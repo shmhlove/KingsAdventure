@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Window - Forward
+  serializedVersion: 3
+  m_Compressed: 0
+  m_RotationCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: {x: 0, y: .087155737, z: 0, w: .99619472}
+        inSlope: {x: 0, y: .359277397, z: 0, w: -.0325226784}
+        outSlope: {x: 0, y: .359277397, z: 0, w: -.0325226784}
+        tangentMode: 1179664
+      - time: .366666764
+        value: {x: 0, y: .327667773, z: 0, w: .944792986}
+        inSlope: {x: 0, y: .768356562, z: 0, w: -.266443253}
+        outSlope: {x: 0, y: .768356562, z: 0, w: -.266443253}
+        tangentMode: 2752553
+      - time: .5
+        value: {x: 0, y: .42261827, z: 0, w: .906307757}
+        inSlope: {x: 0, y: .645025134, z: 0, w: -.296151519}
+        outSlope: {x: 0, y: .645025134, z: 0, w: -.296151519}
+        tangentMode: 3670075
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    path: 
+  m_CompressedRotationCurves: []
+  m_PositionCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: {x: 260, y: 0, z: 0}
+        inSlope: {x: 207.887482, y: 0, z: -3.10401273}
+        outSlope: {x: 207.887482, y: 0, z: -3.10401273}
+        tangentMode: 291498688
+      - time: .233333334
+        value: {x: 72.6057129, y: 0, z: -172.177872}
+        inSlope: {x: -2349.73901, y: 0, z: -1249.07117}
+        outSlope: {x: -2349.73901, y: 0, z: -1249.07117}
+        tangentMode: 2
+      - time: .5
+        value: {x: -690, y: 0, z: -515}
+        inSlope: {x: -2859.77148, y: 0, z: -1030}
+        outSlope: {x: -2859.77148, y: 0, z: -1030}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    path: 
+  m_ScaleCurves: []
+  m_FloatCurves: []
+  m_SampleRate: 60
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_EditorCurves: []
+  m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 0
+  m_HasMotionFloatCurves: 0
+  m_GenerateMotionCurves: 0
+  m_Events: []
+--- !u!1002 &7400001
+EditorExtensionImpl:
+  serializedVersion: 6

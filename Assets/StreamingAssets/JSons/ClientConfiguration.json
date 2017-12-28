@@ -1,0 +1,11 @@
+{
+	"ClientConfiguration": 
+	{
+		"ServerConfigurationCDN": "http://blueasa.synology.me/home/shmhlove/KOR/LambKebab",
+		"ServiceMode": "DevQA",
+		"Version": "1.0.0",
+		"VSyncCount": 0,
+		"FrameRate": 60,
+		"CacheSize(MB)": 200
+	}
+}

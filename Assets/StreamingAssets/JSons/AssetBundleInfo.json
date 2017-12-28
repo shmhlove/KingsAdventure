@@ -1,0 +1,60 @@
+{
+	"AssetBundleInfo": [
+		{
+			"s_BundleName": "Effect",
+			"s_BundleSize": "0",
+			"s_BundleHash": "00000000000000000000000000000000",
+			"p_Resources": 
+			[
+				{
+					"s_Name": "cloud03_01",
+					"s_FileName": "cloud03_01.png",
+					"s_Extension": ".png",
+					"s_Size": "9940",
+					"s_Hash": "DB4C6A40B6056D61ADA845E0009C88D5",
+					"s_Path": "Effect/cloud03_01"
+				},
+				{
+					"s_Name": "New Material",
+					"s_FileName": "New Material.mat",
+					"s_Extension": ".mat",
+					"s_Size": "5024",
+					"s_Hash": "F6F789BFB7DC42B22670C3215089824B",
+					"s_Path": "Effect/New Material"
+				}
+			]
+		},
+		{
+			"s_BundleName": "Sound",
+			"s_BundleSize": "0",
+			"s_BundleHash": "00000000000000000000000000000000",
+			"p_Resources": 
+			[
+				{
+					"s_Name": "Audio_BGM_GameOver",
+					"s_FileName": "Audio_BGM_GameOver.wav",
+					"s_Extension": ".wav",
+					"s_Size": "360852",
+					"s_Hash": "83ACDDE38C731E8FC3216C1F282F2AA3",
+					"s_Path": "Sound/BGM/Audio_BGM_GameOver"
+				},
+				{
+					"s_Name": "Audio_BGM_Pineapple",
+					"s_FileName": "Audio_BGM_Pineapple.ogg",
+					"s_Extension": ".ogg",
+					"s_Size": "423938",
+					"s_Hash": "B1AA4ABDFB1BCDDEF73E0844D9FA7A40",
+					"s_Path": "Sound/BGM/Audio_BGM_Pineapple"
+				},
+				{
+					"s_Name": "Audio_Effect_Crash",
+					"s_FileName": "Audio_Effect_Crash.wav",
+					"s_Extension": ".wav",
+					"s_Size": "31116",
+					"s_Hash": "C586D3C03B5012C6E13C3E69B4EDCAD5",
+					"s_Path": "Sound/Effect/Audio_Effect_Crash"
+				}
+			]
+		}
+	]
+}

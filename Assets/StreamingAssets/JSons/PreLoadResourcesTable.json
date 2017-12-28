@@ -1,0 +1,14 @@
+{
+	"PreLoadResourcesList": [
+        {
+             "Restaurant": [
+                "Image_FrontBG"
+            ]
+        },
+        {
+            "Town": [
+                "Plantation_HarvestUI"
+            ]
+        }
+    ]
+}
