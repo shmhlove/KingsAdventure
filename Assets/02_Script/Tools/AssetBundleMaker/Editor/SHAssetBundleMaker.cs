@@ -188,15 +188,15 @@ public static class SHAssetBundleMaker
     }
 
     // 유틸 : 클라이언트 정보 테이블 얻기
-    static JsonClientConfiguration GetClientConfigTable(SHTableData pTableData)
+    static JsonClientConfig GetClientConfigTable(SHTableData pTableData)
     {
-        return pTableData.GetTable<JsonClientConfiguration>();
+        return pTableData.GetTable<JsonClientConfig>();
     }
 
     // 유틸 : 서버 정보 테이블 얻기
-    static JsonServerConfiguration GetServerConfigTable(SHTableData pTableData)
+    static JsonServerConfig GetServerConfigTable(SHTableData pTableData)
     {
-        return pTableData.GetTable<JsonServerConfiguration>();
+        return pTableData.GetTable<JsonServerConfig>();
     }
 
     // 유틸 : 번들 테이블 얻기
@@ -206,9 +206,9 @@ public static class SHAssetBundleMaker
     }
 
     // 유틸 : 리소스 테이블 얻기
-    static JsonResourcesTable GetResourceTable(SHTableData pTableData)
+    static JsonResources GetResourceTable(SHTableData pTableData)
     {
-        return pTableData.GetTable<JsonResourcesTable>();
+        return pTableData.GetTable<JsonResources>();
     }
     #endregion
 }

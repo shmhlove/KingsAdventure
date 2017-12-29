@@ -1,5 +1,5 @@
 ﻿{
-    "ServerConfiguration":
+    "ServerConfig":
     {
         "AOS_MarketURL":             "market://details?id=com.SHFunction.Framework",
         "IOS_MarketURL":             "itms-apps://itunes.apple.com/app/idcom.SHFunction.Framework",

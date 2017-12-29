@@ -7,10 +7,9 @@ public static class Single
 {
     // 데이터
     public static SHDataManager             Data                { get { return SHDataManager.Instance; } }
-    public static SHResourceData            Resource            { get { return Data.ResourcesData; } }
-    public static SHAssetBundleData         AssetBundle         { get { return Data.AssetBundleData; } }
-    public static SHTableData               Table               { get { return Data.TableData; } }
-    public static SHUserData                User                { get { return Data.UserData; } }
+    public static SHResourceData            Resource            { get { return Data.Resources; } }
+    public static SHAssetBundleData         AssetBundle         { get { return Data.AssetBundle; } }
+    public static SHTableData               Table               { get { return Data.Table; } }
     
     // 씬
     public static SHSceneManager            Scene               { get { return SHSceneManager.Instance; } }
@@ -78,7 +77,7 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
     public override void OnDestroy()
     {
         base.OnDestroy();
-        Destroyed();
+        this.Clear();
     }
 
     // 시스템 : 업데이트
@@ -102,7 +101,7 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
     // 시스템 : 어플종료
     private void OnApplicationQuit()
     {
-        Destroyed();
+        this.Clear();
     }
     #endregion
 
@@ -150,38 +149,38 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
 
 
     #region Utility Functions
-    // 유틸 : 싱글턴 제거
-    void Destroyed()
-    {
-        if (null == m_pInstance)
-            return;
-
-        m_pInstance.OnFinalize();
-        m_pInstance = null;
-    }
-
     // 유틸 : 객체 초기화
     static void Initialize(T pInstance)
     {
         if (null == pInstance)
             return;
 
-        // 싱글턴 생성시 Awake에서 호출되고, Instance에서 호출되므로 같으면 무시
-        if ((null != m_pInstance) && (m_pInstance == pInstance))
+        // 초기화 무시처리 : 싱글턴 생성시 Awake에서 호출되고, Instance Property에 접근하면서 호출될 수 있므로 인스턴스가 같으면 무시
+        if (m_pInstance == pInstance)
             return;
 
-        // 인스턴스 중복체크
+        // 인스턴스 중복체크 : 이미 생성된 게임오브젝트가 존재할 수 있으므로 중복체크 후 인스턴스 업데이트 처리
         T pDuplication = SHGameObject.GetDuplication(pInstance);
         if (null != pDuplication)
         {
-            m_pInstance = pDuplication;
             SHGameObject.DestoryObject(pInstance.gameObject);
+            m_pInstance = pDuplication;
             return;
         }
 
         m_pInstance = pInstance;
         m_pInstance.SetParent("SHSingletons(Destroy)");
         m_pInstance.OnInitialize();
+    }
+
+    // 유틸 : 싱글턴 제거
+    void Clear()
+    {
+        if (null == m_pInstance)
+            return;
+
+        m_pInstance.OnFinalize();
+        m_pInstance = null;
     }
 
     // 유틸 : 싱글턴 부모설정

@@ -16,7 +16,7 @@ public class AssetBundleInfo
     public string                                   m_strBundleName = string.Empty;
     public long                                     m_lBundleSize   = 0;
     public Hash128                                  m_pHash128;
-    public Dictionary<string, SHResourcesTableInfo> m_dicResources  = new Dictionary<string, SHResourcesTableInfo>();
+    public Dictionary<string, SHResourcesInfo> m_dicResources  = new Dictionary<string, SHResourcesInfo>();
     #endregion
 
 
@@ -27,13 +27,13 @@ public class AssetBundleInfo
         m_strBundleName = pCopy.m_strBundleName;
         m_lBundleSize   = pCopy.m_lBundleSize;
         m_pHash128      = pCopy.m_pHash128;
-        m_dicResources  = new Dictionary<string, SHResourcesTableInfo>(pCopy.m_dicResources);
+        m_dicResources  = new Dictionary<string, SHResourcesInfo>(pCopy.m_dicResources);
     }
     #endregion
 
 
     #region Interface Functions
-    public void AddResourceInfo(SHResourcesTableInfo pInfo)
+    public void AddResourceInfo(SHResourcesInfo pInfo)
     {
         if (null == pInfo)
             return;
@@ -49,12 +49,12 @@ public class AssetBundleInfo
         m_dicResources.Remove(strResourceName);
     }
 
-    public void CopyResourceInfo(Dictionary<string, SHResourcesTableInfo> dicCopy)
+    public void CopyResourceInfo(Dictionary<string, SHResourcesInfo> dicCopy)
     {
-        m_dicResources = new Dictionary<string, SHResourcesTableInfo>(dicCopy);
+        m_dicResources = new Dictionary<string, SHResourcesInfo>(dicCopy);
     }
 
-    public SHResourcesTableInfo GetResourceInfo(string strResourceName)
+    public SHResourcesInfo GetResourceInfo(string strResourceName)
     {
         if (false == IsIncludeResource(strResourceName))
             return null;
@@ -113,7 +113,7 @@ public class JsonAssetBundleInfo : SHBaseTable
             for(int iLoopUnit = 0; iLoopUnit < iMaxUnit; ++iLoopUnit)
             {
                 JSONNode pUnitNode = pDataNode["p_Resources"][iLoopUnit];
-                SHResourcesTableInfo pUnit = new SHResourcesTableInfo();
+                SHResourcesInfo pUnit = new SHResourcesInfo();
                 pUnit.m_strName             = GetStrToJson(pUnitNode, "s_Name");
                 pUnit.m_strFileName         = GetStrToJson(pUnitNode, "s_FileName");
                 pUnit.m_strExtension        = GetStrToJson(pUnitNode, "s_Extension");
@@ -138,7 +138,7 @@ public class JsonAssetBundleInfo : SHBaseTable
     // 인터페이스 : 정보파일 다운로드
     public void DownloadByCDN(Action pComplate)
     {
-        // 서버정보파일(ServerConfiguration.json)에 URL이 없으면 패치하지 않는다.
+        // 서버정보파일(ServerConfig.json)에 URL이 없으면 패치하지 않는다.
         if (true == string.IsNullOrEmpty(SHPath.GetURLToBundleCDN()))
         {
             pComplate();
@@ -202,7 +202,7 @@ public class JsonAssetBundleInfo : SHBaseTable
     }
 
     // 인터페이스 : 번들이름과 리소스 이름으로 리소스 정보얻기
-    public SHResourcesTableInfo GetResourceInfo(string strBundleName, string strResourceName)
+    public SHResourcesInfo GetResourceInfo(string strBundleName, string strResourceName)
     {
         if (false == m_pData.ContainsKey(strBundleName))
             return null;
@@ -213,7 +213,7 @@ public class JsonAssetBundleInfo : SHBaseTable
     }
     
     // 인터페이스 : 번들 리스트 얻기( 리소스 테이블과 비교 : 번들파일크기, 리소스 파일크기/해시코드 )
-    public Dictionary<string, AssetBundleInfo> GetBundleListToCompare(JsonResourcesTable pResourceInfo)
+    public Dictionary<string, AssetBundleInfo> GetBundleListToCompare(JsonResources pResourceInfo)
     {
         var dicBundleInfo = GetContainer();
         if (null == pResourceInfo)

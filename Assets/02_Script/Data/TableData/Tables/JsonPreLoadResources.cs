@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 using SimpleJSON;
 
-public class JsonPreLoadResourcesTable : SHBaseTable
+public class JsonPreloadResources : SHBaseTable
 {
     #region Members
     Dictionary<eSceneType, List<string>> m_pData = new Dictionary<eSceneType, List<string>>();
@@ -15,9 +15,9 @@ public class JsonPreLoadResourcesTable : SHBaseTable
 
 
     #region System Functions
-    public JsonPreLoadResourcesTable()
+    public JsonPreloadResources()
     {
-        m_strFileName = "PreLoadResourcesTable";
+        m_strFileName = "PreloadResources";
     }
     #endregion
 

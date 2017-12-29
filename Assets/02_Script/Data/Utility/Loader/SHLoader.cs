@@ -37,7 +37,7 @@ public partial class SHLoader
         m_pPrograss.StartLoadTime();
 
         // 예외처리 : 로드할 리스트가 있는가?
-        if (false == IsReMainLoadFiles())
+        if (false == IsRemainLoadFiles())
         {
             CallEventToComplate();
             return;

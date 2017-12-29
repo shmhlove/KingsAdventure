@@ -9,8 +9,8 @@ using System.Collections.Generic;
 
 public class SHEditorCleanner : Editor 
 {
-    [MenuItem("SHTools/Editor/CleanCache", false, 100)]
-    [MenuItem("Assets/SHTools/Editor/CleanCache", false, 100)]
+    [MenuItem("SHTools/Editor/Clean Cache", false, 100)]
+    [MenuItem("Assets/SHTools/Editor/Clean Cache", false, 100)]
     static void SelectToCleanCache()
     {
         if (true == Caching.CleanCache())
@@ -23,8 +23,8 @@ public class SHEditorCleanner : Editor
         }
     }
 
-    [MenuItem("SHTools/Editor/CleanPlayerPrefs", false, 101)]
-    [MenuItem("Assets/SHTools/Editor/CleanPlayerPrefs", false, 101)]
+    [MenuItem("SHTools/Editor/Clean PlayerPrefs", false, 101)]
+    [MenuItem("Assets/SHTools/Editor/Clean PlayerPrefs", false, 101)]
     static void SelectToCleanPlayerPrefs()
     {
         SHPlayerPrefs.DeleteAll();

@@ -66,7 +66,7 @@ public partial class SHResourceData : SHBaseData
             return;
         }
 
-        SHResourcesTableInfo pResourceInfo = Single.Table.GetResourcesInfo(pInfo.m_strName);
+        SHResourcesInfo pResourceInfo = Single.Table.GetResourcesInfo(pInfo.m_strName);
         if (null == pResourceInfo)
         {
             Debug.LogFormat("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
@@ -108,7 +108,7 @@ public partial class SHResourceData : SHBaseData
         strFileName = Path.GetFileNameWithoutExtension(strFileName);
         if (false == IsLoadResource(strFileName.ToLower()))
         {
-            SHResourcesTableInfo pInfo = Single.Table.GetResourcesInfo(strFileName);
+            SHResourcesInfo pInfo = Single.Table.GetResourcesInfo(strFileName);
             if (null == pInfo)
             {
                 Debug.Log(string.Format("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", strFileName));
@@ -252,7 +252,7 @@ public partial class SHResourceData : SHBaseData
     }
     
     // 유틸 : 어싱크로 리소스 로드하기
-    void LoadAsync(SHResourcesTableInfo pTable, Action<string, SHLoadStartInfo> pStart, 
+    void LoadAsync(SHResourcesInfo pTable, Action<string, SHLoadStartInfo> pStart, 
                                                 Action<string, SHLoadEndInfo> pDone)
     {
         if (true == IsLoadResource(pTable.m_strName.ToLower()))
@@ -288,7 +288,7 @@ public partial class SHResourceData : SHBaseData
     }
 
     // 유틸 : 싱크로 리소스 로드하기
-    T LoadSync<T>(SHResourcesTableInfo pTable) where T : Object
+    T LoadSync<T>(SHResourcesInfo pTable) where T : Object
     {
         if (null == pTable)
             return null;

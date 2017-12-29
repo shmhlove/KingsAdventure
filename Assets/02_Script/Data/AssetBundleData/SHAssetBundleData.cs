@@ -42,7 +42,7 @@ public partial class SHAssetBundleData : SHBaseData
     {
         var dicLoadList = new Dictionary<string, SHLoadData>();
         
-        // 서버정보파일(ServerConfiguration.json)에 URL이 없으면 패치하지 않는다.
+        // 서버정보파일(ServerConfig.json)에 URL이 없으면 패치하지 않는다.
         if (true == string.IsNullOrEmpty(SHPath.GetURLToBundleCDN()))
             return dicLoadList;
 

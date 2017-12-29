@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 using SimpleJSON;
 
-public class SHResourcesTableInfo
+public class SHResourcesInfo
 {
     #region Members
     public string           m_strName;             // 확장자가 없는 이름
@@ -22,7 +22,7 @@ public class SHResourcesTableInfo
 
 
     #region Interface Functions
-    public void CopyTo(SHResourcesTableInfo pData)
+    public void CopyTo(SHResourcesInfo pData)
     {
         if (null == pData)
             return;
@@ -39,17 +39,17 @@ public class SHResourcesTableInfo
     #endregion
 }
 
-public class JsonResourcesTable : SHBaseTable
+public class JsonResources : SHBaseTable
 {
     #region Members
-    Dictionary<string, SHResourcesTableInfo> m_pData = new Dictionary<string, SHResourcesTableInfo>();
+    Dictionary<string, SHResourcesInfo> m_pData = new Dictionary<string, SHResourcesInfo>();
     #endregion
 
 
     #region System Functions
-    public JsonResourcesTable()
+    public JsonResources()
     {
-        m_strFileName = "ResourcesTable";
+        m_strFileName = "ResourcesInfo";
     }
     #endregion
 
@@ -70,11 +70,11 @@ public class JsonResourcesTable : SHBaseTable
         if (null == pJson)
             return false;
 
-        int iMaxTable = pJson["ResourcesList"].Count;
+        int iMaxTable = pJson["ResourcesInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            JSONNode pDataNode         = pJson["ResourcesList"][iLoop];
-            SHResourcesTableInfo pData = new SHResourcesTableInfo();
+            JSONNode pDataNode         = pJson["ResourcesInfo"][iLoop];
+            SHResourcesInfo pData = new SHResourcesInfo();
             pData.m_strName             = GetStrToJson(pDataNode, "s_Name");
             pData.m_strFileName         = GetStrToJson(pDataNode, "s_FileName");
             pData.m_strExtension        = GetStrToJson(pDataNode, "s_Extension");
@@ -102,7 +102,7 @@ public class JsonResourcesTable : SHBaseTable
 
     #region Interface Functions
     // 인터페이스 : 파일명으로 리소스 정보얻기
-    public SHResourcesTableInfo GetResouceInfo(string strName)
+    public SHResourcesInfo GetResouceInfo(string strName)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
@@ -117,7 +117,7 @@ public class JsonResourcesTable : SHBaseTable
     // 인터페이스 : 파일명으로 리소스 경로 얻기
     public string GetResoucesPath(string strName)
     {
-        SHResourcesTableInfo pInfo = GetResouceInfo(strName);
+        SHResourcesInfo pInfo = GetResouceInfo(strName);
         if (null == pInfo)
             return string.Empty;
     
@@ -125,12 +125,12 @@ public class JsonResourcesTable : SHBaseTable
     }
     
     // 인터페이스 : 타입에 해당하는 리소스 정보 리스트 얻기
-    public List<SHResourcesTableInfo> GetResourceInfoByType(eResourceType eType)
+    public List<SHResourcesInfo> GetResourceInfoByType(eResourceType eType)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        var pList = new List<SHResourcesTableInfo>();
+        var pList = new List<SHResourcesInfo>();
         SHUtils.ForToDic(m_pData, (pKey, pValue) =>
         {
             if (eType == pValue.m_eResourceType)
@@ -149,7 +149,7 @@ public class JsonResourcesTable : SHBaseTable
 
 
     #region Utility Functions
-    void AddResources(string strKey, SHResourcesTableInfo pData)
+    void AddResources(string strKey, SHResourcesInfo pData)
     {
         m_pData[strKey.ToLower().Trim()] = pData;
     }

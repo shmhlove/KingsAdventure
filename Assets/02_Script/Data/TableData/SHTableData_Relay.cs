@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 public partial class SHTableData : SHBaseData
 {
-    #region PreLoadResourcesTable
+    #region PreloadResources
     public List<string> GetPreLoadResourcesList(eSceneType eType)
     {
-        JsonPreLoadResourcesTable pTable = GetTable<JsonPreLoadResourcesTable>();
+        JsonPreloadResources pTable = GetTable<JsonPreloadResources>();
         if (null == pTable)
             return new List<string>();
 
@@ -18,10 +18,10 @@ public partial class SHTableData : SHBaseData
     }
     #endregion
 
-    #region ResourcesTable
-    public SHResourcesTableInfo GetResourcesInfo(string strFileName)
+    #region ResourcesInfo
+    public SHResourcesInfo GetResourcesInfo(string strFileName)
     {
-        JsonResourcesTable pTable = GetTable<JsonResourcesTable>();
+        JsonResources pTable = GetTable<JsonResources>();
         if (null == pTable)
             return null;
 
@@ -29,10 +29,10 @@ public partial class SHTableData : SHBaseData
     }
     #endregion
 
-    #region JsonClientConfiguration
-    public string GetServerConfigurationCDN()
+    #region JsonClientConfig
+    public string GetServerConfigCDN()
     {
-        var pTable = GetTable<JsonClientConfiguration>();
+        var pTable = GetTable<JsonClientConfig>();
         if (null == pTable)
             return string.Empty;
 
@@ -40,7 +40,7 @@ public partial class SHTableData : SHBaseData
     }
     public string GetClientVersion()
     {
-        var pTable = GetTable<JsonClientConfiguration>();
+        var pTable = GetTable<JsonClientConfig>();
         if (null == pTable)
             return "0";
 
@@ -48,7 +48,7 @@ public partial class SHTableData : SHBaseData
     }
     public eServiceMode GetClientServiceMode()
     {
-        var pTable = GetTable<JsonClientConfiguration>();
+        var pTable = GetTable<JsonClientConfig>();
         if (null == pTable)
             return eServiceMode.None;
 
@@ -56,7 +56,7 @@ public partial class SHTableData : SHBaseData
     }
     public int GetClientVersionToOrder(eOrderNum eOrder)
     {
-        var pTable = GetTable<JsonClientConfiguration>();
+        var pTable = GetTable<JsonClientConfig>();
         if (null == pTable)
             return 0;
 
@@ -64,10 +64,10 @@ public partial class SHTableData : SHBaseData
     }
     #endregion
 
-    #region JsonServerConfiguration
+    #region JsonServerConfig
     public string GetServerURL()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return string.Empty;
 
@@ -75,7 +75,7 @@ public partial class SHTableData : SHBaseData
     }
     public string GetBundleCDN()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return string.Empty;
 
@@ -83,7 +83,7 @@ public partial class SHTableData : SHBaseData
     }
     public string GetMarketURL()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return string.Empty;
 
@@ -91,7 +91,7 @@ public partial class SHTableData : SHBaseData
     }
     public eServiceMode GetServiceMode()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return eServiceMode.None;
 
@@ -99,7 +99,7 @@ public partial class SHTableData : SHBaseData
     }
     public eServiceState GetServiceState()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return eServiceState.None;
 
@@ -107,26 +107,26 @@ public partial class SHTableData : SHBaseData
     }
     public string GetServiceCheckMessage()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return string.Empty;
 
         return pTable.GetCheckMessage();
     }
-    public void DownloadServerConfiguration(Action pComplate)
+    public void DownloadServerConfig(Action pComplate)
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
         {
             pComplate();
             return;
         }
 
-        pTable.DownloadByCDN(pComplate, SHPath.GetURLToServerConfigurationCDN());
+        pTable.DownloadByCDN(pComplate, SHPath.GetURLToServerConfigCDN());
     }
-    public bool IsLoadServerConfiguration()
+    public bool IsLoadServerConfig()
     {
-        var pTable = GetTable<JsonServerConfiguration>();
+        var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
             return false;
 

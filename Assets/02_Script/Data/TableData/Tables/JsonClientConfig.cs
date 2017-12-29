@@ -7,22 +7,22 @@ using System.Collections.Generic;
 
 using SimpleJSON;
 
-public class JsonClientConfiguration : SHBaseTable
+public class JsonClientConfig : SHBaseTable
 {
     #region Members
-    public string        m_strConfigurationCDN  = string.Empty;
-    public string        m_strServiceMode       = string.Empty;
-    public string        m_strVersion           = string.Empty;
-    public int           m_iVSyncCount          = 0;
-    public int           m_iFrameRate           = 60;
-    public int           m_iCacheSize           = 200;
+    public string        m_strCDN         = string.Empty;
+    public string        m_strServiceMode = string.Empty;
+    public string        m_strVersion     = string.Empty;
+    public bool          m_bVSyncCount    = false;
+    public int           m_iFrameRate     = 60;
+    public int           m_iCacheSize     = 200;
     #endregion
 
 
     #region System Functions
-    public JsonClientConfiguration()
+    public JsonClientConfig()
     {
-        m_strFileName = "ClientConfiguration";
+        m_strFileName = "ClientConfig";
     }
     #endregion
 
@@ -30,12 +30,12 @@ public class JsonClientConfiguration : SHBaseTable
     #region Virtual Functions
     public override void Initialize()
     {
-        m_strConfigurationCDN   = string.Empty;
-        m_strServiceMode        = string.Empty;
-        m_strVersion            = string.Empty;
-        m_iVSyncCount           = 0;
-        m_iFrameRate            = 60;
-        m_iCacheSize            = 200;
+        m_strCDN         = string.Empty;
+        m_strServiceMode = string.Empty;
+        m_strVersion     = string.Empty;
+        m_bVSyncCount    = false;
+        m_iFrameRate     = 60;
+        m_iCacheSize     = 200;
     }
     public override bool IsLoadTable()
     {
@@ -46,12 +46,12 @@ public class JsonClientConfiguration : SHBaseTable
         if (null == pJson)
             return false;
 
-        JSONNode pDataNode      = pJson["ClientConfiguration"];
+        JSONNode pDataNode      = pJson["ClientConfig"];
 
-        m_strConfigurationCDN   = GetStrToJson(pDataNode, "ServerConfigurationCDN");
+        m_strCDN                = GetStrToJson(pDataNode, "ServerConfigCDN");
         m_strServiceMode        = GetStrToJson(pDataNode, "ServiceMode");
         m_strVersion            = GetStrToJson(pDataNode, "Version");
-        m_iVSyncCount           = GetIntToJson(pDataNode, "VSyncCount");
+        m_bVSyncCount           = GetBoolToJson(pDataNode, "VSyncCount");
         m_iFrameRate            = GetIntToJson(pDataNode, "FrameRate");
         m_iCacheSize            = GetIntToJson(pDataNode, "CacheSize(MB)");
         
@@ -70,11 +70,11 @@ public class JsonClientConfiguration : SHBaseTable
         string strNewLine = "\r\n";
         string strBuff = "{" + strNewLine;
 
-        strBuff += string.Format("\t\"{0}\": {1}", "ClientConfiguration", strNewLine);
+        strBuff += string.Format("\t\"{0}\": {1}", "ClientConfig", strNewLine);
         strBuff += "\t{" + strNewLine;
         {
-            strBuff += string.Format("\t\t\"ServerConfigurationCDN\": \"{0}\",{1}",
-                m_strConfigurationCDN,
+            strBuff += string.Format("\t\t\"ServerConfigCDN\": \"{0}\",{1}",
+                m_strCDN,
                 strNewLine);
 
             strBuff += string.Format("\t\t\"ServiceMode\": \"{0}\",{1}",
@@ -86,7 +86,7 @@ public class JsonClientConfiguration : SHBaseTable
                 strNewLine);
 
             strBuff += string.Format("\t\t\"VSyncCount\": {0},{1}",
-                m_iVSyncCount,
+                m_bVSyncCount,
                 strNewLine);
 
             strBuff += string.Format("\t\t\"FrameRate\": {0},{1}",
@@ -109,7 +109,7 @@ public class JsonClientConfiguration : SHBaseTable
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        m_strConfigurationCDN = strCDN;
+        m_strCDN = strCDN;
     }
     public void SetServiceMode(string strServiceMode)
     {
@@ -123,7 +123,7 @@ public class JsonClientConfiguration : SHBaseTable
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        return m_strConfigurationCDN;
+        return m_strCDN;
     }
     public string GetServiceMode()
     {
@@ -155,7 +155,7 @@ public class JsonClientConfiguration : SHBaseTable
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        return m_iVSyncCount;
+        return (true == m_bVSyncCount) ? 1 : 0;
     }
     public int GetFrameRate()
     {

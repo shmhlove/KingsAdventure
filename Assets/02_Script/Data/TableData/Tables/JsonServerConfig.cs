@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 using SimpleJSON;
 
-using DicData = System.Collections.Generic.Dictionary<eServiceMode, JsonServerConfigurationData>;
+using DicData = System.Collections.Generic.Dictionary<eServiceMode, JsonServerConfigData>;
 
-public class JsonServerConfigurationData
+public class JsonServerConfigData
 {
     public eServiceMode m_eServiceMode        = eServiceMode.Dev;
     public string       m_strClientVersion    = string.Empty;
@@ -19,7 +19,7 @@ public class JsonServerConfigurationData
     public string       m_strServiceState     = string.Empty;
 }
 
-public class JsonServerConfiguration : SHBaseTable
+public class JsonServerConfig : SHBaseTable
 {
     #region Members
     private string  m_strAOSMarketURL = string.Empty;
@@ -29,9 +29,9 @@ public class JsonServerConfiguration : SHBaseTable
 
 
     #region System Functions
-    public JsonServerConfiguration()
+    public JsonServerConfig()
     {
-        m_strFileName = "ServerConfiguration";
+        m_strFileName = "ServerConfig";
     }
     #endregion
 
@@ -54,7 +54,7 @@ public class JsonServerConfiguration : SHBaseTable
         if (null == pJson)
             return false;
 
-        JSONNode pDataNode = pJson["ServerConfiguration"];
+        JSONNode pDataNode = pJson["ServerConfig"];
 
         // 마켓 URL
         m_strAOSMarketURL = GetStrToJson(pDataNode, "AOS_MarketURL");
@@ -66,7 +66,7 @@ public class JsonServerConfiguration : SHBaseTable
             if (eServiceMode.None == eMode)
                 return;
 
-            var pData                = new JsonServerConfigurationData();
+            var pData                = new JsonServerConfigData();
             pData.m_strClientVersion = GetStrToJson(pDataNode[eMode.ToString()], "ClientVersion");
             pData.m_strGameServerURL = GetStrToJson(pDataNode[eMode.ToString()], "GameServerURL");
             pData.m_strBundleCDN     = GetStrToJson(pDataNode[eMode.ToString()], "BundleCDN");
@@ -103,10 +103,10 @@ public class JsonServerConfiguration : SHBaseTable
             }
             else
             {
-                Debug.LogErrorFormat("Error!!! Download ServerConfiguration.json : (Error : {0}, URL : {1}", pWWW.error, pWWW.url);
+                Debug.LogErrorFormat("Error!!! Download ServerConfig.json : (Error : {0}, URL : {1}", pWWW.error, pWWW.url);
             }
 
-        }, new WWW(string.Format("{0}/{1}.json", SHPath.GetURLToServerConfigurationCDN(), m_strFileName)));
+        }, new WWW(string.Format("{0}/{1}.json", SHPath.GetURLToServerConfigCDN(), m_strFileName)));
     }
 
     // 인터페이스 : CDN에서 정보파일 다운로드
@@ -128,7 +128,7 @@ public class JsonServerConfiguration : SHBaseTable
     }
 
     // 인터페이스 : 클라버전에 맞는 서버정보 얻기(Live부터 Dev까지 순차검색)
-    public JsonServerConfigurationData GetServerInfo(string strClientVersion)
+    public JsonServerConfigData GetServerInfo(string strClientVersion)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
@@ -158,7 +158,7 @@ public class JsonServerConfiguration : SHBaseTable
     }
 
     // 인터페이스 : 클라버전에 맞는 서버정보 얻기
-    public JsonServerConfigurationData GetServerInfo(eServiceMode eMode)
+    public JsonServerConfigData GetServerInfo(eServiceMode eMode)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
@@ -273,7 +273,7 @@ public class JsonServerConfiguration : SHBaseTable
         string strNewLine = "\r\n";
         string strBuff = "{" + strNewLine;
 
-        strBuff += string.Format("\t\"{0}\": {1}", "ServerConfiguration", strNewLine);
+        strBuff += string.Format("\t\"{0}\": {1}", "ServerConfig", strNewLine);
         strBuff += "\t{" + strNewLine;
         {
             strBuff += string.Format("\t\t\"AOS_MarketURL\": \"{0}\",{1}",

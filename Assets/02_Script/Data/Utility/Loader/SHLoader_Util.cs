@@ -25,7 +25,7 @@ public partial class SHLoader
     {
         CallEventToAsyncPrograss();
 
-        if (false == IsReMainLoadFiles())
+        if (false == IsRemainLoadFiles())
             return;
 
         if (true == IsLoadDone())
@@ -74,7 +74,7 @@ public partial class SHLoader
     float GetLoadPrograss()
     {
         // 로드할 파일이 없으면 100프로지~
-        if (false == IsReMainLoadFiles())
+        if (false == IsRemainLoadFiles())
             return 100.0f;
 
         float iProgress = 0.0f;
@@ -189,7 +189,7 @@ public partial class SHLoader
     }
 
     // 로드할 파일이 있는가?
-    public bool IsReMainLoadFiles()
+    public bool IsRemainLoadFiles()
     {
         SHPair<int, int> pCountInfo = m_pPrograss.GetCountInfo();
 

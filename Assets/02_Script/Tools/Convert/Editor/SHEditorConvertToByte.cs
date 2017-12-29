@@ -9,8 +9,8 @@ using System.Collections.Generic;
 public class SHEditorConvertToByte : Editor
 {
     #region Interface Functions
-    [MenuItem("SHTools/Convert Table To Byte", false, 0)]
-    [MenuItem("Assets/SHTools/Convert Table To Byte", false, 0)]
+    [MenuItem("SHTools/Convert To Byte", false, 0)]
+    [MenuItem("Assets/SHTools/Convert To Byte", false, 0)]
     static void SelectToMenu()
     {
         EditorUtility.DisplayDialog("[SHTools] Convert Table To ByteFile",

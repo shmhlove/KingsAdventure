@@ -60,7 +60,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         if (eBOOL.True != (m_eIsFocus = bIsFocus ? eBOOL.True : eBOOL.False))
             return;
 
-        // 서비스상태 체크 후 Run이 아니면 인트로로 보낸다.
+        // 서비스 상태 체크 후 Run이 아니면 인트로로 보낸다.
         CheckServiceState((eResult) =>
         {
             if (eServiceState.Run != eResult)
@@ -114,7 +114,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     // 인터페이스 : 어플리케이션 정보설정
     public void SetApplicationInfo()
     {
-        var pClientInfo = Single.Table.GetTable<JsonClientConfiguration>();
+        var pClientInfo = Single.Table.GetTable<JsonClientConfig>();
         SetVSync(pClientInfo.GetVSyncCount());
         SetFrameRate(pClientInfo.GetFrameRate());
         SetCacheInfo(pClientInfo.GetCacheSize(), 30);
@@ -151,7 +151,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     // 인터페이스 : 현재 서비스 상태 체크
     public void CheckServiceState(Action<eServiceState> pCallback)
     {
-        Single.Table.DownloadServerConfiguration(() =>
+        Single.Table.DownloadServerConfig(() =>
         {
             if (null == pCallback)
                 return;
@@ -267,7 +267,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     // 디버그 : 앱정보 출력
     void DrawAppInformation()
     {
-        var pServerInfo = Single.Table.GetTable<JsonServerConfiguration>();
+        var pServerInfo = Single.Table.GetTable<JsonServerConfig>();
         if (false == pServerInfo.IsLoadTable())
             return;
 

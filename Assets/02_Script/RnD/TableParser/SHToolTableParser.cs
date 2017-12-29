@@ -29,7 +29,7 @@ public class SHToolTableParser : MonoBehaviour
     [FuncButton]
     void StartParse()
     {
-        if (true == m_pLoader.IsReMainLoadFiles())
+        if (true == m_pLoader.IsRemainLoadFiles())
         {
             EditorUtility.DisplayDialog("SHToolTableParser", "파싱 중 입니다. 완료 후 시작해주세요.", "확인");
             return;

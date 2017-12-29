@@ -114,7 +114,7 @@ class SHBuildScript
         {
             case eNationType.Korea:
                 // ClinetConfiguration파일 업데이트( CDN 주소 )
-                WriteClientConfiguration(GetURLToConfigurationCDNOfKorea(), eMode);
+                WriteClientConfig(GetURLToConfigurationCDNOfKorea(), eMode);
                 break;
         }
     }
@@ -189,17 +189,17 @@ class SHBuildScript
         Debug.LogFormat("** AssetBundles Packing End({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
     }
     
-    // 유틸 : ClientConfiguration파일 업데이트
-    static void WriteClientConfiguration(string strConfigurationCDN, eServiceMode eMode)
+    // 유틸 : ClientConfig파일 업데이트
+    static void WriteClientConfig(string strConfigurationCDN, eServiceMode eMode)
     {
-        var pConfigFile = Single.Table.GetTable<JsonClientConfiguration>();
+        var pConfigFile = Single.Table.GetTable<JsonClientConfig>();
         
         pConfigFile.SetServiceMode(eMode.ToString());
         pConfigFile.SetConfigurationCDN(strConfigurationCDN);
         pConfigFile.SaveJsonFile();
     }
 
-    // 유틸 : 한국 ServerConfiguration CDN 주소
+    // 유틸 : 한국 ServerConfig CDN 주소
     static string GetURLToConfigurationCDNOfKorea()
     {
         return string.Format("{0}/{1}", "http://blueasa.synology.me/home/shmhlove/KOR", Application.productName);

@@ -8,24 +8,20 @@ public class SHDataManager : SHSingleton<SHDataManager>
 {
     #region Members
     // 테이블 데이터 : Excel, SQLite, Json, Byte, XML
-    private SHTableData     m_pTableData = new SHTableData();
-    public SHTableData      TableData { get { return m_pTableData; } }
+    private SHTableData     m_pTable = new SHTableData();
+    public SHTableData      Table { get { return m_pTable; } }
 
     // 리소스 데이터 : Prefab, Animation, Texture, Sound, Material
-    private SHResourceData  m_pResourcesData = new SHResourceData();
-    public SHResourceData   ResourcesData { get { return m_pResourcesData; } }
+    private SHResourceData  m_pResources = new SHResourceData();
+    public SHResourceData   Resources { get { return m_pResources; } }
 
     // 애셋번들 데이터
-    private SHAssetBundleData  m_pAssetBundleData = new SHAssetBundleData();
-    public SHAssetBundleData   AssetBundleData { get { return m_pAssetBundleData; } }
+    private SHAssetBundleData  m_pAssetBundle = new SHAssetBundleData();
+    public SHAssetBundleData   AssetBundle { get { return m_pAssetBundle; } }
 
     // 서버 데이터 : 로딩타임에 Req하려는 서버 데이터
-    private SHServerData    m_pServerData = new SHServerData();
-    public SHServerData     ServerData { get { return m_pServerData; } }
-
-    // 유저 데이터
-    private SHUserData      m_pUserData = new SHUserData();
-    public SHUserData       UserData { get { return m_pUserData; } }
+    private SHServerData    m_pServer = new SHServerData();
+    public SHServerData     Server { get { return m_pServer; } }
     
     // 로더
     private SHLoader        m_pLoader = new SHLoader();
@@ -37,11 +33,10 @@ public class SHDataManager : SHSingleton<SHDataManager>
     // 다양화 : 싱글턴 생성될때
     public override void OnInitialize()
     {
-        TableData.OnInitialize();
-        ResourcesData.OnInitialize();
-        AssetBundleData.OnInitialize();
-        ServerData.OnInitialize();
-        UserData.OnInitialize();
+        Table.OnInitialize();
+        Resources.OnInitialize();
+        AssetBundle.OnInitialize();
+        Server.OnInitialize();
 
         SetDontDestroy();
     }
@@ -49,10 +44,9 @@ public class SHDataManager : SHSingleton<SHDataManager>
     // 다양화 : 싱글턴 종료될때
     public override void OnFinalize() 
     {
-        TableData.OnFinalize();
-        ResourcesData.OnFinalize();
-        AssetBundleData.OnFinalize();
-        UserData.OnFinalize();
+        Table.OnFinalize();
+        Resources.OnFinalize();
+        AssetBundle.OnFinalize();
     }
     #endregion
 
@@ -63,11 +57,10 @@ public class SHDataManager : SHSingleton<SHDataManager>
     {
         base.FixedUpdate();
 
-        TableData.FrameMove();
-        ResourcesData.FrameMove();
-        AssetBundleData.FrameMove();
-        ServerData.FrameMove();
-        UserData.FrameMove();
+        Table.FrameMove();
+        Resources.FrameMove();
+        AssetBundle.FrameMove();
+        Server.FrameMove();
     }
     #endregion
 
@@ -105,9 +98,9 @@ public class SHDataManager : SHSingleton<SHDataManager>
     }
 
     // 인터페이스 : 로드중인지 체크(로드 중이거나 할 파일이 있는지  체크)
-    public bool IsReMainLoadFiles()
+    public bool IsRemainLoadFiles()
     {
-        return Loader.IsReMainLoadFiles();
+        return Loader.IsRemainLoadFiles();
     }
 
     #endregion
@@ -117,27 +110,25 @@ public class SHDataManager : SHSingleton<SHDataManager>
     // 유틸 : 로드 리스트
     List<Dictionary<string, SHLoadData>> GetLoadList(eSceneType eType)
     {
-        var pLoadList = new List<Dictionary<string, SHLoadData>>();
-
-        pLoadList.Add(ServerData.GetLoadList(eType));
-        pLoadList.Add(TableData.GetLoadList(eType));
-        pLoadList.Add(ResourcesData.GetLoadList(eType));
-        pLoadList.Add(AssetBundleData.GetLoadList(eType));
-        
-        return pLoadList;
+        return new List<Dictionary<string, SHLoadData>>()
+        {
+            Server.GetLoadList(eType),
+            Table.GetLoadList(eType),
+            Resources.GetLoadList(eType),
+            AssetBundle.GetLoadList(eType)
+        };
     }
 
     // 유틸 : 패치 리스트
     List<Dictionary<string, SHLoadData>> GetPatchList()
     {
-        var pPatchList = new List<Dictionary<string, SHLoadData>>();
-
-        pPatchList.Add(ServerData.GetPatchList());
-        pPatchList.Add(TableData.GetPatchList());
-        pPatchList.Add(ResourcesData.GetPatchList());
-        pPatchList.Add(AssetBundleData.GetPatchList());
-        
-        return pPatchList;
+        return new List<Dictionary<string, SHLoadData>>()
+        {
+            Server.GetPatchList(),
+            Table.GetPatchList(),
+            Resources.GetPatchList(),
+            AssetBundle.GetPatchList()
+        };
     }
     #endregion
 
@@ -146,10 +137,8 @@ public class SHDataManager : SHSingleton<SHDataManager>
     // 이벤트 : 로드가 시작될때
     void OnEventToLoadStart()
     {
-        // ResourcesData.OnFinalize();
-        Resources.UnloadUnusedAssets();
-
-        // 가비지를 동작시킨다.
+        UnityEngine.Resources.UnloadUnusedAssets();
+        
         for (int iLoop = 0; iLoop < System.GC.MaxGeneration; ++iLoop)
         {
             System.GC.Collect(iLoop, GCCollectionMode.Forced);
@@ -159,9 +148,8 @@ public class SHDataManager : SHSingleton<SHDataManager>
     // 이벤트 : 로드가 완료되었을때
     public void OnEventToLoadDone(object pSender, EventArgs vArgs)
     {
-        Resources.UnloadUnusedAssets();
-
-        // 가비지를 동작시킨다.
+        UnityEngine.Resources.UnloadUnusedAssets();
+        
         for (int iLoop = 0; iLoop < System.GC.MaxGeneration; ++iLoop)
         {
             System.GC.Collect(iLoop, GCCollectionMode.Forced);

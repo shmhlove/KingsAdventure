@@ -12,7 +12,7 @@ public class SHResourcesLister
 {
     #region Members
     // 멤버 : 리스팅된 리소스 리스트
-    public Dictionary<string, SHResourcesTableInfo> m_dicResources      = new Dictionary<string, SHResourcesTableInfo>();
+    public Dictionary<string, SHResourcesInfo>      m_dicResources      = new Dictionary<string, SHResourcesInfo>();
 
     // 멤버 : 리스팅된 번들 리스트
     public Dictionary<string, AssetBundleInfo>      m_dicAssetBundles   = new Dictionary<string, AssetBundleInfo>();
@@ -38,7 +38,7 @@ public class SHResourcesLister
         (pFileInfo) => 
         {
             // 파일 정보 생성
-            SHResourcesTableInfo pInfo = MakeFileInfo(pFileInfo);
+            SHResourcesInfo pInfo = MakeFileInfo(pFileInfo);
             if (null == pInfo)
                 return;
             
@@ -73,7 +73,7 @@ public class SHResourcesLister
     }
 
     // 인터페이스 : 리소스 리스트를 Json형태로 쓰기
-    public static void SaveToResources(Dictionary<string, SHResourcesTableInfo> dicTable, string strSaveFilePath)
+    public static void SaveToResources(Dictionary<string, SHResourcesInfo> dicTable, string strSaveFilePath)
     {
         if (0 == dicTable.Count)
             return;
@@ -82,7 +82,7 @@ public class SHResourcesLister
         string strBuff    = "{" + strNewLine;
         
         // 테이블별 내용작성
-        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesList", strNewLine);
+        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesInfo", strNewLine);
         SHUtils.ForToDic(dicTable, (pKey, pValue) =>
         {
             strBuff += "\t\t{" + strNewLine;
@@ -98,7 +98,7 @@ public class SHResourcesLister
     }
 
     // 인터페이스 : 리소스 리스트를 Json형태로 번들정보파일포맷으로 쓰기
-    public static void SaveToResourcesOfBundleFormat(Dictionary<string, SHResourcesTableInfo> dicTable, string strSaveFilePath)
+    public static void SaveToResourcesOfBundleFormat(Dictionary<string, SHResourcesInfo> dicTable, string strSaveFilePath)
     {
         if (0 == dicTable.Count)
             return;
@@ -107,7 +107,7 @@ public class SHResourcesLister
         string strBuff = "{" + strNewLine;
 
         // 테이블별 내용작성
-        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesList", strNewLine);
+        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesInfo", strNewLine);
         SHUtils.ForToDic(dicTable, (pKey, pValue) =>
         {
             strBuff += "\t\t{" + strNewLine;
@@ -211,7 +211,7 @@ public class SHResourcesLister
     }
 
     // 인터페이스 : 파일정보 Json 포맷으로 만들어주기
-    public static string MakeSaveFormat(SHResourcesTableInfo pInfo, string strPreFix)
+    public static string MakeSaveFormat(SHResourcesInfo pInfo, string strPreFix)
     {
         if (null == pInfo)
             return string.Empty;
@@ -261,7 +261,7 @@ public class SHResourcesLister
 
     #region Utility Functions
     // 유틸 : 리소스 리스트 추가
-    void AddResourceInfo(SHResourcesTableInfo pInfo)
+    void AddResourceInfo(SHResourcesInfo pInfo)
     {
         if (null == pInfo)
             return;
@@ -272,7 +272,7 @@ public class SHResourcesLister
     // 유틸 : 번들 리스트 추가
     // 1. 리소스의 최상위 폴더이름을 번들이름으로 하여 등록시킴.
     // 2. 프리팹을 제외한 모든 리소스를 번들 리스트로 등록시킴.
-    void AddAssetBundleInfo(SHResourcesTableInfo pInfo)
+    void AddAssetBundleInfo(SHResourcesInfo pInfo)
     {
         if (null == pInfo)
             return;
@@ -298,7 +298,7 @@ public class SHResourcesLister
     }
 
     // 유틸 : 번들로 묶지 않을 파일에 대한 필터링
-    bool CheckFilteringToAssetBundleInfo(SHResourcesTableInfo pInfo)
+    bool CheckFilteringToAssetBundleInfo(SHResourcesInfo pInfo)
     {
         // 프리팹파일 필터링
         if (".prefab" == pInfo.m_strExtension)
@@ -312,7 +312,7 @@ public class SHResourcesLister
     }
 
     // 유틸 : 파일로 부터 정보얻어서 테이블 데이터 객체만들기
-    SHResourcesTableInfo MakeFileInfo(FileInfo pFile)
+    SHResourcesInfo MakeFileInfo(FileInfo pFile)
     {
         // 알리아싱
         string strRoot              = "Resources";
@@ -324,7 +324,7 @@ public class SHResourcesLister
             return null;
         
         // 기록
-        var pInfo                   = new SHResourcesTableInfo();
+        var pInfo                   = new SHResourcesInfo();
         pInfo.m_strName             = Path.GetFileNameWithoutExtension(strFullName);
         pInfo.m_strFileName         = Path.GetFileName(strFullName);
         pInfo.m_strExtension        = strExtension;
@@ -352,7 +352,7 @@ public class SHResourcesLister
     }
 
     // 유틸 : 이름중복체크
-    string CheckToDuplication(Dictionary<string, SHResourcesTableInfo> dicFiles, string strFileName)
+    string CheckToDuplication(Dictionary<string, SHResourcesInfo> dicFiles, string strFileName)
     {
         foreach (var kvp in dicFiles)
         {

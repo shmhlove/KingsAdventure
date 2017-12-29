@@ -17,10 +17,10 @@ public static partial class SHPath
     }
 
     // 경로 : Configuration CDN 주소
-    public static string GetURLToServerConfigurationCDN()
+    public static string GetURLToServerConfigCDN()
     {
         return string.Empty;
-        //return Single.Table.GetServerConfigurationCDN();
+        //return Single.Table.GetServerConfigCDN();
     }
     
     // 경로 : 번들 CDN 주소

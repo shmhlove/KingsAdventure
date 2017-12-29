@@ -11,14 +11,13 @@ public static class SHGameObject
         return new GameObject(strName);
     }
 
-    // 오브젝트 제거
+    // 오브젝트 즉시 제거
     public static void DestoryObject(UnityEngine.Object pObject)
     {
         if (null == pObject)
             return;
 
         UnityEngine.Object.DestroyImmediate(pObject);
-        //UnityEngine.Object.DestroyObject(pObject);
     }
 
     // 오브젝트 찾기 및 생성
@@ -96,6 +95,7 @@ public static class SHGameObject
         pChild.SetParent(pParent);
         return pParent;
     }
+
     // 컴포넌트 얻기
     public static T GetComponent<T>(GameObject pObject) where T : Component
     {
@@ -109,7 +109,7 @@ public static class SHGameObject
         return pComponent;
     }
 
-    // 유틸 : 객체 중복체크
+    // 객체 중복체크
     public static T GetDuplication<T>(T pInstance) where T : UnityEngine.Object
     {
         var pList = SHGameObject.FindObjectsOfType<T>();
