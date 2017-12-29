@@ -1,10 +1,10 @@
 {
 	"ClientConfig": 
 	{
-		"ServerConfigCDN": "http://blueasa.synology.me/home/shmhlove/KOR/LambKebab",
+		"ServerConfigCDN": "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure",
 		"ServiceMode": "DevQA",
 		"Version": "1.0.0",
-		"VSyncCount": true,
+		"VSyncCount": True,
 		"FrameRate": 60,
 		"CacheSize(MB)": 200
 	}
