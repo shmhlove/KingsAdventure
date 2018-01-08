@@ -7,68 +7,54 @@ using System.Collections.Generic;
 public partial class SHLoader
 {
     #region Utility Functions
-    void CoroutineToLoad()
+    void CoroutineToLoadProcess()
     {
-        // 로드 실행(LoadCall()의 반환값 false의 의미는 Load함수 호출이 완료되었다는 의미)
-        if (false == LoadCall())
-            return;
-
-        Single.Coroutine.WaitTime(CoroutineToLoad, 0.05f);
-    }
-
-    void ThreadToLoad()
-    {
-        while (true == LoadCall()) ;
-    }
-
-    void CoroutineToAsyncPrograss()
-    {
-        CallEventToAsyncPrograss();
+        LoadCall();
 
         if (false == IsRemainLoadFiles())
             return;
 
+        Single.Coroutine.NextFrame(CoroutineToLoadProcess);
+    }
+    
+    void CoroutineToLoadPrograssEvent()
+    {
+        CallEventToPrograss();
+
         if (true == IsLoadDone())
             return;
 
-        Single.Coroutine.WaitTime(CoroutineToAsyncPrograss, 0.2f);
+        Single.Coroutine.NextFrame(CoroutineToLoadPrograssEvent);
     }
 
-    bool LoadCall()
+    void LoadCall()
     {
-        var pData = m_pPrograss.GetLoadData();
-        if (null == pData)
-            return false;
+        var pDataInfo = m_pPrograss.DequeueWaitingDataInfo();
+        if (null == pDataInfo)
+            return;
 
-        if (false == pData.m_pTriggerLoadCall())
+        if (false == pDataInfo.IsLoadTrigger())
         {
-            m_pPrograss.SetLoadData(pData);
-            return true;
+            m_pPrograss.EnqueueWaitingDataInfo(pDataInfo);
+            return;
         }
-
-        pData.m_pLoadFunc(pData, OnEventToLoadStart, OnEventToLoadDone);
-        return true;
+        
+        pDataInfo.LoadCall(OnEventToLoadStart, OnEventToLoadDone);
     }
 
-    void AddLoadList(List<Dictionary<string, SHLoadData>> pLoadList)
+    void AddLoadDatum(List<Dictionary<string, SHLoadData>> pLoadDatum)
     {
         SHUtils.ForToList<Dictionary<string, SHLoadData>>(
-        pLoadList, (dicLoadList) =>
-        {
-            m_pPrograss.AddLoadInfo(dicLoadList);
-        });
+        pLoadDatum, (dicLoadData) => m_pPrograss.AddLoadDatum(dicLoadData) );
     }
 
-    void AddLoadEvent(EventHandler pComplate, EventHandler pProgress, EventHandler pError)
+    void AddLoadEvent(EventHandler pDone, EventHandler pProgress)
     {
-        if (null != pComplate)
-            EventToComplate.Add(pComplate);
+        if (null != pDone)
+            EventToDone.Add(pDone);
 
         if (null != pProgress)
             EventToProgress.Add(pProgress);
-
-        if (null != pError)
-            EventToError.Add(pError);
     }
 
     float GetLoadPrograss()
@@ -78,6 +64,8 @@ public partial class SHLoader
             return 100.0f;
 
         float iProgress = 0.0f;
+
+        // 로드 중인 파일의 진행율
         SHUtils.ForToDic<string, SHLoadStartInfo>(m_pPrograss.LoadingFiles, (pKey, pValue) => 
         {
             if (true == m_pPrograss.IsDone(pKey))
@@ -86,86 +74,60 @@ public partial class SHLoader
             iProgress += pValue.GetPrograss();
         });
 
-        SHPair<int, int> pCountInfo = m_pPrograss.GetCountInfo();
-        float fCountGap         = SHMath.Divide(100.0f, pCountInfo.Value1);
-        float fComplatePercent  = (fCountGap * pCountInfo.Value2);
-        float fProgressPercent  = (fCountGap * iProgress);
+        // 로드 완료된 파일의 진행율
+        var pCountInfo         = m_pPrograss.GetCountInfo();
+        float fCountGap        = SHMath.Divide(100.0f, pCountInfo.Value1);
+        float fDonePercent     = (fCountGap * pCountInfo.Value2);
+        float fProgressPercent = (fCountGap * iProgress);
 
-        return (fComplatePercent + fProgressPercent);
+        // 로드 완료된 파일의 진행율 + 로드 중인 파일의 진행율
+        return (fDonePercent + fProgressPercent);
     }
 
     void OnEventToLoadStart(string strFileName, SHLoadStartInfo pData)
     {
-        m_pPrograss.SetLoadStart(strFileName, pData);
+        m_pPrograss.AddLoadStartInfo(strFileName, pData);
     }
 
     void OnEventToLoadDone(string strFileName, SHLoadEndInfo pData)
     {
-        CallEventToError(m_pPrograss.GetLoadDataInfo(strFileName), pData);
-        CallEventToPrograss(m_pPrograss.SetLoadFinish(strFileName, pData.m_bIsSuccess));
-
-        if (false == IsLoadDone())
-            return;
-
-        CallEventToComplate();
+        // CallEventToPrograss(m_pPrograss.SetLoadFinish(strFileName, pData.m_bIsSuccess));
+        m_pPrograss.SetLoadFinish(strFileName, pData.m_bIsSuccess);
+        CallEventToDone();
     }
-
-    void CallEventToAsyncPrograss()
-    {
-        var pEvent                  = new SHLoadEvent();
-        pEvent.m_pCount             = m_pPrograss.GetCountInfo();
-        pEvent.m_fPercent           = GetLoadPrograss();
-        pEvent.m_bIsAsyncPrograss   = true;
-        EventToProgress.Callback<SHLoadEvent>(this, pEvent);
-    }
-
+    
     void CallEventToPrograss(SHLoadData pData)
     {
-        if (null == pData)
-            return;
+        var pEvent            = new SHLoadingInfo();
 
-        var pEvent                  = new SHLoadEvent();
-        pEvent.m_eType              = pData.m_eDataType;
-        pEvent.m_strFileName        = pData.m_strName;
-        pEvent.m_pCount             = m_pPrograss.GetCountInfo();
-        pEvent.m_pTime              = m_pPrograss.GetLoadTime(pData.m_strName);
-        pEvent.m_bIsSuccess         = pData.m_bIsSuccess;
-        pEvent.m_bIsFail            = m_pPrograss.m_bIsFail;
-        pEvent.m_fPercent           = GetLoadPrograss();
-        pEvent.m_bIsAsyncPrograss   = false;
-        EventToProgress.Callback<SHLoadEvent>(this, pEvent);
+        // 로드 중인 파일리스트 만들기
+        // public eDataType            m_eType;
+        // public string               m_strFileName;
+        // public bool                 m_bIsDone;
+        // public eErrorCode           m_eErrorCode;
+
+        pEvent.m_eType        = pData.m_eDataType;
+        pEvent.m_strFileName  = pData.m_strName;
+
+        pEvent.m_pCount       = m_pPrograss.GetCountInfo();
+        pEvent.m_pTime        = m_pPrograss.GetLoadTime(pData.m_strName);
+        pEvent.m_bIsSuccess   = pData.m_bIsSuccess;
+        pEvent.m_bIsFail      = m_pPrograss.m_bIsFail;
+        pEvent.m_fLoadPercent = GetLoadPrograss();
+        
+        EventToProgress.Callback<SHLoadingInfo>(this, pEvent);
     }
 
-    void CallEventToComplate()
+    void CallEventToDone()
     {
-        var pEvent                  = new SHLoadEvent();
+        var pEvent                  = new SHLoadingInfo();
         pEvent.m_bIsFail            = m_pPrograss.m_bIsFail;
         pEvent.m_pCount             = m_pPrograss.GetCountInfo();
         pEvent.m_pTime              = new SHPair<float, float>(m_pPrograss.GetLoadTime(), 0.0f);
-        EventToComplate.Callback<SHLoadEvent>(this, pEvent);
-        EventToComplate.Clear();
+        EventToDone.Callback<SHLoadingInfo>(this, pEvent);
+        EventToDone.Clear();
     }
-
-    void CallEventToError(SHLoadData pData, SHLoadEndInfo pEndData)
-    {
-        if ((null == pData) || (null == pEndData))
-            return;
-
-        if (eLoadErrorCode.None == pEndData.m_eErrorCode)
-            return;
-
-        var pEvent                  = new SHLoadEvent();
-        pEvent.m_eType              = pData.m_eDataType;
-        pEvent.m_strFileName        = pData.m_strName;
-        pEvent.m_pCount             = m_pPrograss.GetCountInfo();
-        pEvent.m_pTime              = m_pPrograss.GetLoadTime(pData.m_strName);
-        pEvent.m_bIsSuccess         = pData.m_bIsSuccess;
-        pEvent.m_bIsFail            = m_pPrograss.m_bIsFail;
-        pEvent.m_fPercent           = GetLoadPrograss();
-        pEvent.m_eErrorCode         = pEndData.m_eErrorCode;
-        pEvent.m_bIsAsyncPrograss   = false;
-        EventToError.Callback<SHLoadEvent>(this, pEvent);
-    }
+    
     #endregion
 
 

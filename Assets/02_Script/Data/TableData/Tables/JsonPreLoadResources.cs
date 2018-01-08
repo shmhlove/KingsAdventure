@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 public class JsonPreloadResources : SHBaseTable
 {
@@ -31,7 +31,7 @@ public class JsonPreloadResources : SHBaseTable
     {
         return (0 != m_pData.Count);
     }
-    public override bool? LoadJsonTable(JSONNode pJson, string strFileName)
+    public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
             return false;
@@ -43,7 +43,7 @@ public class JsonPreloadResources : SHBaseTable
             {
                 SHUtils.For(0, pDataNode[eType.ToString()].Count, (iDataIndex) => 
                 {
-                    AddData(eType, pDataNode[eType.ToString()][iDataIndex].Value);
+                    AddData(eType, (string)pDataNode[eType.ToString()][iDataIndex]);
                 });
             });
         });

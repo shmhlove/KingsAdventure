@@ -113,16 +113,16 @@ public partial class SHTableData : SHBaseData
 
         return pTable.GetCheckMessage();
     }
-    public void DownloadServerConfig(Action pComplate)
+    public void DownloadServerConfig(Action pComplete)
     {
         var pTable = GetTable<JsonServerConfig>();
         if (null == pTable)
         {
-            pComplate();
+            pComplete();
             return;
         }
 
-        pTable.DownloadByCDN(pComplate, SHPath.GetURLToServerConfigCDN());
+        pTable.DownloadByCDN(pComplete, SHPath.GetURLToServerConfigCDN());
     }
     public bool IsLoadServerConfig()
     {
@@ -159,16 +159,16 @@ public partial class SHTableData : SHBaseData
 
         return pTable.GetBundleInfoToResourceName(strResourceName);
     }
-    public void DownloadBundleInfo(Action pComplate)
+    public void DownloadBundleInfo(Action pComplete)
     {
         var pTable = GetTable<JsonAssetBundleInfo>();
         if (null == pTable)
         {
-            pComplate();
+            pComplete();
             return;
         }
 
-        pTable.DownloadByCDN(pComplate);
+        pTable.DownloadByCDN(pComplete);
     }
     #endregion
 }

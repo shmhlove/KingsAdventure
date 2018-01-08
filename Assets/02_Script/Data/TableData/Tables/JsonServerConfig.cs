@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 using DicData = System.Collections.Generic.Dictionary<eServiceMode, JsonServerConfigData>;
 
@@ -49,12 +49,12 @@ public class JsonServerConfig : SHBaseTable
         return (0 != m_dicServerInfo.Count);
     }
 
-    public override bool? LoadJsonTable(JSONNode pJson, string strFileName)
+    public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
             return false;
 
-        JSONNode pDataNode = pJson["ServerConfig"];
+        JsonData pDataNode = pJson["ServerConfig"];
 
         // 마켓 URL
         m_strAOSMarketURL = GetStrToJson(pDataNode, "AOS_MarketURL");
@@ -83,12 +83,12 @@ public class JsonServerConfig : SHBaseTable
 
     #region Interface Functions
     // 인터페이스 : CDN에서 정보파일 다운로드
-    public void DownloadByCDN(Action pComplate, string strURL)
+    public void DownloadByCDN(Action pComplete, string strURL)
     {
         // URL이 없으면 다운받지 않는다.
         if (true == string.IsNullOrEmpty(strURL))
         {
-            pComplate();
+            pComplete();
             return;
         }
 
@@ -97,9 +97,9 @@ public class JsonServerConfig : SHBaseTable
             if (true == string.IsNullOrEmpty(pWWW.error))
             {
                 SHJson pJson = new SHJson();
-                pJson.SetJsonNode(pJson.GetJsonParseToString(pWWW.text));
+                pJson.SetJsonData(pJson.GetJsonParseToString(pWWW.text));
                 LoadJsonTable(pJson.Node, m_strFileName);
-                pComplate();
+                pComplete();
             }
             else
             {
@@ -121,7 +121,7 @@ public class JsonServerConfig : SHBaseTable
             return false;
 
         SHJson pJson = new SHJson();
-        pJson.SetJsonNode(pJson.GetJsonParseToString(pWWW.text));
+        pJson.SetJsonData(pJson.GetJsonParseToString(pWWW.text));
         LoadJsonTable(pJson.Node, m_strFileName);
 
         return true;

@@ -66,7 +66,7 @@ public partial class SHAssetBundleData : SHBaseData
         if (true == IsExist(pInfo.m_strName))
         {
             pStart(pInfo.m_strName, new SHLoadStartInfo());
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
             return;
         }
 
@@ -76,11 +76,11 @@ public partial class SHAssetBundleData : SHBaseData
             if (true == bIsSuccess)
             {
                 AddBundleData(pInfo.m_strName, pWWW.assetBundle);
-                pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+                pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
             }
             else
             {
-                pDone(pInfo.m_strName, new SHLoadEndInfo(false, eLoadErrorCode.Patch_Bundle));
+                pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Patch_Bundle));
             }
             
         }, WWW.LoadFromCacheOrDownload(string.Format("{0}/{1}.unity3d", SHPath.GetURLToBundleCDNWithPlatform(), pInfo.m_strName.ToLower()),

@@ -215,7 +215,7 @@ namespace LunarConsoleInternal
         {
             try
             {
-                JSONNode node = JSON.Parse(response);
+                JsonData node = JSON.Parse(response);
                 
                 JSONClass root = node.AsObject;
                 if (root != null)

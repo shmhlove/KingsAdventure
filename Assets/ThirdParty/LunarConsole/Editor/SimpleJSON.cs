@@ -61,26 +61,26 @@ namespace LunarConsoleInternal
         FloatValue        = 7,
     }
  
-    public class JSONNode
+    public class JsonData
     {
         #region common interface
-        public virtual void Add(string aKey, JSONNode aItem){ }
-        public virtual JSONNode this[int aIndex]   { get { return null; } set { } }
-        public virtual JSONNode this[string aKey]  { get { return null; } set { } }
+        public virtual void Add(string aKey, JsonData aItem){ }
+        public virtual JsonData this[int aIndex]   { get { return null; } set { } }
+        public virtual JsonData this[string aKey]  { get { return null; } set { } }
         public virtual string Value                { get { return "";   } set { } }
         public virtual int Count                   { get { return 0;    } }
  
-        public virtual void Add(JSONNode aItem)
+        public virtual void Add(JsonData aItem)
         {
             Add("", aItem);
         }
  
-        public virtual JSONNode Remove(string aKey) { return null; }
-        public virtual JSONNode Remove(int aIndex) { return null; }
-        public virtual JSONNode Remove(JSONNode aNode) { return aNode; }
+        public virtual JsonData Remove(string aKey) { return null; }
+        public virtual JsonData Remove(int aIndex) { return null; }
+        public virtual JsonData Remove(JsonData aNode) { return aNode; }
  
-        public virtual IEnumerable<JSONNode> Childs { get { yield break;} }
-        public IEnumerable<JSONNode> DeepChilds
+        public virtual IEnumerable<JsonData> Childs { get { yield break;} }
+        public IEnumerable<JsonData> DeepChilds
         {
             get
             {
@@ -92,11 +92,11 @@ namespace LunarConsoleInternal
  
         public override string ToString()
         {
-            return "JSONNode";
+            return "JsonData";
         }
         public virtual string ToString(string aPrefix)
         {
-            return "JSONNode";
+            return "JsonData";
         }
  
         #endregion common interface
@@ -177,22 +177,22 @@ namespace LunarConsoleInternal
         #endregion typecasting properties
  
         #region operators
-        public static implicit operator JSONNode(string s)
+        public static implicit operator JsonData(string s)
         {
             return new JSONData(s);
         }
-        public static implicit operator string(JSONNode d)
+        public static implicit operator string(JsonData d)
         {
             return (d == null)?null:d.Value;
         }
-        public static bool operator ==(JSONNode a, object b)
+        public static bool operator ==(JsonData a, object b)
         {
             if (b == null && a is JSONLazyCreator)
                 return true;
             return System.Object.ReferenceEquals(a,b);
         }
  
-        public static bool operator !=(JSONNode a, object b)
+        public static bool operator !=(JsonData a, object b)
         {
             return !(a == b);
         }
@@ -228,10 +228,10 @@ namespace LunarConsoleInternal
             return result;
         }
  
-        public static JSONNode Parse(string aJSON)
+        public static JsonData Parse(string aJSON)
         {
-            Stack<JSONNode> stack = new Stack<JSONNode>();
-            JSONNode ctx = null;
+            Stack<JsonData> stack = new Stack<JsonData>();
+            JsonData ctx = null;
             int i = 0;
             string Token = "";
             string TokenName = "";
@@ -461,7 +461,7 @@ namespace LunarConsoleInternal
                 return System.Convert.ToBase64String(stream.ToArray());
             }
         }
-        public static JSONNode Deserialize(System.IO.BinaryReader aReader)
+        public static JsonData Deserialize(System.IO.BinaryReader aReader)
         {
             JSONBinaryTag type = (JSONBinaryTag)aReader.ReadByte();
             switch(type)
@@ -515,12 +515,12 @@ namespace LunarConsoleInternal
         }
  
         #if USE_SharpZipLib
-        public static JSONNode LoadFromCompressedStream(System.IO.Stream aData)
+        public static JsonData LoadFromCompressedStream(System.IO.Stream aData)
         {
             var zin = new ICSharpCode.SharpZipLib.BZip2.BZip2InputStream(aData);
             return LoadFromStream(zin);
         }
-        public static JSONNode LoadFromCompressedFile(string aFileName)
+        public static JsonData LoadFromCompressedFile(string aFileName)
         {
             #if USE_FileIO
             using(var F = System.IO.File.OpenRead(aFileName))
@@ -531,7 +531,7 @@ namespace LunarConsoleInternal
             throw new Exception("Can't use File IO stuff in webplayer");
             #endif
         }
-        public static JSONNode LoadFromCompressedBase64(string aBase64)
+        public static JsonData LoadFromCompressedBase64(string aBase64)
         {
             var tmp = System.Convert.FromBase64String(aBase64);
             var stream = new System.IO.MemoryStream(tmp);
@@ -539,28 +539,28 @@ namespace LunarConsoleInternal
             return LoadFromCompressedStream(stream);
         }
         #else
-        public static JSONNode LoadFromCompressedFile(string aFileName)
+        public static JsonData LoadFromCompressedFile(string aFileName)
         {
             throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
         }
-        public static JSONNode LoadFromCompressedStream(System.IO.Stream aData)
+        public static JsonData LoadFromCompressedStream(System.IO.Stream aData)
         {
             throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
         }
-        public static JSONNode LoadFromCompressedBase64(string aBase64)
+        public static JsonData LoadFromCompressedBase64(string aBase64)
         {
             throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
         }
         #endif
  
-        public static JSONNode LoadFromStream(System.IO.Stream aData)
+        public static JsonData LoadFromStream(System.IO.Stream aData)
         {
             using(var R = new System.IO.BinaryReader(aData))
             {
                 return Deserialize(R);
             }
         }
-        public static JSONNode LoadFromFile(string aFileName)
+        public static JsonData LoadFromFile(string aFileName)
         {
             #if USE_FileIO
             using(var F = System.IO.File.OpenRead(aFileName))
@@ -571,19 +571,19 @@ namespace LunarConsoleInternal
             throw new Exception("Can't use File IO stuff in webplayer");
             #endif
         }
-        public static JSONNode LoadFromBase64(string aBase64)
+        public static JsonData LoadFromBase64(string aBase64)
         {
             var tmp = System.Convert.FromBase64String(aBase64);
             var stream = new System.IO.MemoryStream(tmp);
             stream.Position = 0;
             return LoadFromStream(stream);
         }
-    } // End of JSONNode
+    } // End of JsonData
  
-    public class JSONArray : JSONNode, IEnumerable
+    public class JSONArray : JsonData, IEnumerable
     {
-        private List<JSONNode> m_List = new List<JSONNode>();
-        public override JSONNode this[int aIndex]
+        private List<JsonData> m_List = new List<JsonData>();
+        public override JsonData this[int aIndex]
         {
             get
             {
@@ -599,7 +599,7 @@ namespace LunarConsoleInternal
                     m_List[aIndex] = value;
             }
         }
-        public override JSONNode this[string aKey]
+        public override JsonData this[string aKey]
         {
             get{ return new JSONLazyCreator(this);}
             set{ m_List.Add(value); }
@@ -608,40 +608,40 @@ namespace LunarConsoleInternal
         {
             get { return m_List.Count; }
         }
-        public override void Add(string aKey, JSONNode aItem)
+        public override void Add(string aKey, JsonData aItem)
         {
             m_List.Add(aItem);
         }
-        public override JSONNode Remove(int aIndex)
+        public override JsonData Remove(int aIndex)
         {
             if (aIndex < 0 || aIndex >= m_List.Count)
                 return null;
-            JSONNode tmp = m_List[aIndex];
+            JsonData tmp = m_List[aIndex];
             m_List.RemoveAt(aIndex);
             return tmp;
         }
-        public override JSONNode Remove(JSONNode aNode)
+        public override JsonData Remove(JsonData aNode)
         {
             m_List.Remove(aNode);
             return aNode;
         }
-        public override IEnumerable<JSONNode> Childs
+        public override IEnumerable<JsonData> Childs
         {
             get
             {
-                foreach(JSONNode N in m_List)
+                foreach(JsonData N in m_List)
                     yield return N;
             }
         }
         public IEnumerator GetEnumerator()
         {
-            foreach(JSONNode N in m_List)
+            foreach(JsonData N in m_List)
                 yield return N;
         }
         public override string ToString()
         {
             string result = "[ ";
-            foreach (JSONNode N in m_List)
+            foreach (JsonData N in m_List)
             {
                 if (result.Length > 2)
                     result += ", ";
@@ -653,7 +653,7 @@ namespace LunarConsoleInternal
         public override string ToString(string aPrefix)
         {
             string result = "[ ";
-            foreach (JSONNode N in m_List)
+            foreach (JsonData N in m_List)
             {
                 if (result.Length > 3)
                     result += ", ";
@@ -674,10 +674,10 @@ namespace LunarConsoleInternal
         }
     } // End of JSONArray
  
-    public class JSONClass : JSONNode, IEnumerable
+    public class JSONClass : JsonData, IEnumerable
     {
-        private Dictionary<string,JSONNode> m_Dict = new Dictionary<string,JSONNode>();
-        public override JSONNode this[string aKey]
+        private Dictionary<string,JsonData> m_Dict = new Dictionary<string,JsonData>();
+        public override JsonData this[string aKey]
         {
             get
             {
@@ -694,7 +694,7 @@ namespace LunarConsoleInternal
                     m_Dict.Add(aKey,value);
             }
         }
-        public override JSONNode this[int aIndex]
+        public override JsonData this[int aIndex]
         {
             get
             {
@@ -716,7 +716,7 @@ namespace LunarConsoleInternal
         }
  
  
-        public override void Add(string aKey, JSONNode aItem)
+        public override void Add(string aKey, JsonData aItem)
         {
             if (!string.IsNullOrEmpty(aKey))
             {
@@ -729,15 +729,15 @@ namespace LunarConsoleInternal
                 m_Dict.Add(Guid.NewGuid().ToString(), aItem);
         }
  
-        public override JSONNode Remove(string aKey)
+        public override JsonData Remove(string aKey)
         {
             if (!m_Dict.ContainsKey(aKey))
                 return null;
-            JSONNode tmp = m_Dict[aKey];
+            JsonData tmp = m_Dict[aKey];
             m_Dict.Remove(aKey);
             return tmp;        
         }
-        public override JSONNode Remove(int aIndex)
+        public override JsonData Remove(int aIndex)
         {
             if (aIndex < 0 || aIndex >= m_Dict.Count)
                 return null;
@@ -745,7 +745,7 @@ namespace LunarConsoleInternal
             m_Dict.Remove(item.Key);
             return item.Value;
         }
-        public override JSONNode Remove(JSONNode aNode)
+        public override JsonData Remove(JsonData aNode)
         {
             try
             {
@@ -759,24 +759,24 @@ namespace LunarConsoleInternal
             }
         }
  
-        public override IEnumerable<JSONNode> Childs
+        public override IEnumerable<JsonData> Childs
         {
             get
             {
-                foreach(KeyValuePair<string,JSONNode> N in m_Dict)
+                foreach(KeyValuePair<string,JsonData> N in m_Dict)
                     yield return N.Value;
             }
         }
  
         public IEnumerator GetEnumerator()
         {
-            foreach(KeyValuePair<string, JSONNode> N in m_Dict)
+            foreach(KeyValuePair<string, JsonData> N in m_Dict)
                 yield return N;
         }
         public override string ToString()
         {
             string result = "{";
-            foreach (KeyValuePair<string, JSONNode> N in m_Dict)
+            foreach (KeyValuePair<string, JsonData> N in m_Dict)
             {
                 if (result.Length > 2)
                     result += ", ";
@@ -788,7 +788,7 @@ namespace LunarConsoleInternal
         public override string ToString(string aPrefix)
         {
             string result = "{ ";
-            foreach (KeyValuePair<string, JSONNode> N in m_Dict)
+            foreach (KeyValuePair<string, JsonData> N in m_Dict)
             {
                 if (result.Length > 3)
                     result += ", ";
@@ -810,7 +810,7 @@ namespace LunarConsoleInternal
         }
     } // End of JSONClass
  
-    public class JSONData : JSONNode
+    public class JSONData : JsonData
     {
         private string m_Data;
         public override string Value
@@ -885,23 +885,23 @@ namespace LunarConsoleInternal
         }
     } // End of JSONData
  
-    internal class JSONLazyCreator : JSONNode
+    internal class JSONLazyCreator : JsonData
     {
-        private JSONNode m_Node = null;
+        private JsonData m_Node = null;
         private string m_Key = null;
  
-        public JSONLazyCreator(JSONNode aNode)
+        public JSONLazyCreator(JsonData aNode)
         {
             m_Node = aNode;
             m_Key  = null;
         }
-        public JSONLazyCreator(JSONNode aNode, string aKey)
+        public JSONLazyCreator(JsonData aNode, string aKey)
         {
             m_Node = aNode;
             m_Key = aKey;
         }
  
-        private void Set(JSONNode aVal)
+        private void Set(JsonData aVal)
         {
             if (m_Key == null)
             {
@@ -914,7 +914,7 @@ namespace LunarConsoleInternal
             m_Node = null; // Be GC friendly.
         }
  
-        public override JSONNode this[int aIndex]
+        public override JsonData this[int aIndex]
         {
             get
             {
@@ -928,7 +928,7 @@ namespace LunarConsoleInternal
             }
         }
  
-        public override JSONNode this[string aKey]
+        public override JsonData this[string aKey]
         {
             get
             {
@@ -941,13 +941,13 @@ namespace LunarConsoleInternal
                 Set(tmp);
             }
         }
-        public override void Add (JSONNode aItem)
+        public override void Add (JsonData aItem)
         {
             var tmp = new JSONArray();
             tmp.Add(aItem);
             Set(tmp);
         }
-        public override void Add (string aKey, JSONNode aItem)
+        public override void Add (string aKey, JsonData aItem)
         {
             var tmp = new JSONClass();
             tmp.Add(aKey, aItem);
@@ -1062,9 +1062,9 @@ namespace LunarConsoleInternal
  
     public static class JSON
     {
-        public static JSONNode Parse(string aJSON)
+        public static JsonData Parse(string aJSON)
         {
-            return JSONNode.Parse(aJSON);
+            return JsonData.Parse(aJSON);
         }
     }
 }

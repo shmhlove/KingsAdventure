@@ -155,35 +155,35 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     }
 
     // 유틸 : 씬 로드 ( Change 방식 : GoTo 명령시 호출됨 )
-    AsyncOperation LoadScene(eSceneType eType, Action<bool> pComplate)
+    AsyncOperation LoadScene(eSceneType eType, Action<bool> pComplete)
     {
-        return SetLoadPostProcess(pComplate,
+        return SetLoadPostProcess(pComplete,
             SceneManager.LoadSceneAsync(eType.ToString(), LoadSceneMode.Single));
     }
     
     // 유틸 : 씬 로드 ( Add 방식 : SceneData 클래스에서 호출됨 )
-    AsyncOperation AddScene(string strSceneName, Action<bool> pComplate)
+    AsyncOperation AddScene(string strSceneName, Action<bool> pComplete)
     {
-        return SetLoadPostProcess(pComplate,
+        return SetLoadPostProcess(pComplete,
             SceneManager.LoadSceneAsync(strSceneName, LoadSceneMode.Additive));
     }
 
     // 유틸 : 씬 로드 후 처리를 위한 코루틴 등록
-    AsyncOperation SetLoadPostProcess(Action<bool> pComplate, AsyncOperation pAsyncInfo)
+    AsyncOperation SetLoadPostProcess(Action<bool> pComplete, AsyncOperation pAsyncInfo)
     {
         if (null == pAsyncInfo)
         {
             Debug.LogError(string.Format("씬 로드 실패!!(SceneType : {0})", GetCurrentScene()));
 
-            if (null != pComplate)
-                pComplate(false);
+            if (null != pComplete)
+                pComplete(false);
         }
         else
         {
             Single.Coroutine.Async(() =>
             {
-                if (null != pComplate)
-                    pComplate(true);
+                if (null != pComplete)
+                    pComplete(true);
             },
             pAsyncInfo);
         }

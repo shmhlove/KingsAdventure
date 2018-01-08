@@ -8,7 +8,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 public class AssetBundleInfo
 {
@@ -95,15 +95,15 @@ public class JsonAssetBundleInfo : SHBaseTable
         return (0 != m_pData.Count);
     }
 
-    public override bool? LoadJsonTable(JSONNode pJson, string strFileName)
+    public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
             return false;
-
+        
         int iMaxTable = pJson["AssetBundleInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            JSONNode           pDataNode = pJson["AssetBundleInfo"][iLoop];
+            JsonData           pDataNode = pJson["AssetBundleInfo"][iLoop];
             AssetBundleInfo    pData     = new AssetBundleInfo();
             pData.m_strBundleName        = GetStrToJson(pDataNode, "s_BundleName");
             pData.m_lBundleSize          = (long)GetIntToJson(pDataNode, "s_BundleSize");
@@ -112,13 +112,13 @@ public class JsonAssetBundleInfo : SHBaseTable
             int iMaxUnit = pDataNode["p_Resources"].Count;
             for(int iLoopUnit = 0; iLoopUnit < iMaxUnit; ++iLoopUnit)
             {
-                JSONNode pUnitNode = pDataNode["p_Resources"][iLoopUnit];
+                JsonData pUnitNode = pDataNode["p_Resources"][iLoopUnit];
                 SHResourcesInfo pUnit = new SHResourcesInfo();
                 pUnit.m_strName             = GetStrToJson(pUnitNode, "s_Name");
                 pUnit.m_strFileName         = GetStrToJson(pUnitNode, "s_FileName");
                 pUnit.m_strExtension        = GetStrToJson(pUnitNode, "s_Extension");
                 pUnit.m_strSize             = GetStrToJson(pUnitNode, "s_Size");
-                //pUnit.m_strLastWriteTime    = GetStrToJson(pUnitNode, "s_LastWriteTime");
+                //pUnit.m_strLastWriteTime  = GetStrToJson(pUnitNode, "s_LastWriteTime");
                 pUnit.m_strHash             = GetStrToJson(pUnitNode, "s_Hash");
                 pUnit.m_strPath             = GetStrToJson(pUnitNode, "s_Path");
                 pUnit.m_eResourceType       = SHHard.GetResourceTypeToExtension(pUnit.m_strExtension);
@@ -136,12 +136,12 @@ public class JsonAssetBundleInfo : SHBaseTable
 
     #region Interface Functions
     // 인터페이스 : 정보파일 다운로드
-    public void DownloadByCDN(Action pComplate)
+    public void DownloadByCDN(Action pComplete)
     {
         // 서버정보파일(ServerConfig.json)에 URL이 없으면 패치하지 않는다.
         if (true == string.IsNullOrEmpty(SHPath.GetURLToBundleCDN()))
         {
-            pComplate();
+            pComplete();
             return;
         }
 
@@ -150,9 +150,9 @@ public class JsonAssetBundleInfo : SHBaseTable
             if (true == string.IsNullOrEmpty(pWWW.error))
             {
                 SHJson pJson = new SHJson();
-                pJson.SetJsonNode(pJson.GetJsonParseToByte(pWWW.bytes));
+                pJson.SetJsonData(pJson.GetJsonParseToByte(pWWW.bytes));
                 LoadJsonTable(pJson.Node, m_strFileName);
-                pComplate();
+                pComplete();
             }
             else
             {

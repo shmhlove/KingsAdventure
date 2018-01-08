@@ -62,7 +62,7 @@ public partial class SHResourceData : SHBaseData
 
         if (true == IsLoadResource(pInfo.m_strName.ToLower()))
         {
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
             return;
         }
 
@@ -70,15 +70,15 @@ public partial class SHResourceData : SHBaseData
         if (null == pResourceInfo)
         {
             Debug.LogFormat("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
-            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eLoadErrorCode.Load_Resource));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Resource));
             return;
         }
 
         var pObject = LoadSync<Object>(pResourceInfo);
         if (null == pObject)
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.Load_Resource));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.Load_Resource));
         else
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
     }
 
     // 다양화 : 로더로 부터 호출될 패치함수( 번들패치를 받아야겠네 )
@@ -258,7 +258,7 @@ public partial class SHResourceData : SHBaseData
         if (true == IsLoadResource(pTable.m_strName.ToLower()))
         {
             pStart(pTable.m_strName, new SHLoadStartInfo());
-            pDone(pTable.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+            pDone(pTable.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
             return;
         }
 
@@ -273,12 +273,12 @@ public partial class SHResourceData : SHBaseData
             if (null == pRequest.asset)
             {
                 Debug.LogError(string.Format("{0} 파일이 없습니다!!!", pTable.m_strPath));
-                pDone(pTable.m_strName, new SHLoadEndInfo(false, eLoadErrorCode.Load_Resource));
+                pDone(pTable.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Resource));
                 return;
             }
 
             m_dicResources.Add(pTable.m_strName.ToLower(), pRequest.asset);
-            pDone(pTable.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
+            pDone(pTable.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
 
 #if UNITY_EDITOR
             Single.AppInfo.SetLoadResource(string.Format("Load : {0}({1}sec)", pTable.m_strName, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));

@@ -4,102 +4,131 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+// public class : 로드 프로그래스
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 로딩 플로우의 세부기능을 담고 있으며 Loader를 통해 제어됩니다.
+ * --------------------------------------------------------------------------------------
+ */
 public class SHLoadPrograss
 {
     #region Members
-    // 로드 카운트 : <Total, Current>
-    private SHPair<int, int> m_pLoadCount               = new SHPair<int, int>(0, 0);
+    // 로드 대기 중인 데이터 정보
+    private Queue<SHLoadDataStateInfo> m_qLoadDatumWaitQueue = new Queue<SHLoadDataStateInfo>();
 
-    // 남은 데이터 정보
-    private Queue<SHLoadData> m_qLoadQueue              = new Queue<SHLoadData>();
+    // 로드 진행 중인 데이터 정보<파일명, 파일정보>
+    private Dictionary<string, SHLoadDataStateInfo> m_dicLoadingDatum = new Dictionary<string, SHLoadDataStateInfo>();
 
-    // 로드 중인 데이터 정보
-    private Dictionary<string, SHLoadStartInfo> m_dicLoadingFiles = new Dictionary<string, SHLoadStartInfo>();
-    public Dictionary<string, SHLoadStartInfo> LoadingFiles { get { return m_dicLoadingFiles; } }
-
-    // 전체 데이터 정보 : <데이터타입, <파일명, 파일정보>>
-    private Dictionary<eDataType, Dictionary<string, SHLoadData>> m_dicTotalLoadData = new Dictionary<eDataType, Dictionary<string, SHLoadData>>();
-
-    // 실패한 파일이 하나라도 있는가?
-    public bool m_bIsFail = false;
-
-    // 로드를 완료했는가?
-    public bool m_bIsDone = false;
+    // 전체 데이터 정보 : <데이터 타입, <파일명, 파일정보>>
+    private Dictionary<eDataType, Dictionary<string, SHLoadDataStateInfo>> m_dicAllLoadDatum = new Dictionary<eDataType, Dictionary<string, SHLoadDataStateInfo>>();
+    
+    public bool m_bIsLoadFail     = false; // 파일 하나라도 실패한 적이 있는가?
+    public bool m_bIsDone         = false; // 모든 데이터 로드를 완료했는가?
     #endregion
 
 
     #region Virtual Functions
     public void Initialize()
     {
-        m_pLoadCount.Initialize();
-        m_qLoadQueue.Clear();
-        m_dicTotalLoadData.Clear();
-        m_dicLoadingFiles.Clear();
-        m_bIsFail = false;
-        m_bIsDone = false;
+        m_qLoadDatumWaitQueue.Clear();
+        m_dicAllLoadDatum.Clear();
+        m_dicLoadingDatum.Clear();
+    
+        m_iLoadDoneCount  = 0;
+        m_iTotalDataCount = 0;
+        m_bIsLoadFail     = false;
+        m_bIsDone         = false;
     }
     #endregion
 
 
     #region Interface Functions
-    public void AddLoadInfo(Dictionary<string, SHLoadData> dicLoadList)
+    public void AddLoadDatum(Dictionary<string, SHLoadData> dicLoadDatum)
     {
-        SHUtils.ForToDic(dicLoadList, (pKey, pValue) => 
+        SHUtils.ForToDic(dicLoadDatum, (strName, pData) => 
         {
             // 무결성체크
-            if (null == pValue)
+            if (null == pData)
                 return;
 
             // 중복파일체크
-            SHLoadData pLoadData = GetLoadDataInfo(pValue.m_strName);
+            var pLoadData = GetLoadDataInfo(strName);
             if (null != pLoadData)
             {
-                Debug.LogError(string.Format("중복파일 발견!!!(FileName : {0})", pValue.m_strName));
+                Debug.LogErrorFormat("데이터 로드 중 중복파일 발견!!!(FileName : {0})", strName);
                 return;
             }
 
-            // 초기화 및 등록
-            SetLoadData(pValue);
-            m_pLoadCount.Value1++;
+            // 등록
+            AddLoadData(pData);
         });
     }
-
-    public SHLoadData GetLoadDataInfo(string strName)
-    {
-        strName = strName.ToLower();
-        foreach(var kvp in m_dicTotalLoadData)
-        {
-            if (true == kvp.Value.ContainsKey(strName))
-                return kvp.Value[strName];
-        }
-        return null;
-    }
-
-    public void SetLoadData(SHLoadData pData)
+    
+    private void AddLoadData(SHLoadData pData)
     {
         if (null == pData)
             return;
 
-        pData.m_bIsDone = false;
-        m_qLoadQueue.Enqueue(pData);
+        if (false == m_dicAllLoadDatum.ContainsKey(pData.m_eDataType))
+            m_dicAllLoadDatum.Add(pData.m_eDataType, new Dictionary<string, SHLoadDataStateInfo>());
 
-        if (false == m_dicTotalLoadData.ContainsKey(pData.m_eDataType))
-            m_dicTotalLoadData.Add(pData.m_eDataType, new Dictionary<string, SHLoadData>());
-
-        m_dicTotalLoadData[pData.m_eDataType][pData.m_strName.ToLower()] = pData;
+        var pDataStateInfo = new SHLoadDataStateInfo(pData);
+        m_qLoadDatumWaitQueue.Enqueue(pDataStateInfo);
+        m_dicAllLoadDatum[pData.m_eDataType][pData.m_strName.ToLower()] = pDataStateInfo;
     }
 
-    public SHLoadData GetLoadData()
+    public SHLoadDataStateInfo GetLoadDataInfo(string strName)
     {
-        if (0 == m_qLoadQueue.Count)
+        foreach (var kvp in m_dicAllLoadDatum)
+        {
+            if (true == kvp.Value.ContainsKey(strName.ToLower()))
+                return kvp.Value[strName.ToLower()];
+        }
+        return null;
+    }
+
+    public void EnqueueWaitingDataInfo(SHLoadDataStateInfo pLoadDataInfo)
+    {
+        if (true == m_qLoadDatumWaitQueue.Contains(pLoadDataInfo))
+            return;
+
+        m_qLoadDatumWaitQueue.Enqueue(pLoadDataInfo);
+    }
+
+    public SHLoadDataStateInfo DequeueWaitingDataInfo()
+    {
+        if (0 == m_qLoadDatumWaitQueue.Count)
             return null;
 
-        var pData = m_qLoadQueue.Dequeue();
-        if (null == pData)
+        var pDataInfo = m_qLoadDatumWaitQueue.Dequeue();
+        if (null == pDataInfo)
             return null;
 
-        Single.Timer.StartDeltaTime(pData.m_strName);
-        return pData;
+        return pDataInfo;
+    }
+
+    public int GetLoadDoneCount()
+    {
+        int iLoadDoneCount = 0;
+        foreach (var kvp1 in m_dicAllLoadDatum)
+        {
+            foreach(var kvp2 in kvp1.Value)
+            {
+                if (true == kvp2.Value.IsDone())
+                    ++iLoadDoneCount;
+            }
+        }
+        return iLoadDoneCount;
+    }
+
+    public int GetTotalCount()
+    {
+        int iTotalCount = 0;
+        foreach(var kvp in m_dicAllLoadDatum)
+        {
+            iTotalCount += kvp.Value.Count;
+        }
+        return iTotalCount;
     }
 
     public SHLoadData SetLoadFinish(string strFileName, bool bIsSuccess)
@@ -114,8 +143,8 @@ public class SHLoadPrograss
         pData.m_bIsSuccess  = bIsSuccess;
         pData.m_bIsDone     = true;
 
-        if (true == m_dicLoadingFiles.ContainsKey(strFileName))
-            m_dicLoadingFiles.Remove(strFileName);
+        if (true == m_dicLoadingDatum.ContainsKey(strFileName))
+            m_dicLoadingDatum.Remove(strFileName);
 
         if (false == m_bIsFail)
             m_bIsFail = (false == bIsSuccess);
@@ -126,7 +155,7 @@ public class SHLoadPrograss
         return pData;
     }
 
-    public void SetLoadStart(string strFileName, SHLoadStartInfo pInfo)
+    public void AddLoadStartInfo(string strFileName, SHLoadStartInfo pInfo)
     {
         if (null == pInfo)
             return;
@@ -138,14 +167,9 @@ public class SHLoadPrograss
         if (true == pData.m_bIsDone)
             return;
 
-        m_dicLoadingFiles[strFileName] = pInfo;
+        m_dicLoadingDatum[strFileName] = pInfo;
     }
-
-    public SHPair<int, int> GetCountInfo()
-    {
-        return m_pLoadCount;
-    }
-
+    
     public void StartLoadTime()
     {
         Single.Timer.StartDeltaTime("LoadingTime");
@@ -168,21 +192,17 @@ public class SHLoadPrograss
         if (null == pData)
             return true;
 
-        return pData.m_bIsDone;
+        return pData.IsDone();
     }
 
     public bool IsDone(eDataType eType)
     {
-        if (false == m_dicTotalLoadData.ContainsKey(eType))
+        if (false == m_dicAllLoadDatum.ContainsKey(eType))
             return true;
-
-        var dicDataInfo = m_dicTotalLoadData[eType];
-        foreach (var kvp in dicDataInfo)
+        
+        foreach (var kvp in m_dicAllLoadDatum[eType])
         {
-            if (null == kvp.Value)
-                continue;
-
-            if (false == kvp.Value.m_bIsDone)
+            if (false == kvp.Value.IsDone())
                 return false;
         }
 

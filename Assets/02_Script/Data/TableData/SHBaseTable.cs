@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 
-using SimpleJSON;
+using LitJson;
 using System.Xml;
 
 public abstract class SHBaseTable
@@ -25,31 +25,30 @@ public abstract class SHBaseTable
     public virtual void Initialize() { }
     public abstract bool IsLoadTable();
     // 다양화(로드) : 서버 웹 데이터
-    public virtual WWW LoadWebData(Action<bool> pDone)                          { return null; }
+    public virtual WWW LoadWebData(Action<bool> pDone)                              { return null; }
     // 다양화(로드) : 코드로 데이터를 생성(Hard한 데이터)
-    public virtual bool? LoadStaticTable()                                      { return null; }
+    public virtual eErrorCode LoadStaticTable()                                     { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : SQLite파일에서 로드
-    public virtual bool? LoadDBTable(SQLiteQuery pTable, string strTableName)   { return null; }
+    public virtual eErrorCode LoadDBTable(SQLiteQuery pTable, string strTableName)  { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : Json파일에서 로드
-    public virtual bool? LoadJsonTable(JSONNode pJson, string strTableName)     { return null; }
+    public virtual eErrorCode LoadJsonTable(JsonData pJson, string strTableName)    { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : XML파일에서 로드
-    public virtual bool? LoadXMLTable(XmlNode pNode)                            { return null; }
+    public virtual eErrorCode LoadXMLTable(XmlNode pNode)                           { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : Byte파일에서 로드
-    public virtual bool? LoadBytesTable(byte[] pByte)                           { return null; }
+    public virtual eErrorCode LoadBytesTable(byte[] pByte)                          { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : 컨테이너를 시리얼 라이즈해서 Byte파일로 내어주는 함수
-    public virtual byte[] GetBytesTable()                                       { return null; }
+    public virtual byte[] GetBytesTable()                                           { return null; }
     // 다양화(로드) : 컨테이너를 콜렉션형태로 내어주는 함수
-    public virtual ICollection GetData()                                        { return null; }
+    public virtual ICollection GetData()                                            { return null; }
     #endregion
 
 
     #region Interface Functions
     // 인터페이스 : Hard한 데이터 로드
-    public bool? LoadStatic()
+    public eErrorCode LoadStatic()
     {
-        // 예외처리 : 오버라이드 체크
-        if (null == LoadStaticTable())
-            return Return(null);
+        if (eErrorCode.Table_Not_Override == LoadStaticTable())
+            return Return(eErrorCode.Table_Not_Override);
         
         Initialize();
 
@@ -57,65 +56,60 @@ public abstract class SHBaseTable
     }
 
     // 인터페이스 : SQLite파일 로드
-    public bool? LoadDB(string strFileName) 
+    public eErrorCode LoadDB(string strFileName) 
     {
-        // 예외처리 : 오버라이드 체크
-        if (null == LoadDBTable(null, null))
-            return Return(null);
-
-        // 예외처리 : 로드체크
+        if (eErrorCode.Table_Not_Override == LoadDBTable(null, null))
+            return Return(eErrorCode.Table_Not_Override);
+        
         SHSQLite pSQLite = new SHSQLite(strFileName);
         if (false == pSQLite.CheckDBFile())
-            return Return(false);
-
-        // 예외처리 : 테이블체크
+            return Return(eErrorCode.Table_Not_ExsitFile);
+        
         SQLiteQuery pTableList = pSQLite.GetTable("TableList");
         if (null == pTableList)
-            return Return(false);
+            return Return(eErrorCode.Table_Error_Grammar);
 
         Initialize();
 
         while (true == pTableList.Step())
         {
-            string strTableName = pTableList.GetString("s_Table");
-            m_pSQLiteReader     = pSQLite.GetTable(strTableName);
-            bool? bResult       = LoadDBTable(m_pSQLiteReader, strTableName);
+            var strTableName = pTableList.GetString("s_Table");
+            m_pSQLiteReader  = pSQLite.GetTable(strTableName);
+            var eResult      = LoadDBTable(m_pSQLiteReader, strTableName);
             if (null != m_pSQLiteReader)
             {
                 m_pSQLiteReader.Release();
                 m_pSQLiteReader = null;
             }
-            if (null == bResult)        return Return(null);
-            if (false == bResult.Value) return Return(false);
+
+            return Return(eResult);
         }
 
         pTableList.Release();
         pSQLite.Clear();
 
-        return Return(true);
+        return Return(eErrorCode.Succeed);
     }
 
     // 인터페이스 : Json파일 로드
-    public bool? LoadJson(string strFileName) 
+    public eErrorCode LoadJson(string strFileName) 
     {
-        // 예외처리 : 오버라이드 체크
-        if (null == LoadJsonTable(null, null))
-            return Return(null);
-
-        // 예외처리 : 로드체크
+        if (eErrorCode.Table_Not_Override == LoadJsonTable(null, null))
+            return Return(eErrorCode.Table_Not_Override);
+        
         SHJson pJson = new SHJson(strFileName);
         if (false == pJson.CheckJson())
-            return Return(false);
+            return Return(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 
         return Return(LoadJsonTable(pJson.Node, m_strFileName));
     }
-    public bool? LoadJsonToLocal(string strFileName) 
+    public eErrorCode LoadJsonToLocal(string strFileName) 
     {
         // 예외처리 : 오버라이드 체크
-        if (null == LoadJsonTable(null, null))
-            return Return(null);
+        if (eErrorCode.Table_Not_Override == LoadJsonTable(null, null))
+            return Return(eErrorCode.Table_Not_Override);
 
         // 예외처리 : 로드체크
         SHJson pJson = new SHJson();
@@ -123,7 +117,7 @@ public abstract class SHBaseTable
             pJson.LoadToStreamingForLocal(strFileName);
 
         if (false == pJson.CheckJson())
-            return Return(false);
+            return Return(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 
@@ -131,24 +125,23 @@ public abstract class SHBaseTable
     }
 
     // 인터페이스 : XML파일 로드
-    public bool? LoadXML(string strFileName) 
+    public eErrorCode LoadXML(string strFileName) 
     {
         // 예외처리 : 오버라이드 체크
-        if (null == LoadXMLTable(null))
-            return Return(null);
+        if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
+            return Return(eErrorCode.Table_Not_Override);
 
         return LoadXML(new SHXML(strFileName));
     }
     
     // 인터페이스 : XML파일 로드
-    public bool? LoadXML(SHXML pXML)
+    public eErrorCode LoadXML(SHXML pXML)
     {
         if (null == pXML)
             return Return(false);
-
-        // 예외처리 : 오버라이드 체크
-        if (null == LoadXMLTable(null))
-            return Return(null);
+        
+        if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
+            return Return(eErrorCode.Table_Not_Override);
 
         if (false == pXML.CheckXML())
             return Return(false);
@@ -172,11 +165,10 @@ public abstract class SHBaseTable
     }
 
     // 인터페이스 : Byte파일 로드
-    public bool? LoadBytes(string strFileName)
+    public eErrorCode LoadBytes(string strFileName)
     {
-        // 예외처리 : 오버라이드 체크
-        if (null == LoadBytesTable(null))
-            return Return(null);
+        if (eErrorCode.Table_Not_Override == LoadBytesTable(null))
+            return Return(eErrorCode.Table_Not_Override);
 
         // 예외처리 : 로드체크(실패시 다른 로드방식으로 로드가능하도록 null 리턴)
         SHBytes pBytes = new SHBytes(strFileName);
@@ -192,14 +184,14 @@ public abstract class SHBaseTable
 
     #region Utility Functions
     // 유틸 : 로드함수가 종료될때 Reader객체를 초기화하고, 리턴될 수 있도록
-    bool? Return(bool? bReturnValue)
+    eErrorCode Return(eErrorCode errorCode)
     {
         if (null != m_pSQLiteReader)
             m_pSQLiteReader.Release();
 
         m_pSQLiteReader = null;
 
-        return bReturnValue;
+        return errorCode;
     }
     
     // 유틸 : 테이블 타입
@@ -252,55 +244,55 @@ public abstract class SHBaseTable
 
     #region Interface : Json
     // 유틸함수 : Json에서 String데이터 얻기
-    public string GetStrToJson(JSONNode pNode, string strKey)
+    public string GetStrToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
             return string.Empty;
 
-        return pNode[strKey].Value;
+        return (string)pNode[strKey];
     }
     // 유틸함수 : Json에서 int데이터 얻기
-    public int GetIntToJson(JSONNode pNode, string strKey)
+    public int GetIntToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
             return 0;
 
-        return pNode[strKey].AsInt;
+        return (int)pNode[strKey];
     }
     // 유틸함수 : Json에서 float데이터 얻기
-    public float GetFloatToJson(JSONNode pNode, string strKey)
+    public float GetFloatToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
             return 0.0f;
 
-        return pNode[strKey].AsFloat;
+        return (float)pNode[strKey];
     }
     // 유틸함수 : Json에서 bool데이터 얻기
-    public bool GetBoolToJson(JSONNode pNode, string strKey)
+    public bool GetBoolToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
             return false;
 
-        return pNode[strKey].AsBool;
+        return (bool)pNode[strKey];
     }
     // 유틸함수 : Json에서 vector3데이터 얻기
-    public Vector3 GetVector3ToJson(JSONArray pArray)
+    public Vector3 GetVector3ToJson(JsonData pArray)
     {
         if ((null == pArray) || (3 > pArray.Count))
             return Vector3.zero;
 
-        return new Vector3(pArray[0].AsFloat,
-                           pArray[1].AsFloat,
-                           pArray[2].AsFloat);
+        return new Vector3((float)pArray[0],
+                           (float)pArray[1],
+                           (float)pArray[2]);
     }
     // 유틸함수 : Json에서 vector2데이터 얻기
-    public Vector3 GetVector2ToJson(JSONArray pArray)
+    public Vector3 GetVector2ToJson(JsonData pArray)
     {
         if ((null == pArray) || (2 > pArray.Count))
             return Vector2.zero;
 
-        return new Vector2(pArray[0].AsFloat,
-                           pArray[1].AsFloat);
+        return new Vector2((float)pArray[0],
+                           (float)pArray[1]);
     }
     #endregion
 

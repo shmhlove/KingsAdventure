@@ -38,7 +38,7 @@ public class SHToolTableParser : MonoBehaviour
         if ((true == string.IsNullOrEmpty(m_strFileName)) ||
             (true == m_strFileName.Equals(m_strDescription)))
         {
-            m_pLoader.LoadStart(m_pTableData.GetLoadList(eSceneType.None));
+            m_pLoader.Process(m_pTableData.GetLoadList(eSceneType.None));
         }
         else
         {
@@ -50,7 +50,7 @@ public class SHToolTableParser : MonoBehaviour
                 return;
             }
 
-            m_pLoader.LoadStart(pLoadInfo);
+            m_pLoader.Process(pLoadInfo);
         }
     }
     #endregion

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class SHDataManager : SHSingleton<SHDataManager>
 {
     #region Members
+
     // 테이블 데이터 : Excel, SQLite, Json, Byte, XML
     private SHTableData     m_pTable = new SHTableData();
     public SHTableData      Table { get { return m_pTable; } }
@@ -25,11 +26,12 @@ public class SHDataManager : SHSingleton<SHDataManager>
     
     // 로더
     private SHLoader        m_pLoader = new SHLoader();
-    public SHLoader         Loader { get { return m_pLoader; } }
+
     #endregion
 
 
     #region Virtual Functions
+
     // 다양화 : 싱글턴 생성될때
     public override void OnInitialize()
     {
@@ -48,10 +50,12 @@ public class SHDataManager : SHSingleton<SHDataManager>
         Resources.OnFinalize();
         AssetBundle.OnFinalize();
     }
+
     #endregion
 
 
     #region System Functions
+
     // 시스템 : 업데이트
     public override void FixedUpdate()
     {
@@ -62,51 +66,81 @@ public class SHDataManager : SHSingleton<SHDataManager>
         AssetBundle.FrameMove();
         Server.FrameMove();
     }
+
     #endregion
 
 
     #region Interface Functions
+
     // 인터페이스 : 로드명령
-    public void Load(eSceneType eType, EventHandler pDone, EventHandler pProgress, EventHandler pError)
+    public void Load(eSceneType eType, Action<SHLoadingInfo> pDone, Action<SHLoadingInfo> pProgress)
     {
         OnEventToLoadStart();
-        Loader.LoadStart(GetLoadList(eType), pDone + OnEventToLoadDone, pProgress, pError);
+
+        EventHandler pDoneEventHandler = (sender, e) =>
+        {
+            if (null != pDone)
+            {
+                pDone(Single.Event.GetArgs<SHLoadingInfo>(e));
+            }
+        };
+
+        EventHandler pProgressEventHandler = (sender, e) =>
+        {
+            if (null != pProgress)
+            {
+                pProgress(Single.Event.GetArgs<SHLoadingInfo>(e));
+            }
+        };
+
+        m_pLoader.Process(GetLoadList(eType), (pDoneEventHandler + OnEventToLoadDone), pProgressEventHandler);
     }
 
     // 인터페이스 : 패치명령
-    public void Patch(EventHandler pDone, EventHandler pProgress, EventHandler pError)
+    public void Patch(Action<SHLoadingInfo> pDone, Action<SHLoadingInfo> pProgress)
     {
-        Loader.LoadStart(GetPatchList(), pDone, pProgress, pError);
+        EventHandler pDoneEventHandler = (sender, e) =>
+        {
+            if (null != pDone)
+            {
+                pDone(Single.Event.GetArgs<SHLoadingInfo>(e));
+            }
+        };
+
+        EventHandler pProgressEventHandler = (sender, e) =>
+        {
+            if (null != pProgress)
+            {
+                pProgress(Single.Event.GetArgs<SHLoadingInfo>(e));
+            }
+        };
+
+        m_pLoader.Process(GetPatchList(), pDoneEventHandler, pProgressEventHandler);
     }
     
     // 인터페이스 : 로드가 완료되었는가?(성공/실패유무가 아님)
     public bool IsLoadDone()
     {
-        return Loader.IsLoadDone();
+        return m_pLoader.IsLoadDone();
     }
 
-    // 인터페이스 : 특정 파일이 로드완료되었는가?(성공/실패유무가 아님)
+    // 인터페이스 : 특정 파일이 로드완료 되었는가?(성공/실패유무가 아님)
     public bool IsLoadDone(string strFileName)
     {
-        return Loader.IsLoadDone(strFileName);
+        return m_pLoader.IsLoadDone(strFileName);
     }
 
-    // 인터페이스 : 특정 타입이 로드완료되었는가?(성공/실패유무가 아님)
+    // 인터페이스 : 특정 타입의 데이터들이 로드완료 되었는가?(성공/실패유무가 아님)
     public bool IsLoadDone(eDataType eType)
     {
-        return Loader.IsLoadDone(eType);
-    }
-
-    // 인터페이스 : 로드중인지 체크(로드 중이거나 할 파일이 있는지  체크)
-    public bool IsRemainLoadFiles()
-    {
-        return Loader.IsRemainLoadFiles();
+        return m_pLoader.IsLoadDone(eType);
     }
 
     #endregion
 
 
     #region Utility Functions
+
     // 유틸 : 로드 리스트
     List<Dictionary<string, SHLoadData>> GetLoadList(eSceneType eType)
     {
@@ -130,10 +164,12 @@ public class SHDataManager : SHSingleton<SHDataManager>
             AssetBundle.GetPatchList()
         };
     }
+
     #endregion
 
 
     #region Event Handler
+
     // 이벤트 : 로드가 시작될때
     void OnEventToLoadStart()
     {
@@ -155,5 +191,6 @@ public class SHDataManager : SHSingleton<SHDataManager>
             System.GC.Collect(iLoop, GCCollectionMode.Forced);
         }
     }
+
     #endregion
 }

@@ -52,31 +52,42 @@ public partial class SHTableData : SHBaseData
     {
         return new Dictionary<string, SHLoadData>();
     }
-    public override void Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
-                                                Action<string, SHLoadEndInfo> pDone)
+    public override IEnumerator Load(SHLoadData pInfo, 
+                                     Action<string, SHLoadStartInfo> pStart,
+                                     Action<string, SHLoadEndInfo> pDone)
     {
+        pStart(pInfo.m_strName, new SHLoadStartInfo());
+
         SHBaseTable pTable = GetTable(pInfo.m_strName);
         if (null == pTable)
         {
             Debug.LogError(string.Format("[TableData] 등록된 테이블이 아닙니다.!!({0})", pInfo.m_strName));
-            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eLoadErrorCode.Load_Table));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Table));
             return;
         }
 
         SHUtils.ForToList(GetLoadOrder(pTable), (pLambda) =>
         {
-            bool? bIsSuccess = pLambda();
-            if (null != bIsSuccess)
+            pLambda((eResult) =>
             {
-                if (true == bIsSuccess.Value)
-                    pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.None));
-                else
-                    pDone(pInfo.m_strName, new SHLoadEndInfo(true, eLoadErrorCode.Load_Table));
-                return;
-            }
+                switch(eResult)
+                {
+                    case eErrorCode.Table_Not_ExsitFile:
+                    case eErrorCode.Table_Error_Grammar:
+                    case eErrorCode.Table_Load_Fail:
+                }
+                if (null != bIsSuccess)
+                {
+                    if (true == bIsSuccess.Value)
+                        pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
+                    else
+                        pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.Load_Table));
+                    return;
+                }
+            });
         });
 
-        pDone(pInfo.m_strName, new SHLoadEndInfo(false, eLoadErrorCode.Load_Table));
+        pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Table));
     }
     public override void Patch(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
                                                  Action<string, SHLoadEndInfo> pDone)

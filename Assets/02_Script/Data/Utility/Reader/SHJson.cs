@@ -7,13 +7,13 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 public class SHJson
 {
     #region Members
-    private JSONNode m_pJsonNode = null;
-    public JSONNode Node { get { return m_pJsonNode; } }
+    private JsonData m_pJsonData = null;
+    public JsonData Node { get { return m_pJsonData; } }
     #endregion
 
 
@@ -29,54 +29,54 @@ public class SHJson
         // 1차 : PersistentDataPath에 Json데이터가 있으면 그걸 로드하도록 한다.
         // 2차 : 없으면 StreamingAssets에서 로드하도록 한다.
 
-        if (null != (m_pJsonNode = LoadToPersistent(strFileName)))
+        if (null != (m_pJsonData = LoadToPersistent(strFileName)))
             return;
 
-        m_pJsonNode = LoadToStreamingForWWW(strFileName);
+        m_pJsonData = LoadToStreamingForWWW(strFileName);
     }
 
     ~SHJson()
     {
-        SetJsonNode(null);
+        SetJsonData(null);
     }
     #endregion
 
 
     #region Interface Functions
-    // 인터페이스 : JsonNode설정
-    public JSONNode SetJsonNode(JSONNode pNode)
+    // 인터페이스 : JsonData설정
+    public JsonData SetJsonData(JsonData pNode)
     {
-        return (m_pJsonNode = pNode);
+        return (m_pJsonData = pNode);
     }
 
     // 인터페이스 : Persistent에서 로드
-    public JSONNode LoadToPersistent(string strFileName)
+    public JsonData LoadToPersistent(string strFileName)
     {
         string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPathToPersistentJson(), Path.GetFileNameWithoutExtension(strFileName));
         if (false == File.Exists(strSavePath))
             return null;
 
-        return SetJsonNode(LoadLocal(strSavePath));
+        return SetJsonData(LoadLocal(strSavePath));
     }
 
     // 인터페이스 : Streaming에서 LoaclLoad로 로드
-    public JSONNode LoadToStreamingForLocal(string strFileName)
+    public JsonData LoadToStreamingForLocal(string strFileName)
     {
         string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPathToJson(), Path.GetFileNameWithoutExtension(strFileName));
         if (false == File.Exists(strSavePath))
             return null;
 
-        return SetJsonNode(LoadLocal(strSavePath));
+        return SetJsonData(LoadLocal(strSavePath));
     }
 
     // 인터페이스 : Streaming에서 WWW로 로드
-    public JSONNode LoadToStreamingForWWW(string strFileName)
+    public JsonData LoadToStreamingForWWW(string strFileName)
     {
-        return SetJsonNode(LoadWWW(GetStreamingPath(strFileName)));
+        return SetJsonData(LoadWWW(GetStreamingPath(strFileName)));
     }
 
     // 인터페이스 : Json파일 로드
-    public JSONNode LoadWWW(string strFilePath)
+    public JsonData LoadWWW(string strFilePath)
     {
         WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strFilePath));
         if (true != string.IsNullOrEmpty(pWWW.error))
@@ -89,14 +89,14 @@ public class SHJson
     }
     
     // 인터페이스 : Byte로 Json파싱
-    public JSONNode GetJsonParseToByte(byte[] pByte)
+    public JsonData GetJsonParseToByte(byte[] pByte)
     {
         System.Text.UTF8Encoding pEncoder = new System.Text.UTF8Encoding();
-        return JSON.Parse(pEncoder.GetString(pByte));
+        return JsonMapper.ToObject(pEncoder.GetString(pByte));
     }
 
     // 인터페이스 : string으로 Json파싱
-    public JSONNode GetJsonParseToString(string strBuff)
+    public JsonData GetJsonParseToString(string strBuff)
     {
         MemoryStream pStream = new MemoryStream(Encoding.UTF8.GetBytes(strBuff));
         StreamReader pReader = new StreamReader(pStream, true);
@@ -104,13 +104,13 @@ public class SHJson
         pReader.Close();
         pStream.Close();
 
-        return JSON.Parse(strEncodingBuff);
+        return JsonMapper.ToObject(strEncodingBuff);
     }
 
     // 인터페이스 : Json파일 로드 체크
     public bool CheckJson()
     {
-        return (null != m_pJsonNode);
+        return (null != m_pJsonData);
     }
 
     // 인터페이스 : DataSet을 Json으로 쓰기
@@ -155,7 +155,7 @@ public class SHJson
 
     #region Utility Functions
     // 유틸 : Json파일 로드
-    public JSONNode LoadLocal(string strFilePath)
+    public JsonData LoadLocal(string strFilePath)
     {
         if (false == File.Exists(strFilePath))
             return null;

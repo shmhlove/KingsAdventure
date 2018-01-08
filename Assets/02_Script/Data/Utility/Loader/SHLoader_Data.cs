@@ -1,121 +1,198 @@
 ﻿using UnityEngine;
 
 using System;
-using System.Threading; 
 using System.Collections;
 using System.Collections.Generic;
 
-// enum : 로드 에러 코드
-public enum eLoadErrorCode
-{
-    None,
-    Load_Scene,         // 씬 로드 중 에러
-    Load_Resource,      // 리소스 로드 중 에러
-    Load_Table,         // 테이블 로드 중 에러
-    Convert_Table,      // 테이블 패치 후 컨버팅 중 에러
-    Patch_Table,        // 테이블 패치 중 에러
-    Patch_Bundle,       // 번들 패치 중 에러
-    Common_WWW,         // 일반적인 WWW 에러
-}
 
-// class : 로드 이벤트 데이터
-public class SHLoadEvent
-{
-    public eDataType            m_eType;              // 현재 로드타입
-    public string               m_strFileName;        // 현재 로드파일이름
-    public bool                 m_bIsSuccess;         // 현재 파일 로드상태
-    public bool                 m_bIsFail;            // 실패한 파일이 하나라도 있는가?
-    public eLoadErrorCode       m_eErrorCode;         // 에러코드
-
-    public SHPair<int, int>     m_pCount;             // 로드 카운트 정보<Total, Current>
-    public SHPair<float, float> m_pTime;              // 로드 시간 정보<Total, Current>
-
-    public float                m_fPercent;           // 진행도(0 ~ 100%)
-    public bool                 m_bIsAsyncPrograss;   // 어싱크 프로그래스 정보인가? ( 어싱크는 로드 순서가 없기에 현재파일 정보는 보내줄 수가 없다. )
-}
-
-// class : 로드 데이터
+// public class : 로드 데이터
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * SHLoadData는 로드할 데이터에 대한 정보.
+ * --------------------------------------------------------------------------------------
+ * 데이터 로드부에서 SHLoadData를 구성하여 로더에 Push 해두면, 
+ * 로드 타이밍이 왔을때 로더가 데이터 로드부에 SHLoadData를 전달해준다.
+ * 이때 데이터 로드부에서는 자신이 구성한 SHLoadData를 바탕으로 데이터를 로드하면 된다.
+ * --------------------------------------------------------------------------------------
+ * 데이터로드부 -SHLoadData-> Push -> 로더
+ * 로더 -SHLoadData-> Load -> 데이터로드부
+ * --------------------------------------------------------------------------------------
+ */
 public class SHLoadData
 {
-    public eDataType            m_eDataType;          // 로드 타입
-    public string               m_strName;            // 파일명
-    public Func<bool>           m_pTriggerLoadCall;   // 로트콜 조건있을 경우가 있다,, ( TableType이 모두 로드되었을때라거나 등등 )
-    public Action                                     // 로드명령 콜백
+    public eDataType            m_eDataType;          // 로드할 데이터 타입
+    public string               m_strName;            // 로드할 데이터 이름
+    public Func<bool>           m_pTriggerLoadCall;   // 트리거 람다 : 로드 타이밍을 데이터 로드부에서 결정할 수 있도록 트리거 람다를 등록할 수 있다.
+    public Action                                     // 로드 콜백 : 로드 타이밍이 왔을때 콜이 될 람다
     <
         SHLoadData, 
         Action<string, SHLoadStartInfo>,
         Action<string, SHLoadEndInfo>
     > m_pLoadFunc;
     
-    public float                m_fLoadTime;          // 로드 시간
-    public bool                 m_bIsSuccess;         // 로드 성공여부
-    public bool                 m_bIsDone;            // 로드 완료여부
-    
     public SHLoadData()
     {
-        m_fLoadTime         = 0.0f;
-        m_bIsSuccess        = false;
-        m_bIsDone           = false;
         m_pTriggerLoadCall  = () => { return true; };
     }
 }
 
-// class : 로드 시작 이벤트 정보
+// public class : 로드 시작 정보
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 데이터 로드가 시작될때 로더에 알려줘야 할 정보.
+ * --------------------------------------------------------------------------------------
+ * 만약 로드 방식이 Async 라면 
+ * 데이터 로드부에서 AsyncOperation를 로더에 전달하여
+ * 로더의 프로그래스 정보를 갱신시켜줄 수 있다.
+ * --------------------------------------------------------------------------------------
+ */
 public class SHLoadStartInfo
 {
-    public WWW              m_pPatch        = null;
-    public AsyncOperation   m_pResource     = null;
+    public WWW              m_pWWW   = null;
+    public AsyncOperation   m_pAsync = null;
 
     public SHLoadStartInfo() { }
     public SHLoadStartInfo(WWW pWWW)
     {
-        m_pPatch = pWWW;
+        m_pWWW = pWWW;
     }
     public SHLoadStartInfo(AsyncOperation pAsync)
     {
-        m_pResource = pAsync;
+        m_pAsync = pAsync;
     }
 
     public float GetPrograss()
     {
-        if (null != m_pPatch)
-            return m_pPatch.progress;
+        if (null != m_pWWW)
+            return m_pWWW.progress;
 
-        if (null != m_pResource)
-            return m_pResource.progress;
+        if (null != m_pAsync)
+            return m_pAsync.progress;
 
         return 0.0f;
     }
 }
 
-// class : 로드 종료 이벤트 정보
+// public class : 로드 종료 정보
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 데이터 로드가 종료 되었을때 로더에 알려줘야 할 정보.
+ * --------------------------------------------------------------------------------------
+ * 데이터를 성공적으로 로드하였는지에 대한 정보를 로더에게 알려주면
+ * 로더는 모든 데이터의 결과를 종합하여 최종적으로 데이터 로드가 성공했는지를 기록한다.
+ * 이 기록으로 데이터 로드를 재시작 할 것인지 다음 스텝으로 게임을 진행 시킬 것인지 결정할 수 있다.
+ * --------------------------------------------------------------------------------------
+ */
 public class SHLoadEndInfo
 {
-    public bool             m_bIsSuccess;
-    public eLoadErrorCode   m_eErrorCode;
-    public SHLoadEndInfo() { }
-    public SHLoadEndInfo(bool bIsSuccess, eLoadErrorCode eErrorCode)
+    public bool         m_bIsSuccess;
+    public bool         m_bIsDone;
+    public eErrorCode   m_eErrorCode;
+
+    public SHLoadEndInfo()
     {
-        m_bIsSuccess = bIsSuccess;
-        m_eErrorCode = eErrorCode;
+        m_bIsDone    = false;
+    }
+    public SHLoadEndInfo(eErrorCode errorCode) : this()
+    {
+        m_bIsSuccess = eErrorCode.Succeed == errorCode;
+        m_eErrorCode = errorCode;
     }
 }
 
+// public class : 로드 데이터 상태
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 로드할 데이터에 대한 상태 정보로 로드 시작부터 종료까지 모든 상태를 기록한다.
+ * --------------------------------------------------------------------------------------
+ */
+public class SHLoadDataStateInfo
+{
+    public SHLoadData      m_pLoadDataInfo;
+    public SHLoadStartInfo m_pStartInfo;
+    public SHLoadEndInfo   m_pEndInfo;
+
+    public DateTime        m_pLoadStartTime;
+
+    public SHLoadDataStateInfo()
+    {
+        m_pLoadDataInfo = null;
+        m_pStartInfo = null;
+        m_pEndInfo = null;
+    }
+    public SHLoadDataStateInfo(SHLoadData pData) : this()
+    {
+        m_pLoadDataInfo = pData;
+    }
+    
+    public bool IsLoadTrigger()
+    {
+        if (null == m_pLoadDataInfo)
+            return false;
+
+        return m_pLoadDataInfo.m_pTriggerLoadCall();
+    }
+
+    public void LoadCall(Action<string, SHLoadStartInfo> OnEventStart, Action<string, SHLoadEndInfo> OnEventDone)
+    {
+        if (null == m_pLoadDataInfo)
+            return;
+
+        m_pLoadStartTime = DateTime.Now;
+        m_pLoadDataInfo.m_pLoadFunc(m_pLoadDataInfo, OnEventStart, OnEventDone);
+    }
+
+    public bool IsDone()
+    {
+        if (null == m_pEndInfo)
+            return true;
+
+        return m_pEndInfo.m_bIsDone;
+    }
+}
+
+// public class : 데이터 로딩 중 정보
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 로딩 중인 현재 데이터와 진행상태 정보입니다.
+ * --------------------------------------------------------------------------------------
+ * 유저 클래스에서는 이 정보데이터를 Prograss 혹은 Done 이벤트 콜백으로 프레임마다 받을 수 있습니다.
+ * --------------------------------------------------------------------------------------
+ */
+public class SHLoadingInfo
+{
+    // 로드 중인 데이터 정보들
+    public List<SHLoadDataStateInfo> m_pLoadingDatum = new List<SHLoadDataStateInfo>();
+
+    // 로딩 카운트 정보
+    public int                       m_iLoadDoneCount;  // 로드 완료된 데이터 카운트
+    public int                       m_iTotalDataCount; // 전체 데이터 카운트
+    public int                       m_fElapsedTime;    // 현재 경과된 시간
+    public float                     m_fLoadPercent;    // 로드 진행도(0 ~ 100%)
+}
+
+// public class : 로더
+/* Summary
+ * --------------------------------------------------------------------------------------
+ * 로딩 플로우를 전체적으로 관리하는 클래스
+ * --------------------------------------------------------------------------------------
+ * Loader를 통해 SHLoadData 리스트를 등록하면 
+ * 순차적으로 로드콜을 받을 수 있고, 프로그래스 정보를 이벤트로 받을 수 있습니다.
+ * --------------------------------------------------------------------------------------
+ */
 public partial class SHLoader
 {
-    // 로드 정보
+    // 로드 진행 관리
     public SHLoadPrograss m_pPrograss = new SHLoadPrograss();
 
     // 이벤트
-    public SHEvent EventToComplate = new SHEvent();
-    public SHEvent EventToProgress = new SHEvent();
-    public SHEvent EventToError    = new SHEvent();
+    public SHEvent EventToDone        = new SHEvent();
+    public SHEvent EventToProgress    = new SHEvent();
 
     public void Initialize()
     {
         m_pPrograss.Initialize();
-        EventToComplate.Clear();
+        EventToDone.Clear();
         EventToProgress.Clear();
-        EventToError.Clear();
     }
 }

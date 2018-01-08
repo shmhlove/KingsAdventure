@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 public class SHResourcesInfo
 {
@@ -65,7 +65,7 @@ public class JsonResources : SHBaseTable
         return (0 != m_pData.Count);
     }
 
-    public override bool? LoadJsonTable(JSONNode pJson, string strFileName)
+    public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
             return false;
@@ -73,7 +73,7 @@ public class JsonResources : SHBaseTable
         int iMaxTable = pJson["ResourcesInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            JSONNode pDataNode         = pJson["ResourcesInfo"][iLoop];
+            JsonData pDataNode         = pJson["ResourcesInfo"][iLoop];
             SHResourcesInfo pData = new SHResourcesInfo();
             pData.m_strName             = GetStrToJson(pDataNode, "s_Name");
             pData.m_strFileName         = GetStrToJson(pDataNode, "s_FileName");

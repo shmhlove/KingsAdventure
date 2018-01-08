@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-using SimpleJSON;
+using LitJson;
 
 public class JsonClientConfig : SHBaseTable
 {
@@ -41,12 +41,12 @@ public class JsonClientConfig : SHBaseTable
     {
         return (false == string.IsNullOrEmpty(m_strVersion));
     }
-    public override bool? LoadJsonTable(JSONNode pJson, string strFileName)
+    public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
             return false;
 
-        JSONNode pDataNode      = pJson["ClientConfig"];
+        JsonData pDataNode      = pJson["ClientConfig"];
 
         m_strCDN                = GetStrToJson(pDataNode, "ServerConfigCDN");
         m_strServiceMode        = GetStrToJson(pDataNode, "ServiceMode");
