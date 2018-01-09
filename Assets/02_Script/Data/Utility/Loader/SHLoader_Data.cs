@@ -22,17 +22,21 @@ public class SHLoadData
 {
     public eDataType            m_eDataType;          // 로드할 데이터 타입
     public string               m_strName;            // 로드할 데이터 이름
-    public Func<bool>           m_pTriggerLoadCall;   // 트리거 람다 : 로드 타이밍을 데이터 로드부에서 결정할 수 있도록 트리거 람다를 등록할 수 있다.
+    public Func<bool>           m_pLoadOkayTrigger;   // 트리거 람다 : 로드 타이밍을 데이터 로드부에서 결정할 수 있도록 트리거 람다를 등록할 수 있다.
     public Action                                     // 로드 콜백 : 로드 타이밍이 왔을때 콜이 될 람다
-    <
-        SHLoadData, 
+    <   SHLoadData, 
         Action<string, SHLoadStartInfo>,
         Action<string, SHLoadEndInfo>
     > m_pLoadFunc;
     
     public SHLoadData()
     {
-        m_pTriggerLoadCall  = () => { return true; };
+        m_pLoadOkayTrigger  = () => { return true; };
+        m_pLoadFunc         = (pData, pStartEvent, pDoneEvent) =>
+        {
+            pStartEvent(m_strName, new SHLoadStartInfo());
+            pDoneEvent(m_strName, new SHLoadEndInfo(eErrorCode.Failed));
+        };
     }
 }
 
@@ -61,13 +65,10 @@ public class SHLoadStartInfo
         m_pAsync = pAsync;
     }
 
-    public float GetPrograss()
+    public float GetProgress()
     {
-        if (null != m_pWWW)
-            return m_pWWW.progress;
-
-        if (null != m_pAsync)
-            return m_pAsync.progress;
+        if (null != m_pWWW)   return m_pWWW.progress;
+        if (null != m_pAsync) return m_pAsync.progress;
 
         return 0.0f;
     }
@@ -86,14 +87,9 @@ public class SHLoadStartInfo
 public class SHLoadEndInfo
 {
     public bool         m_bIsSuccess;
-    public bool         m_bIsDone;
     public eErrorCode   m_eErrorCode;
 
-    public SHLoadEndInfo()
-    {
-        m_bIsDone    = false;
-    }
-    public SHLoadEndInfo(eErrorCode errorCode) : this()
+    public SHLoadEndInfo(eErrorCode errorCode)
     {
         m_bIsSuccess = eErrorCode.Succeed == errorCode;
         m_eErrorCode = errorCode;
@@ -112,25 +108,28 @@ public class SHLoadDataStateInfo
     public SHLoadStartInfo m_pStartInfo;
     public SHLoadEndInfo   m_pEndInfo;
 
+    public bool            m_bIsDone;
     public DateTime        m_pLoadStartTime;
+    public DateTime        m_pLoadEndTime;
 
     public SHLoadDataStateInfo()
     {
         m_pLoadDataInfo = null;
-        m_pStartInfo = null;
-        m_pEndInfo = null;
+        m_pStartInfo    = null;
+        m_pEndInfo      = null;
+        m_bIsDone       = false;
     }
     public SHLoadDataStateInfo(SHLoadData pData) : this()
     {
         m_pLoadDataInfo = pData;
     }
     
-    public bool IsLoadTrigger()
+    public bool IsLoadOkayByTrigger()
     {
         if (null == m_pLoadDataInfo)
-            return false;
+            return true;
 
-        return m_pLoadDataInfo.m_pTriggerLoadCall();
+        return m_pLoadDataInfo.m_pLoadOkayTrigger();
     }
 
     public void LoadCall(Action<string, SHLoadStartInfo> OnEventStart, Action<string, SHLoadEndInfo> OnEventDone)
@@ -142,12 +141,21 @@ public class SHLoadDataStateInfo
         m_pLoadDataInfo.m_pLoadFunc(m_pLoadDataInfo, OnEventStart, OnEventDone);
     }
 
+    public void LoadDone(SHLoadEndInfo pEndInfo)
+    {
+        m_pLoadEndTime = DateTime.Now;
+        m_pEndInfo     = pEndInfo;
+        m_bIsDone      = true;
+    }
+
     public bool IsDone()
     {
-        if (null == m_pEndInfo)
-            return true;
+        return m_bIsDone;
+    }
 
-        return m_pEndInfo.m_bIsDone;
+    public float GetProgress()
+    {
+        return m_pStartInfo.GetProgress();
     }
 }
 
@@ -156,7 +164,7 @@ public class SHLoadDataStateInfo
  * --------------------------------------------------------------------------------------
  * 로딩 중인 현재 데이터와 진행상태 정보입니다.
  * --------------------------------------------------------------------------------------
- * 유저 클래스에서는 이 정보데이터를 Prograss 혹은 Done 이벤트 콜백으로 프레임마다 받을 수 있습니다.
+ * 유저 클래스에서는 이 정보데이터를 Progress 혹은 Done 이벤트 콜백으로 프레임마다 받을 수 있습니다.
  * --------------------------------------------------------------------------------------
  */
 public class SHLoadingInfo
@@ -165,10 +173,12 @@ public class SHLoadingInfo
     public List<SHLoadDataStateInfo> m_pLoadingDatum = new List<SHLoadDataStateInfo>();
 
     // 로딩 카운트 정보
-    public int                       m_iLoadDoneCount;  // 로드 완료된 데이터 카운트
-    public int                       m_iTotalDataCount; // 전체 데이터 카운트
-    public int                       m_fElapsedTime;    // 현재 경과된 시간
-    public float                     m_fLoadPercent;    // 로드 진행도(0 ~ 100%)
+    public int   m_iSucceedCount;   // 로드 성공한 데이터 카운트
+    public int   m_iFailedCount;    // 로드 실패한 데이터 카운트
+    public int   m_iLoadDoneCount;  // 로드 완료된 데이터 카운트
+    public int   m_iTotalDataCount; // 전체 데이터 카운트
+    public float m_fElapsedTime;    // 현재 경과된 시간(초단위)
+    public float m_fLoadPercent;    // 로드 진행도(0 ~ 100%)
 }
 
 // public class : 로더
@@ -183,7 +193,7 @@ public class SHLoadingInfo
 public partial class SHLoader
 {
     // 로드 진행 관리
-    public SHLoadPrograss m_pPrograss = new SHLoadPrograss();
+    public SHLoadProgress m_pProgress = new SHLoadProgress();
 
     // 이벤트
     public SHEvent EventToDone        = new SHEvent();
@@ -191,7 +201,7 @@ public partial class SHLoader
 
     public void Initialize()
     {
-        m_pPrograss.Initialize();
+        m_pProgress.Initialize();
         EventToDone.Clear();
         EventToProgress.Clear();
     }
