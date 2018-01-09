@@ -55,8 +55,8 @@ public partial class SHResourceData : SHBaseData
     }
 
     // 다양화 : 로더로 부터 호출될 로드함수
-    public override void Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
-                                                Action<string, SHLoadEndInfo> pDone)
+    public override IEnumerator Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
+                                                       Action<string, SHLoadEndInfo> pDone)
     {
         pStart(pInfo.m_strName, new SHLoadStartInfo());
 
