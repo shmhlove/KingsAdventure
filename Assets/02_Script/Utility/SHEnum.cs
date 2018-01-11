@@ -48,10 +48,10 @@ public enum eDataType
 {
     None,
     LocalTable,
-    ServerData,
+    ServerTable,
     Resources,
     Scene,
-    BundleData,
+    AssetsBundle,
 }
 
 // 테이블 포맷타입

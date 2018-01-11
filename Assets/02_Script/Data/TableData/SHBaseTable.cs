@@ -82,7 +82,8 @@ public abstract class SHBaseTable
                 m_pSQLiteReader = null;
             }
 
-            return Return(eResult);
+            if (eErrorCode.Succeed != eResult)
+                return Return(eResult);
         }
 
         pTableList.Release();
@@ -138,30 +139,31 @@ public abstract class SHBaseTable
     public eErrorCode LoadXML(SHXML pXML)
     {
         if (null == pXML)
-            return Return(false);
+            return Return(eErrorCode.Failed);
         
         if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
             return Return(eErrorCode.Table_Not_Override);
 
         if (false == pXML.CheckXML())
-            return Return(false);
+            return Return(eErrorCode.Table_Not_ExsitFile);
 
         // 예외처리 : 노드 리스트 체크
         XmlNodeList pNodeList = pXML.GetNodeList(m_strFileName);
         if (null == pNodeList)
-            return Return(false);
+            return Return(eErrorCode.Table_Error_Grammar);
 
         Initialize();
 
         int iMaxNodeCount = pNodeList.Count;
         for (int iLoop = 0; iLoop < iMaxNodeCount; ++iLoop)
         {
-            bool? bResult = LoadXMLTable(pNodeList[iLoop]);
-            if (null == bResult)        return Return(null);
-            if (false == bResult.Value) return Return(false);
+            var eResult = LoadXMLTable(pNodeList[iLoop]);
+            
+            if (eErrorCode.Succeed != eResult)
+                return Return(eResult);
         }
 
-        return Return(true);
+        return Return(eErrorCode.Succeed);
     }
 
     // 인터페이스 : Byte파일 로드
@@ -173,7 +175,7 @@ public abstract class SHBaseTable
         // 예외처리 : 로드체크(실패시 다른 로드방식으로 로드가능하도록 null 리턴)
         SHBytes pBytes = new SHBytes(strFileName);
         if (false == pBytes.CheckBytes())
-            return Return(null);
+            return Return(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 

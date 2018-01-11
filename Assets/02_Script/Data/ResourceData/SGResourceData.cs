@@ -27,12 +27,7 @@ public partial class SHResourceData : SHBaseData
     {
         m_dicResources.Clear();
     }
-
-    // 다양화 : 업데이트
-    public override void FrameMove() 
-    {
-    }
-
+    
     // 다양화 : 로드할 데이터 리스트 알려주기
     public override Dictionary<string, SHLoadData> GetLoadList(eSceneType eType)
     {
@@ -48,12 +43,6 @@ public partial class SHResourceData : SHBaseData
         return dicLoadList;
     }
     
-    // 다양화 : 패치할 데이터 리스트 알려주기
-    public override Dictionary<string, SHLoadData> GetPatchList()
-    {
-        return new Dictionary<string, SHLoadData>();;
-    }
-
     // 다양화 : 로더로 부터 호출될 로드함수
     public override IEnumerator Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
                                                        Action<string, SHLoadEndInfo> pDone)
@@ -62,29 +51,35 @@ public partial class SHResourceData : SHBaseData
 
         if (true == IsLoadResource(pInfo.m_strName.ToLower()))
         {
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-            return;
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
+            yield break;
         }
 
         SHResourcesInfo pResourceInfo = Single.Table.GetResourcesInfo(pInfo.m_strName);
         if (null == pResourceInfo)
         {
             Debug.LogFormat("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
-            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Resource));
-            return;
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Not_ExsitTable));
+            yield break;
         }
 
+        Single.Coroutine.Routine(() => 
+        {
+            var pResource = GetResources(pInfo.m_strName);
+            if (null == pResource)
+                pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Load_Fail));
+            else
+                pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
+
+        }, LoadAsync<Object>(pResourceInfo));
+        
         var pObject = LoadSync<Object>(pResourceInfo);
         if (null == pObject)
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.Load_Resource));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Load_Fail));
         else
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-    }
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
 
-    // 다양화 : 로더로 부터 호출될 패치함수( 번들패치를 받아야겠네 )
-    public override void Patch(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
-                                                 Action<string, SHLoadEndInfo> pDone)
-    {
+        yield return null;
     }
     #endregion
 
@@ -243,7 +238,7 @@ public partial class SHResourceData : SHBaseData
             m_eDataType = eDataType.Resources,
             m_strName = strName,
             m_pLoadFunc = Load,
-            m_pTriggerLoadCall = () =>
+            m_pLoadOkayTrigger = () =>
             {
                 // 테이블 데이터를 먼저 로드하고 리소스 로드할 수 있도록 트리거 설정
                 return Single.Data.IsLoadDone(eDataType.LocalTable);
@@ -252,39 +247,46 @@ public partial class SHResourceData : SHBaseData
     }
     
     // 유틸 : 어싱크로 리소스 로드하기
-    void LoadAsync(SHResourcesInfo pTable, Action<string, SHLoadStartInfo> pStart, 
-                                                Action<string, SHLoadEndInfo> pDone)
+    IEnumerator LoadAsync<T>(SHResourcesInfo pTable) where T : UnityEngine.Object
     {
-        if (true == IsLoadResource(pTable.m_strName.ToLower()))
-        {
-            pStart(pTable.m_strName, new SHLoadStartInfo());
-            pDone(pTable.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-            return;
-        }
+        if (null == pTable)
+            yield break;
 
+        if (true == IsLoadResource(pTable.m_strName.ToLower()))
+            yield break;
+        
 #if UNITY_EDITOR
         DateTime pStartTime = DateTime.Now;
 #endif
 
-        ResourceRequest pRequest = Resources.LoadAsync(pTable.m_strPath);
-        pStart(pTable.m_strName, new SHLoadStartInfo(pRequest));
-        Single.Coroutine.Async(() =>
+        Object pObject = null;
+        var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
+        if (null != pBundleData)
         {
-            if (null == pRequest.asset)
-            {
-                Debug.LogError(string.Format("{0} 파일이 없습니다!!!", pTable.m_strPath));
-                pDone(pTable.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Resource));
-                return;
-            }
+            var pRequest = pBundleData.m_pBundle.LoadAssetAsync<T>(pTable.m_strName);
+            yield return pRequest;
 
-            m_dicResources.Add(pTable.m_strName.ToLower(), pRequest.asset);
-            pDone(pTable.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
+            pObject = pRequest.asset;
+        }
+        else
+        {
+            var pRequest = Resources.LoadAsync<T>(pTable.m_strPath);
+            yield return pRequest;
 
+            pObject = pRequest.asset;
+        }
+        
+        if (null == pObject)
+        {
+            Debug.LogError(string.Format("{0}을 로드하지 못했습니다!!\n리소스 테이블에는 목록이 있으나 실제 파일은 없을 수도 있습니다.", pTable.m_strPath));
+            yield break;
+        }
+        
 #if UNITY_EDITOR
-            Single.AppInfo.SetLoadResource(string.Format("Load : {0}({1}sec)", pTable.m_strName, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
+        Single.AppInfo.SetLoadResource(string.Format("Load : {0}({1}sec)", pTable.m_strName, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
 #endif
-        },
-        pRequest);
+
+        m_dicResources.Add(pTable.m_strName.ToLower(), pObject);
     }
 
     // 유틸 : 싱크로 리소스 로드하기
@@ -300,7 +302,7 @@ public partial class SHResourceData : SHBaseData
         DateTime pStartTime = DateTime.Now;
 #endif
 
-        T pObject           = null;
+        T pObject       = null;
         var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
         if (null != pBundleData)
             pObject = pBundleData.m_pBundle.LoadAsset<T>(pTable.m_strName);
@@ -317,9 +319,7 @@ public partial class SHResourceData : SHBaseData
         Single.AppInfo.SetLoadResource(string.Format("Load : {0}({1}sec)", pTable.m_strName, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
 #endif
 
-        // Text 데이터들은 한번 로드하고 나면 컨테이너에 담고 안지우기 때문에 저장하지 않는다.
-        if (eResourceType.Text != pTable.m_eResourceType)
-            m_dicResources.Add(pTable.m_strName.ToLower(), pObject);
+        m_dicResources.Add(pTable.m_strName.ToLower(), pObject);
 
         return pObject;
     }

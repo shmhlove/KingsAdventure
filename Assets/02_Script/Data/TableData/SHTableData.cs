@@ -62,36 +62,14 @@ public partial class SHTableData : SHBaseData
         if (null == pTable)
         {
             Debug.LogError(string.Format("[TableData] 등록된 테이블이 아닙니다.!!({0})", pInfo.m_strName));
-            pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Table));
-            return;
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Table_Not_AddClass));
+            yield break;
         }
 
         SHUtils.ForToList(GetLoadOrder(pTable), (pLambda) =>
         {
-            pLambda((eResult) =>
-            {
-                switch(eResult)
-                {
-                    case eErrorCode.Table_Not_ExsitFile:
-                    case eErrorCode.Table_Error_Grammar:
-                    case eErrorCode.Table_Load_Fail:
-                }
-                if (null != bIsSuccess)
-                {
-                    if (true == bIsSuccess.Value)
-                        pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-                    else
-                        pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.Load_Table));
-                    return;
-                }
-            });
+            pDone(pInfo.m_strName, new SHLoadEndInfo(pLambda()));
         });
-
-        pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Load_Table));
-    }
-    public override void Patch(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
-                                                 Action<string, SHLoadEndInfo> pDone)
-    {
     }
     #endregion
 
@@ -159,9 +137,9 @@ public partial class SHTableData : SHBaseData
 
     #region Utility Functions
     // 유틸 : 테이블 타입별 로드 순서 ( 앞선 타입의 로드에 성공하면 뒤 타입들은 로드명령 하지 않는다 )
-    List<Func<bool?>> GetLoadOrder(SHBaseTable pTable)
+    List<Func<eErrorCode>> GetLoadOrder(SHBaseTable pTable)
     {
-        var pLoadOrder = new List<Func<bool?>>();
+        var pLoadOrder = new List<Func<eErrorCode>>();
         //if (true == Single.AppInfo.IsEditorMode())
         //{
         //    pLoadOrder.Add(() => { return pTable.LoadStatic();                        });

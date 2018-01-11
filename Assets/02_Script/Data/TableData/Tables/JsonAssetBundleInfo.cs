@@ -98,7 +98,7 @@ public class JsonAssetBundleInfo : SHBaseTable
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
-            return false;
+            return eErrorCode.Table_Load_Fail;
         
         int iMaxTable = pJson["AssetBundleInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
@@ -129,7 +129,7 @@ public class JsonAssetBundleInfo : SHBaseTable
             AddData(pData.m_strBundleName, pData);
         }
 
-        return true;
+        return eErrorCode.Succeed;
     }
     #endregion
 
@@ -256,7 +256,7 @@ public class JsonAssetBundleInfo : SHBaseTable
         return pResult;
     }
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     // 인터페이스 : 번들정보 업데이트( Streaming기준으로 추가/변경/제거된 번들목록을 갱신한다. )
     public Dictionary<string, AssetBundleInfo> UpdateAssetBundlesMakeInfoByStreamingPath(string strCDN, BuildTarget eTarget)
     {
@@ -318,7 +318,7 @@ public class JsonAssetBundleInfo : SHBaseTable
 
         return pStreamingInfo.GetContainer();
     }
-#endif
+    #endif
 
     // 인터페이스 : Dic데이터를 Json파일로 저장
     public void SaveJsonFileByDic(string strSaveFilePath)

@@ -68,7 +68,7 @@ public class JsonResources : SHBaseTable
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
-            return false;
+            return eErrorCode.Table_Load_Fail;
 
         int iMaxTable = pJson["ResourcesInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
@@ -87,7 +87,7 @@ public class JsonResources : SHBaseTable
             AddResources(pData.m_strName, pData);
         }
 
-        return true;
+        return eErrorCode.Succeed;
     }
 
     public override ICollection GetData()

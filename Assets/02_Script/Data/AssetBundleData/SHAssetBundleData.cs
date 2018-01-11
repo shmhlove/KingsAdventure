@@ -18,10 +18,6 @@ public partial class SHAssetBundleData : SHBaseData
     #endregion
 
 
-    #region System Functions
-    #endregion
-
-
     #region Virtual Functions
     public override void OnInitialize() { }
     public override void OnFinalize()
@@ -56,37 +52,39 @@ public partial class SHAssetBundleData : SHBaseData
 
         return dicLoadList;
     }
-    public override void Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
-                                                Action<string, SHLoadEndInfo> pDone)
+    public override IEnumerator Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
+                                                       Action<string, SHLoadEndInfo> pDone)
     {
+        yield return null;
     }
-    public override void Patch(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
-                                                 Action<string, SHLoadEndInfo> pDone)
+    public override IEnumerator Patch(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart,
+                                                        Action<string, SHLoadEndInfo> pDone)
     {
         if (true == IsExist(pInfo.m_strName))
         {
             pStart(pInfo.m_strName, new SHLoadStartInfo());
-            pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-            return;
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
+            yield break;
         }
 
-        WWW pAsync = Single.Coroutine.WWW((pWWW) =>
-        {
-            bool bIsSuccess = string.IsNullOrEmpty(pWWW.error);
-            if (true == bIsSuccess)
-            {
-                AddBundleData(pInfo.m_strName, pWWW.assetBundle);
-                pDone(pInfo.m_strName, new SHLoadEndInfo(true, eErrorCode.None));
-            }
-            else
-            {
-                pDone(pInfo.m_strName, new SHLoadEndInfo(false, eErrorCode.Patch_Bundle));
-            }
-            
-        }, WWW.LoadFromCacheOrDownload(string.Format("{0}/{1}.unity3d", SHPath.GetURLToBundleCDNWithPlatform(), pInfo.m_strName.ToLower()),
-                                       Single.Table.GetAssetBundleInfo(pInfo.m_strName).m_pHash128));
+        WWW pWWW = WWW.LoadFromCacheOrDownload(string.Format("{0}/{1}.unity3d", 
+            SHPath.GetURLToBundleCDNWithPlatform(), pInfo.m_strName.ToLower()),
+            Single.Table.GetAssetBundleInfo(pInfo.m_strName).m_pHash128);
 
-        pStart(pInfo.m_strName, new SHLoadStartInfo(pAsync));
+        pStart(pInfo.m_strName, new SHLoadStartInfo(pWWW));
+
+        yield return pWWW;
+        
+        bool bIsSuccess = string.IsNullOrEmpty(pWWW.error);
+        if (true == bIsSuccess)
+        {
+            AddBundleData(pInfo.m_strName, pWWW.assetBundle);
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
+        }
+        else
+        {
+            pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Patch_Bundle_Download_Fail));
+        }
     }
     #endregion
 
@@ -96,10 +94,10 @@ public partial class SHAssetBundleData : SHBaseData
     {
         return new SHLoadData()
         {
-            m_eDataType = eDataType.BundleData,
-            m_strName = pInfo.m_strBundleName,
+            m_eDataType = eDataType.AssetsBundle,
+            m_strName   = pInfo.m_strBundleName,
             m_pLoadFunc = Patch,
-            m_pTriggerLoadCall = () =>
+            m_pLoadOkayTrigger = () =>
             {
                 return Caching.ready;
             },

@@ -23,20 +23,17 @@ public class SHLoadData
     public eDataType            m_eDataType;          // 로드할 데이터 타입
     public string               m_strName;            // 로드할 데이터 이름
     public Func<bool>           m_pLoadOkayTrigger;   // 트리거 람다 : 로드 타이밍을 데이터 로드부에서 결정할 수 있도록 트리거 람다를 등록할 수 있다.
-    public Action                                     // 로드 콜백 : 로드 타이밍이 왔을때 콜이 될 람다
+    public Func                                       // 로드 콜백 : 로드 타이밍이 왔을때 콜이 될 람다
     <   SHLoadData, 
         Action<string, SHLoadStartInfo>,
-        Action<string, SHLoadEndInfo>
+        Action<string, SHLoadEndInfo>,
+        IEnumerator
     > m_pLoadFunc;
     
     public SHLoadData()
     {
         m_pLoadOkayTrigger  = () => { return true; };
-        m_pLoadFunc         = (pData, pStartEvent, pDoneEvent) =>
-        {
-            pStartEvent(m_strName, new SHLoadStartInfo());
-            pDoneEvent(m_strName, new SHLoadEndInfo(eErrorCode.Failed));
-        };
+        m_pLoadFunc         = null;
     }
 }
 
@@ -138,6 +135,14 @@ public class SHLoadDataStateInfo
             return;
 
         m_pLoadStartTime = DateTime.Now;
+
+        if (null == m_pLoadDataInfo.m_pLoadFunc)
+        {
+            OnEventStart(m_pLoadDataInfo.m_strName, new SHLoadStartInfo());
+            OnEventDone(m_pLoadDataInfo.m_strName, new SHLoadEndInfo(eErrorCode.Failed));
+            return;
+        }
+
         m_pLoadDataInfo.m_pLoadFunc(m_pLoadDataInfo, OnEventStart, OnEventDone);
     }
 

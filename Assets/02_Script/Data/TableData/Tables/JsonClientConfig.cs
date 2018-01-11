@@ -44,7 +44,7 @@ public class JsonClientConfig : SHBaseTable
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
-            return false;
+            return eErrorCode.Table_Load_Fail;
 
         JsonData pDataNode      = pJson["ClientConfig"];
 
@@ -55,7 +55,7 @@ public class JsonClientConfig : SHBaseTable
         m_iFrameRate            = GetIntToJson(pDataNode, "FrameRate");
         m_iCacheSize            = GetIntToJson(pDataNode, "CacheSize(MB)");
         
-        return true;
+        return eErrorCode.Succeed;
     }
     #endregion
 

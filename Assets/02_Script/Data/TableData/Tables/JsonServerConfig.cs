@@ -52,7 +52,7 @@ public class JsonServerConfig : SHBaseTable
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
-            return false;
+            return eErrorCode.Table_Load_Fail;
 
         JsonData pDataNode = pJson["ServerConfig"];
 
@@ -76,7 +76,7 @@ public class JsonServerConfig : SHBaseTable
             m_dicServerInfo[eMode]   = pData;
         });
         
-        return true;
+        return eErrorCode.Succeed;
     }
     #endregion
 

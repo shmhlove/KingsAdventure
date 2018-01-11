@@ -34,7 +34,7 @@ public class JsonPreloadResources : SHBaseTable
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
-            return false;
+            return eErrorCode.Table_Load_Fail;
         
         SHUtils.For(0, pJson["PreLoadResourcesList"].Count, (iLoop) => 
         {
@@ -48,7 +48,7 @@ public class JsonPreloadResources : SHBaseTable
             });
         });
 
-        return true;
+        return eErrorCode.Succeed;
     }
     #endregion
 
