@@ -13,9 +13,9 @@ using LitJson;
 public class AssetBundleInfo
 {
     #region Members
-    public string                                   m_strBundleName = string.Empty;
-    public long                                     m_lBundleSize   = 0;
-    public Hash128                                  m_pHash128;
+    public string                              m_strBundleName = string.Empty;
+    public long                                m_lBundleSize   = 0;
+    public Hash128                             m_pHash128;
     public Dictionary<string, SHResourcesInfo> m_dicResources  = new Dictionary<string, SHResourcesInfo>();
     #endregion
 

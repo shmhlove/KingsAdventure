@@ -29,10 +29,10 @@ public class SHJson
         // 1차 : PersistentDataPath에 Json데이터가 있으면 그걸 로드하도록 한다.
         // 2차 : 없으면 StreamingAssets에서 로드하도록 한다.
 
-        if (null != (m_pJsonData = LoadToPersistent(strFileName)))
+        if (null != (SetJsonData(LoadToPersistent(strFileName))))
             return;
 
-        m_pJsonData = LoadToStreamingForWWW(strFileName);
+        SetJsonData(LoadToStreamingForWWW(strFileName));
     }
 
     ~SHJson()
