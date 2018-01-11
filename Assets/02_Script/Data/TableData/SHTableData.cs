@@ -18,19 +18,18 @@ public partial class SHTableData : SHBaseData
     {
         m_dicTables.Clear();
 
-        m_dicTables.Add(typeof(JsonClientConfig),          new JsonClientConfig());
-        m_dicTables.Add(typeof(JsonServerConfig),          new JsonServerConfig());
-        m_dicTables.Add(typeof(JsonPreloadResources),        new JsonPreloadResources());
-        m_dicTables.Add(typeof(JsonResources),               new JsonResources());
-        m_dicTables.Add(typeof(JsonAssetBundleInfo),              new JsonAssetBundleInfo());
+        m_dicTables.Add(typeof(JsonClientConfig),     new JsonClientConfig());
+        m_dicTables.Add(typeof(JsonServerConfig),     new JsonServerConfig());
+        m_dicTables.Add(typeof(JsonPreloadResources), new JsonPreloadResources());
+        m_dicTables.Add(typeof(JsonResources),        new JsonResources());
+        m_dicTables.Add(typeof(JsonAssetBundleInfo),  new JsonAssetBundleInfo());
     }
+
     public override void OnFinalize()
     {
         m_dicTables.Clear();
     }
-    public override void FrameMove()
-    {
-    }
+    
     public override Dictionary<string, SHLoadData> GetLoadList(eSceneType eType)
     {
         var dicLoadList = new Dictionary<string, SHLoadData>();
@@ -48,10 +47,7 @@ public partial class SHTableData : SHBaseData
 
         return dicLoadList; 
     }
-    public override Dictionary<string, SHLoadData> GetPatchList()
-    {
-        return new Dictionary<string, SHLoadData>();
-    }
+
     public override IEnumerator Load(SHLoadData pInfo, 
                                      Action<string, SHLoadStartInfo> pStart,
                                      Action<string, SHLoadEndInfo> pDone)
@@ -66,9 +62,9 @@ public partial class SHTableData : SHBaseData
             yield break;
         }
 
-        SHUtils.ForToList(GetLoadOrder(pTable), (pLambda) =>
+        SHUtils.ForToList(GetLoadOrder(pTable), (pLoadTable) =>
         {
-            pDone(pInfo.m_strName, new SHLoadEndInfo(pLambda()));
+            pDone(pInfo.m_strName, new SHLoadEndInfo(pLoadTable()));
         });
     }
     #endregion

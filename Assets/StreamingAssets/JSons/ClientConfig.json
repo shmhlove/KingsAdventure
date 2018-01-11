@@ -4,7 +4,7 @@
 		"ServerConfigCDN": "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure",
 		"ServiceMode": "DevQA",
 		"Version": "1.0.0",
-		"VSyncCount": True,
+		"VSyncCount": true,
 		"FrameRate": 60,
 		"CacheSize(MB)": 200
 	}

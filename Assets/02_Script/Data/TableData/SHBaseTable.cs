@@ -48,7 +48,7 @@ public abstract class SHBaseTable
     public eErrorCode LoadStatic()
     {
         if (eErrorCode.Table_Not_Override == LoadStaticTable())
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
         
         Initialize();
 
@@ -59,15 +59,15 @@ public abstract class SHBaseTable
     public eErrorCode LoadDB(string strFileName) 
     {
         if (eErrorCode.Table_Not_Override == LoadDBTable(null, null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
         
         SHSQLite pSQLite = new SHSQLite(strFileName);
         if (false == pSQLite.CheckDBFile())
-            return Return(eErrorCode.Table_Not_ExsitFile);
+            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
         
         SQLiteQuery pTableList = pSQLite.GetTable("TableList");
         if (null == pTableList)
-            return Return(eErrorCode.Table_Error_Grammar);
+            return ClearReturn(eErrorCode.Table_Error_Grammar);
 
         Initialize();
 
@@ -83,34 +83,34 @@ public abstract class SHBaseTable
             }
 
             if (eErrorCode.Succeed != eResult)
-                return Return(eResult);
+                return ClearReturn(eResult);
         }
 
         pTableList.Release();
         pSQLite.Clear();
 
-        return Return(eErrorCode.Succeed);
+        return ClearReturn(eErrorCode.Succeed);
     }
 
     // 인터페이스 : Json파일 로드
     public eErrorCode LoadJson(string strFileName) 
     {
         if (eErrorCode.Table_Not_Override == LoadJsonTable(null, null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
         
         SHJson pJson = new SHJson(strFileName);
         if (false == pJson.CheckJson())
-            return Return(eErrorCode.Table_Not_ExsitFile);
+            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 
-        return Return(LoadJsonTable(pJson.Node, m_strFileName));
+        return ClearReturn(LoadJsonTable(pJson.Node, m_strFileName));
     }
     public eErrorCode LoadJsonToLocal(string strFileName) 
     {
         // 예외처리 : 오버라이드 체크
         if (eErrorCode.Table_Not_Override == LoadJsonTable(null, null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
 
         // 예외처리 : 로드체크
         SHJson pJson = new SHJson();
@@ -118,11 +118,11 @@ public abstract class SHBaseTable
             pJson.LoadToStreamingForLocal(strFileName);
 
         if (false == pJson.CheckJson())
-            return Return(eErrorCode.Table_Not_ExsitFile);
+            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 
-        return Return(LoadJsonTable(pJson.Node, m_strFileName));
+        return ClearReturn(LoadJsonTable(pJson.Node, m_strFileName));
     }
 
     // 인터페이스 : XML파일 로드
@@ -130,7 +130,7 @@ public abstract class SHBaseTable
     {
         // 예외처리 : 오버라이드 체크
         if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
 
         return LoadXML(new SHXML(strFileName));
     }
@@ -139,18 +139,18 @@ public abstract class SHBaseTable
     public eErrorCode LoadXML(SHXML pXML)
     {
         if (null == pXML)
-            return Return(eErrorCode.Failed);
+            return ClearReturn(eErrorCode.Failed);
         
         if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
 
         if (false == pXML.CheckXML())
-            return Return(eErrorCode.Table_Not_ExsitFile);
+            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
 
         // 예외처리 : 노드 리스트 체크
         XmlNodeList pNodeList = pXML.GetNodeList(m_strFileName);
         if (null == pNodeList)
-            return Return(eErrorCode.Table_Error_Grammar);
+            return ClearReturn(eErrorCode.Table_Error_Grammar);
 
         Initialize();
 
@@ -160,33 +160,33 @@ public abstract class SHBaseTable
             var eResult = LoadXMLTable(pNodeList[iLoop]);
             
             if (eErrorCode.Succeed != eResult)
-                return Return(eResult);
+                return ClearReturn(eResult);
         }
 
-        return Return(eErrorCode.Succeed);
+        return ClearReturn(eErrorCode.Succeed);
     }
 
     // 인터페이스 : Byte파일 로드
     public eErrorCode LoadBytes(string strFileName)
     {
         if (eErrorCode.Table_Not_Override == LoadBytesTable(null))
-            return Return(eErrorCode.Table_Not_Override);
+            return ClearReturn(eErrorCode.Table_Not_Override);
 
         // 예외처리 : 로드체크(실패시 다른 로드방식으로 로드가능하도록 null 리턴)
         SHBytes pBytes = new SHBytes(strFileName);
         if (false == pBytes.CheckBytes())
-            return Return(eErrorCode.Table_Not_ExsitFile);
+            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
 
         Initialize();
 
-        return Return(LoadBytesTable(pBytes.GetBytes()));
+        return ClearReturn(LoadBytesTable(pBytes.GetBytes()));
     }
     #endregion
 
 
     #region Utility Functions
     // 유틸 : 로드함수가 종료될때 Reader객체를 초기화하고, 리턴될 수 있도록
-    eErrorCode Return(eErrorCode errorCode)
+    eErrorCode ClearReturn(eErrorCode errorCode)
     {
         if (null != m_pSQLiteReader)
             m_pSQLiteReader.Release();
