@@ -4,7 +4,7 @@
 //  Lunar Unity Mobile Console
 //  https://github.com/SpaceMadness/lunar-unity-console
 //
-//  Copyright 2016 Alex Lementuev, SpaceMadness.
+//  Copyright 2017 Alex Lementuev, SpaceMadness.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -22,16 +22,17 @@
 using UnityEngine;
 using System.Collections;
 
-namespace LunarConsoleInternal
+namespace LunarConsolePluginInternal
 {
     public static class Constants
     {
-        public static readonly string Version = "0.2.0b";
-        public static readonly string UpdateJsonURL = "https://raw.githubusercontent.com/SpaceMadness/lunar-unity-console/master/Builder/updater.json";
+        public static readonly string Version = "1.5.3";
+        public static readonly string UpdateJsonURLFull = "https://raw.githubusercontent.com/SpaceMadness/lunar-unity-console/master/Builder/updater-full.json";
+        public static readonly string UpdateJsonURLFree = "https://raw.githubusercontent.com/SpaceMadness/lunar-unity-console/master/Builder/updater-free.json";
 
         public static readonly string PluginName = "LunarConsole";
         public static readonly string PluginDisplayName = "Lunar Mobile Console";
 
-        public static readonly string PluginScriptPath = "Assets/" + PluginName + "/Scripts/" + PluginName + ".cs";
+        public static readonly string EditorPrefsKeyBase = "com.spacemadness.lunar.console";
     }
 }

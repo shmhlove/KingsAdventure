@@ -4,7 +4,7 @@
 //  Lunar Unity Mobile Console
 //  https://github.com/SpaceMadness/lunar-unity-console
 //
-//  Copyright 2016 Alex Lementuev, SpaceMadness.
+//  Copyright 2017 Alex Lementuev, SpaceMadness.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
-namespace LunarConsoleInternal
+using LunarConsolePluginInternal;
+
+namespace LunarConsoleEditorInternal
 {
     static class MenuItems
     {
@@ -34,14 +36,22 @@ namespace LunarConsoleInternal
             Installer.Install(silent);
         }
 
-        [MenuItem("Window/Lunar Mobile Console/")]
-        static void Separator()
+        [MenuItem("Window/Lunar Mobile Console/Actions and Variables", true)]
+        static bool ShowActionsAndWariablesFunc()
         {
+            return LunarConsoleConfig.fullVersion && LunarConsoleConfig.consoleEnabled;
+        }
+
+        [MenuItem("Window/Lunar Mobile Console/Actions and Variables")]
+        static void ShowActionsAndWariables()
+        {
+            ActionsAndVariablesWindow.ShowWindow();
         }
 
         [MenuItem("Window/Lunar Mobile Console/Check for updates...")]
         static void CheckForUpdates()
         {
+            LunarConsoleEditorAnalytics.TrackEvent("Version", "updater_check");
             Updater.CheckForUpdates(false);
         }
 
@@ -56,14 +66,6 @@ namespace LunarConsoleInternal
         static void Reset()
         {
             Updater.Reset();
-        }
-        #endif
-
-        #if LUNAR_DEVELOPMENT && UNITY_ANDROID
-        [MenuItem("Window/Lunar Mobile Console/Force update plugin")]
-        static void ForceUpdatePlugin()
-        {
-            AndroidPlugin.ForceUpdateFiles();
         }
         #endif
     }

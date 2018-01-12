@@ -4,7 +4,7 @@
 //  Lunar Unity Mobile Console
 //  https://github.com/SpaceMadness/lunar-unity-console
 //
-//  Copyright 2016 Alex Lementuev, SpaceMadness.
+//  Copyright 2017 Alex Lementuev, SpaceMadness.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -20,17 +20,95 @@
 //
 
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEditor;
 
-namespace LunarConsoleInternal
+using System;
+using System.Collections;
+using System.IO;
+
+using LunarConsolePluginInternal;
+
+namespace LunarConsoleEditorInternal
 {
     static class EditorConstants
     {
-        public static readonly string PrefabPath = "Assets/" + "ThirdParty/" + Constants.PluginName + "/Scripts/" + Constants.PluginName + ".prefab";
-        public static readonly string EditorPath = "Assets/" + "ThirdParty/" + Constants.PluginName + "/Editor";
-        public static readonly string EditorPathIOS = EditorPath + "/iOS";
-        public static readonly string EditorPathAndroid = EditorPath + "/Android";
+        private static string pluginRootDirectory;
 
-        public static readonly string PluginAndroidPath = "Assets/Plugins/Android/" + Constants.PluginName;
+        public static string PrefabPath
+        {
+            get
+            {
+                var pluginRoot = PluginRootDirectory;
+                return pluginRoot != null ? FileUtils.GetAssetPath(pluginRoot, "Scripts", Constants.PluginName + ".prefab") : null;
+            }
+        }
+
+        public static string EditorPathIOS
+        {
+            get
+            {
+                var pluginEditorRoot = PluginEditorRootDirectory;
+                return pluginEditorRoot != null ? FileUtils.GetAssetPath(pluginEditorRoot, "iOS") : null;
+            }
+        }
+
+        public static string EditorPathAndroidAAR
+        {
+            get
+            {
+                var pluginEditorRoot = PluginEditorRootDirectory;
+                return pluginEditorRoot != null ? FileUtils.GetAssetPath(pluginEditorRoot, "Android", "lunar-console.aar") : null;
+            }
+        }
+
+        private static string PluginEditorRootDirectory
+        {
+            get
+            {
+                var pluginRoot = PluginRootDirectory;
+                return pluginRoot != null ? Path.Combine(pluginRoot, "Editor") : null;
+            }
+        }
+
+        private static string PluginRootDirectory
+        {
+            get
+            {
+                if (pluginRootDirectory == null)
+                {
+                    pluginRootDirectory = ResolvePluginRootDirectory();
+                    if (pluginRootDirectory == null)
+                    {
+                        Debug.LogErrorFormat("Unable to resolve plugin root directory. Re-install {0} to fix the issue", Constants.PluginDisplayName);
+                        return null;
+                    }
+                }
+                return pluginRootDirectory;
+            }
+        }
+
+        private static string ResolvePluginRootDirectory()
+        {
+            try
+            {
+                string currentFile = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                if (currentFile != null && File.Exists(currentFile))
+                {
+                    var currentDirectory = new FileInfo(currentFile).Directory;
+                    if (currentDirectory.Name != "Editor")
+                    {
+                        return null;
+                    }
+
+                    return currentDirectory.Parent.FullName;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.e(e, "Exception while resolving plugin files location");
+            }
+
+            return null;
+        }
     }
 }

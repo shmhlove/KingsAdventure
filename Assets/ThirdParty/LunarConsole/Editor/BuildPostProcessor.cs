@@ -4,7 +4,7 @@
 //  Lunar Unity Mobile Console
 //  https://github.com/SpaceMadness/lunar-unity-console
 //
-//  Copyright 2016 Alex Lementuev, SpaceMadness.
+//  Copyright 2017 Alex Lementuev, SpaceMadness.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -22,46 +22,127 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.XCodeEditor.LunarConsole;
+using System;
+
+#if UNITY_IOS || UNITY_IPHONE
+using UnityEditor.iOS.Xcode;
+#endif
 
 using System.Collections;
 using System.IO;
 
-using LunarConsole;
+using LunarConsolePluginInternal;
 
-namespace LunarConsoleInternal
+namespace LunarConsoleEditorInternal
 {
     static class BuildPostProcessor
     {
-        [PostProcessBuild]
-        static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        #if UNITY_IOS || UNITY_IPHONE
+        [PostProcessBuild(1000)]
+        static void OnPostprocessBuild(BuildTarget target, string buildPath)
         {
-            if (LunarConsoleSettings.consoleEnabled)
+            if (LunarConsoleConfig.consoleEnabled)
             {
-                if (target.ToString() == "iOS" || target.ToString() == "iPhone")
+                if (target == BuildTarget.iOS)
                 {
-                    OnPostprocessIOS(pathToBuiltProject);
+                    OnPostprocessIOS(buildPath);
                 }
             }
         }
 
-        static void OnPostprocessIOS(string pathToBuiltProject)
+        static void OnPostprocessIOS(string buildPath)
         {
-            XCProject project = new XCProject(pathToBuiltProject);
-
-            string[] files = Directory.GetFiles(EditorConstants.EditorPathIOS, "*.projmods", System.IO.SearchOption.AllDirectories);
+            // Workaround for:
+            // FileNotFoundException: Could not load file or assembly 'UnityEditor.iOS.Extensions.Xcode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies.
+            // For more information see: http://answers.unity3d.com/questions/1016975/filenotfoundexception-when-using-xcode-api.html
+            // Copy plugin files to the build directory so you can later move to another machine and build it there
+            #if LUNAR_CONSOLE_EXPORT_IOS_FILES
+            var pluginPath = Path.Combine(buildPath, Constants.PluginName);
+            FileUtil.DeleteFileOrDirectory(pluginPath);
+            FileUtil.CopyFileOrDirectory(EditorConstants.EditorPathIOS, pluginPath);
+            // Clean up meta files
+            string[] files = Directory.GetFiles(pluginPath, "*.meta", System.IO.SearchOption.AllDirectories);
             foreach (string file in files)
             {
-                project.ApplyMod(file);
+                FileUtil.DeleteFileOrDirectory(file);
+            }
+            #else  // LUNAR_CONSOLE_EXPORT_IOS_FILES
+            var pluginPath = EditorConstants.EditorPathIOS;
+            #endif // LUNAR_CONSOLE_EXPORT_IOS_FILES
+
+            var projectMod = new XcodeProjMod(buildPath, pluginPath);
+            projectMod.UpdateProject();
+        }
+        #endif //UNITY_IOS || UNITY_IPHONE
+    }
+
+    #if UNITY_IOS || UNITY_IPHONE
+    class XcodeProjMod
+    {
+        private readonly string m_buildPath;
+        private readonly string m_projectPath;
+        private readonly string m_pluginPath;
+
+        public XcodeProjMod(string buildPath, string pluginPath)
+        {
+            m_buildPath = buildPath;
+            m_pluginPath = pluginPath;
+            m_projectPath = PBXProject.GetPBXProjectPath(buildPath);
+        }
+
+        public void UpdateProject()
+        {
+            var project = new PBXProject();
+            project.ReadFromFile(m_projectPath);
+
+            string[] files = Directory.GetFiles(m_pluginPath, "*.projmods", System.IO.SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                ApplyMod(project, file);
             }
 
-            project.Save();
+            project.WriteToFile(m_projectPath);
         }
 
-        [MenuItem("File/Run Post Process")]
-        static void PostProcessBuild()
+        void ApplyMod(PBXProject project, string modFile)
         {
-            OnPostprocessIOS("/Users/weee/dev/projects/unity/lunar-console/Project/Build/iOS/Unity-iPhone.xcodeproj");
+            var json = File.ReadAllText(modFile);
+            var mod = JsonUtility.FromJson<ProjMod>(json);
+            var sourceDir = Directory.GetParent(modFile).FullName;
+            var targetGroup = "Libraries/" + mod.group;
+            var targetGuid = project.TargetGuidByName(PBXProject.GetUnityTargetName());
+            var dirProject = Directory.GetParent(PBXProject.GetPBXProjectPath(m_buildPath)).FullName;
+            foreach (var file in mod.files)
+            {
+                var filename = Path.GetFileName(file);
+                var fileGuid = project.AddFile(FileUtils.FixPath(FileUtils.MakeRelativePath(dirProject, sourceDir + "/" + file)), targetGroup + "/" + filename, PBXSourceTree.Source);
+                if (filename.EndsWith(".h"))
+                {
+                    continue;
+                }
+
+                project.AddFileToBuild(targetGuid, fileGuid);
+            }
+            foreach (var framework in mod.frameworks)
+            {
+                project.AddFrameworkToProject(targetGuid, framework, false);
+            }
         }
     }
+
+    #pragma warning disable 0649
+    #pragma warning disable 0414
+
+    [System.Serializable]
+    class ProjMod
+    {
+        public string group;
+        public string[] frameworks;
+        public string[] files;
+    }
+
+    #pragma warning restore 0649
+    #pragma warning restore 0414
+
+    #endif // UNITY_IOS || UNITY_IPHONE
 }

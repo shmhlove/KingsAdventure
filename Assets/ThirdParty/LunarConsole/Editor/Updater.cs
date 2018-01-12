@@ -4,7 +4,7 @@
 //  Lunar Unity Mobile Console
 //  https://github.com/SpaceMadness/lunar-unity-console
 //
-//  Copyright 2016 Alex Lementuev, SpaceMadness.
+//  Copyright 2017 Alex Lementuev, SpaceMadness.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -25,11 +25,12 @@ using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading;
 
-namespace LunarConsoleInternal
+using LunarConsolePluginInternal;
+
+namespace LunarConsoleEditorInternal
 {
     static class Updater
     {
@@ -142,7 +143,7 @@ namespace LunarConsoleInternal
         
         public static void CheckForUpdates(bool silent = true)
         {
-            HttpDownloader downloader = new HttpDownloader(Constants.UpdateJsonURL);
+            LunarConsoleHttpClient downloader = new LunarConsoleHttpClient(LunarConsoleConfig.fullVersion ? Constants.UpdateJsonURLFull : Constants.UpdateJsonURLFree);
             downloader.DownloadString(delegate(string response, Exception error)
             {
                 if (error != null)
@@ -178,11 +179,15 @@ namespace LunarConsoleInternal
                             new DialogButton("Details...", delegate(string obj)
                             {
                                 Application.OpenURL(info.url);
+                                LunarConsoleEditorAnalytics.TrackEvent("Version", "updater_details");
                             }),
-                            new DialogButton("Remind me later"),
+                            new DialogButton("Remind me later", delegate(string obj) {
+                                LunarConsoleEditorAnalytics.TrackEvent("Version", "updater_later");
+                            }),
                             new DialogButton("Skip this version", delegate(string obj)
                             {
                                 SetShouldSkipVersion(info.version);
+                                LunarConsoleEditorAnalytics.TrackEvent("Version", "updater_skip");
                             })
                         );
                     }
@@ -215,7 +220,7 @@ namespace LunarConsoleInternal
         {
             try
             {
-                JsonData node = JSON.Parse(response);
+                JSONNode node = JSON.Parse(response);
                 
                 JSONClass root = node.AsObject;
                 if (root != null)
@@ -300,95 +305,11 @@ namespace LunarConsoleInternal
                 return Constants.Version;
             }
         }
-        
-        delegate void HttpDownloaderStringCallback(string result, Exception error);
-        
-        class HttpDownloader
-        {
-            private Uri m_uri;
-            private WebClient m_client;
-            
-            public HttpDownloader(string uri)
-                : this(new Uri(uri))
-            {
-            }
-            
-            public HttpDownloader(Uri uri)
-            {
-                if (uri == null)
-                {
-                    throw new ArgumentNullException("Uri is null");
-                }
-                
-                m_uri = uri;
-                m_client = new WebClient();
-            }
-            
-            public void DownloadString(HttpDownloaderStringCallback callback)
-            {
-                if (callback == null)
-                {
-                    throw new ArgumentNullException("Callback is null");
-                }
-                
-                if (m_client == null)
-                {
-                    throw new InvalidOperationException("Already downloading something");
-                }
-                
-                m_client.DownloadStringCompleted += delegate(object sender, DownloadStringCompletedEventArgs e)
-                {
-                    Utils.DispatchOnMainThread(delegate()
-                    {
-                        if (this.IsShowingProgress)
-                        {
-                            EditorUtility.ClearProgressBar();
-                        }
-                        
-                        if (!e.Cancelled)
-                        {
-                            callback(e.Result, e.Error);
-                        }
-                    });
-                };
-                
-                if (this.IsShowingProgress && EditorUtility.DisplayCancelableProgressBar(kMessageBoxTitle, "Connecting...", 1.0f))
-                {
-                    Cancel();
-                }
-                
-                m_client.DownloadStringAsync(m_uri);
-            }
-
-            public void Cancel()
-            {
-                m_client.CancelAsync();
-            }
-            
-            private static string ToHumanReadableLength(long bytes, bool addPrefix = true)
-            {
-                if (bytes < 1024)
-                {
-                    return addPrefix ? string.Format("{0} bytes", bytes) : bytes.ToString();
-                }
-                
-                if (bytes < 1024 * 1024)
-                {
-                    float kbytes = bytes / 1024.0f;
-                    return addPrefix ? string.Format("{0} kb", kbytes.ToString("F1")) : kbytes.ToString("F1");
-                }
-                
-                float mbytes = bytes / 1024.0f / 1024.0f;
-                return addPrefix ? string.Format("{0} Mb", mbytes.ToString("F1")) : mbytes.ToString("F1");
-            }
-            
-            public bool IsShowingProgress { get; set; }
-        }
 
         #region Preferences
         
-        private static readonly string kPrefsKeySkipVersion = "com.spacemadness.lunar.console.SkipVersion";
-        private static readonly string kPrefsKeyLastUpdateCheckDate = "com.spacemadness.lunar.console.LastUpdateCheckDate";
+        private static readonly string kPrefsKeySkipVersion = Constants.EditorPrefsKeyBase + ".SkipVersion";
+        private static readonly string kPrefsKeyLastUpdateCheckDate = Constants.EditorPrefsKeyBase + ".LastUpdateCheckDate";
         
         private static bool IsShouldSkipVersion(string version)
         {
@@ -423,7 +344,7 @@ namespace LunarConsoleInternal
             {
                 if (key == null)
                 {
-                    throw new NullReferenceException("Key is null");
+                    throw new ArgumentNullException("key");
                 }
                 
                 m_key = key;
