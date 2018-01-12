@@ -199,10 +199,10 @@ public abstract class SHBaseTable
     // 유틸 : 테이블 타입
     eTableType GetTableType()
     {
-        if (null != LoadXMLTable(null))        return eTableType.XML;
-        if (null != LoadJsonTable(null, null)) return eTableType.Json;
-        if (null != LoadDBTable(null, null))   return eTableType.SQLite;
-        if (null != LoadBytesTable(null))      return eTableType.Byte;
+        if (eErrorCode.Table_Not_Override != LoadXMLTable(null))        return eTableType.XML;
+        if (eErrorCode.Table_Not_Override != LoadJsonTable(null, null)) return eTableType.Json;
+        if (eErrorCode.Table_Not_Override != LoadDBTable(null, null))   return eTableType.SQLite;
+        if (eErrorCode.Table_Not_Override != LoadBytesTable(null))      return eTableType.Byte;
 
         return eTableType.None;
     }
