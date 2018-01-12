@@ -38,10 +38,10 @@ namespace LunarConsoleEditorInternal
         {
             "Assets/Plugins/Android/LunarConsole",
 
-            "Assets/LunarConsole/Editor/Android/AndroidManifest.xml",
-            "Assets/LunarConsole/Editor/Android/libs",
-            "Assets/LunarConsole/Editor/Android/project.properties",
-            "Assets/LunarConsole/Editor/Android/res",
+            "Assets/ThirdParty/LunarConsole/Editor/Android/AndroidManifest.xml",
+            "Assets/ThirdParty/LunarConsole/Editor/Android/libs",
+            "Assets/ThirdParty/LunarConsole/Editor/Android/project.properties",
+            "Assets/ThirdParty/LunarConsole/Editor/Android/res",
 
             "Assets/Plugins/LunarConsole/Editor/Android/AndroidManifest.xml",
             "Assets/Plugins/LunarConsole/Editor/Android/libs",
