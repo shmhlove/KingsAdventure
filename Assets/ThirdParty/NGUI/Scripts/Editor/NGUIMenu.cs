@@ -1,7 +1,7 @@
-//----------------------------------------------
+//-------------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2015 Tasharen Entertainment
-//----------------------------------------------
+// Copyright © 2011-2017 Tasharen Entertainment Inc
+//-------------------------------------------------
 
 using UnityEngine;
 using UnityEditor;
@@ -192,16 +192,16 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Create/2D UI", false, 6)]
-	[MenuItem("Assets/NGUI/Create 2D UI", false, 1)]
+	[MenuItem("Assets/ThirdParty/NGUI/Create 2D UI", false, 1)]
 	static void Create2D () { UICreateNewUIWizard.CreateNewUI(UICreateNewUIWizard.CameraType.Simple2D); }
 
 	[MenuItem("NGUI/Create/2D UI", true)]
-	[MenuItem("Assets/NGUI/Create 2D UI", true, 1)]
+	[MenuItem("Assets/ThirdParty/NGUI/Create 2D UI", true, 1)]
 	static bool Create2Da ()
 	{
 		if (UIRoot.list.Count == 0 || UICamera.list.size == 0) return true;
 		foreach (UICamera c in UICamera.list)
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 			if (NGUITools.GetActive(c) && c.camera.isOrthoGraphic)
 #else
 			if (NGUITools.GetActive(c) && c.GetComponent<Camera>().orthographic)
@@ -211,16 +211,16 @@ static public class NGUIMenu
 	}
 
 	[MenuItem("NGUI/Create/3D UI", false, 6)]
-	[MenuItem("Assets/NGUI/Create 3D UI", false, 1)]
+	[MenuItem("Assets/ThirdParty/NGUI/Create 3D UI", false, 1)]
 	static void Create3D () { UICreateNewUIWizard.CreateNewUI(UICreateNewUIWizard.CameraType.Advanced3D); }
 
 	[MenuItem("NGUI/Create/3D UI", true)]
-	[MenuItem("Assets/NGUI/Create 3D UI", true, 1)]
+	[MenuItem("Assets/ThirdParty/NGUI/Create 3D UI", true, 1)]
 	static bool Create3Da ()
 	{
 		if (UIRoot.list.Count == 0 || UICamera.list.size == 0) return true;
 		foreach (UICamera c in UICamera.list)
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 			if (NGUITools.GetActive(c) && !c.camera.isOrthoGraphic)
 #else
 			if (NGUITools.GetActive(c) && !c.GetComponent<Camera>().orthographic)
@@ -387,21 +387,21 @@ static public class NGUIMenu
 #region Open
 
 	[MenuItem("NGUI/Open/Atlas Maker", false, 9)]
-	[MenuItem("Assets/NGUI/Open Atlas Maker", false, 0)]
+	[MenuItem("Assets/ThirdParty/NGUI/Open Atlas Maker", false, 0)]
 	static public void OpenAtlasMaker ()
 	{
 		EditorWindow.GetWindow<UIAtlasMaker>(false, "Atlas Maker", true).Show();
 	}
 
 	[MenuItem("NGUI/Open/Font Maker", false, 9)]
-	[MenuItem("Assets/NGUI/Open Bitmap Font Maker", false, 0)]
+	[MenuItem("Assets/ThirdParty/NGUI/Open Bitmap Font Maker", false, 0)]
 	static public void OpenFontMaker ()
 	{
 		EditorWindow.GetWindow<UIFontMaker>(false, "Font Maker", true).Show();
 	}
 
 	[MenuItem("NGUI/Open/", false, 9)]
-	[MenuItem("Assets/NGUI/", false, 0)]
+	[MenuItem("Assets/ThirdParty/NGUI/", false, 0)]
 	static public void OpenSeparator2 () { }
 
 	[MenuItem("NGUI/Open/Prefab Toolbar", false, 9)]
@@ -584,7 +584,7 @@ static public class NGUIMenu
 
 			BoxCollider2D bc = go.AddComponent<BoxCollider2D>();
 			bc.size = size;
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 			bc.center = center;
 #else
 			bc.offset = center;
@@ -596,7 +596,7 @@ static public class NGUIMenu
 			
 			if (p != null)
 			{
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 				if (p.rigidbody != null) NGUITools.Destroy(p.rigidbody);
 #else
 				if (p.GetComponent<Rigidbody>() != null) NGUITools.Destroy(p.GetComponent<Rigidbody>());
@@ -628,7 +628,7 @@ static public class NGUIMenu
 
 			cam.eventType = UICamera.EventType.UI_3D;
 
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 			Vector3 center = c.center;
 #else
 			Vector3 center = c.offset;
@@ -653,7 +653,7 @@ static public class NGUIMenu
 				if (p.GetComponent<Rigidbody2D>() != null)
 					NGUITools.Destroy(p.GetComponent<Rigidbody2D>());
 
-#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
+#if UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 				if (p.rigidbody == null)
 #else
 				if (p.GetComponent<Rigidbody>() == null)
@@ -697,10 +697,10 @@ static public class NGUIMenu
 		return true;
 	}
 
-	[MenuItem("GameObject/Align View To Selected UI", false, 999)]
+	[MenuItem("GameObject/Align View To Selected UI &f", false, 999)]
 	static public void AlignSVWithSelectedUI () { AlignSVToUI(); }
 
-	[MenuItem("GameObject/Align View To Selected UI", true, 999)]
+	[MenuItem("GameObject/Align View To Selected UI &f", true, 999)]
 	static public bool AlignSVWithSelectedUICheck ()
 	{
 		GameObject go = Selection.activeGameObject;
@@ -711,7 +711,7 @@ static public class NGUIMenu
 
 	[MenuItem("NGUI/Normalize Depth Hierarchy &#0", false, 11)]
 	static public void Normalize () { NGUITools.NormalizeDepths(); }
-	
-    [MenuItem("NGUI/Help", false, 120)]
-    static public void Help() { NGUIHelp.Show(); }
+
+	[MenuItem("NGUI/Help", false, 120)]
+	static public void Help () { NGUIHelp.Show(); }
 }

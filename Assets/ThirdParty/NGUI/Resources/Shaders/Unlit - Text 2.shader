@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Hidden/Unlit/Text 2" 
 {
 	Properties
@@ -16,6 +14,7 @@ Shader "Hidden/Unlit/Text 2"
 			"Queue" = "Transparent"
 			"IgnoreProjector" = "True"
 			"RenderType" = "Transparent"
+			"DisableBatching" = "True"
 		}
 		
 		Pass
@@ -25,14 +24,21 @@ Shader "Hidden/Unlit/Text 2"
 			ZWrite Off
 			Offset -1, -1
 			Fog { Mode Off }
-			//ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-
 			#include "UnityCG.cginc"
+
+			// Unity 4 compatibility
+			#ifndef UNITY_VERTEX_INPUT_INSTANCE_ID
+			#define UNITY_VERTEX_INPUT_INSTANCE_ID
+			#define UNITY_VERTEX_OUTPUT_STEREO
+			#define UNITY_SETUP_INSTANCE_ID(v)
+			#define UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(i)
+			#define UnityObjectToClipPos(v) mul(UNITY_MATRIX_MVP, v)
+			#endif
 
 			sampler2D _MainTex;
 			float4 _ClipRange0 = float4(0.0, 0.0, 1.0, 1.0);
@@ -45,14 +51,16 @@ Shader "Hidden/Unlit/Text 2"
 				float4 vertex : POSITION;
 				half4 color : COLOR;
 				float2 texcoord : TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				float4 vertex : POSITION;
+				float4 vertex : SV_POSITION;
 				half4 color : COLOR;
 				float2 texcoord : TEXCOORD0;
 				float4 worldPos : TEXCOORD1;
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			float2 Rotate (float2 v, float2 rot)
@@ -66,6 +74,8 @@ Shader "Hidden/Unlit/Text 2"
 			v2f vert (appdata_t v)
 			{
 				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.color = v.color;
 				o.texcoord = v.texcoord;
@@ -74,7 +84,7 @@ Shader "Hidden/Unlit/Text 2"
 				return o;
 			}
 
-			half4 frag (v2f IN) : COLOR
+			half4 frag (v2f IN) : SV_Target
 			{
 				// First clip region
 				float2 factor = (float2(1.0, 1.0) - abs(IN.worldPos.xy)) * _ClipArgs0.xy;
