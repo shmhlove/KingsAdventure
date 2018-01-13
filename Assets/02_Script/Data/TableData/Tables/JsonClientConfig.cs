@@ -46,14 +46,14 @@ public class JsonClientConfig : SHBaseTable
         if (null == pJson)
             return eErrorCode.Table_Load_Fail;
 
-        JsonData pDataNode      = pJson["ClientConfig"];
+        JsonData pDataNode = pJson["ClientConfig"];
 
-        m_strCDN                = GetStrToJson(pDataNode, "ServerConfigCDN");
-        m_strServiceMode        = GetStrToJson(pDataNode, "ServiceMode");
-        m_strVersion            = GetStrToJson(pDataNode, "Version");
-        m_bVSyncCount           = GetBoolToJson(pDataNode, "VSyncCount");
-        m_iFrameRate            = GetIntToJson(pDataNode, "FrameRate");
-        m_iCacheSize            = GetIntToJson(pDataNode, "CacheSize(MB)");
+        m_strCDN           = GetStrToJson(pDataNode, "ServerConfigCDN");
+        m_strServiceMode   = GetStrToJson(pDataNode, "ServiceMode");
+        m_strVersion       = GetStrToJson(pDataNode, "Version");
+        m_bVSyncCount      = GetBoolToJson(pDataNode, "VSyncCount");
+        m_iFrameRate       = GetIntToJson(pDataNode, "FrameRate");
+        m_iCacheSize       = GetIntToJson(pDataNode, "CacheSize(MB)");
         
         return eErrorCode.Succeed;
     }
@@ -67,42 +67,22 @@ public class JsonClientConfig : SHBaseTable
     }
     public void SaveJsonFile(string strSavePath)
     {
-        string strNewLine = "\r\n";
-        string strBuff = "{" + strNewLine;
+        var pClientConfigJsonData = new JsonData();
+        pClientConfigJsonData["ServerConfigCDN"] = m_strCDN;
+        pClientConfigJsonData["ServiceMode"]     = m_strServiceMode;
+        pClientConfigJsonData["Version"]         = m_strVersion;
+        pClientConfigJsonData["VSyncCount"]      = m_bVSyncCount;
+        pClientConfigJsonData["FrameRate"]       = m_iFrameRate;
+        pClientConfigJsonData["CacheSize(MB)"]   = m_iCacheSize;
 
-        strBuff += string.Format("\t\"{0}\": {1}", "ClientConfig", strNewLine);
-        strBuff += "\t{" + strNewLine;
-        {
-            strBuff += string.Format("\t\t\"ServerConfigCDN\": \"{0}\",{1}",
-                m_strCDN,
-                strNewLine);
+        var pJsonData = new JsonData();
+        pJsonData["ClientConfig"] = pClientConfigJsonData;
 
-            strBuff += string.Format("\t\t\"ServiceMode\": \"{0}\",{1}",
-                m_strServiceMode,
-                strNewLine);
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-            strBuff += string.Format("\t\t\"Version\": \"{0}\",{1}",
-                m_strVersion,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\"VSyncCount\": {0},{1}",
-                m_bVSyncCount,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\"FrameRate\": {0},{1}",
-                m_iFrameRate,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\"CacheSize(MB)\": {0}{1}",
-                m_iCacheSize,
-                strNewLine);
-        }
-        strBuff += "\t}";
-        strBuff += string.Format("{0}", strNewLine);
-        strBuff += "}";
-
-        // 저장
-        SHUtils.SaveFile(strBuff, string.Format("{0}/{1}.json", strSavePath, m_strFileName));
+        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     }
     public void SetConfigurationCDN(string strCDN)
     {

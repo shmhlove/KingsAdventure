@@ -1,11 +1,11 @@
+
 {
-	"ClientConfig": 
-	{
-		"ServerConfigCDN": "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure",
-		"ServiceMode": "DevQA",
-		"Version": "1.0.0",
-		"VSyncCount": True,
-		"FrameRate": 60,
-		"CacheSize(MB)": 200
-	}
+    "ClientConfig" : {
+        "ServerConfigCDN" : "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure",
+        "ServiceMode"     : "DevQA",
+        "Version"         : "",
+        "VSyncCount"      : false,
+        "FrameRate"       : 60,
+        "CacheSize(MB)"   : 200
+    }
 }

@@ -8,6 +8,8 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
+using LitJson;
+
 public class SHResourcesLister
 {
     #region Members
@@ -77,116 +79,53 @@ public class SHResourcesLister
     {
         if (0 == dicTable.Count)
             return;
+
+        var pResourcesJsonData = new JsonData();
+        SHUtils.ForToDic(dicTable, (pKey, pValue) =>
+        {
+            pResourcesJsonData.Add(MakeResourceJsonData(pValue));
+        });
+
+        var pJsonData = new JsonData();
+        pJsonData["ResourcesInfo"] = pResourcesJsonData;
+
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
+
+        SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
+    }
     
-        string strNewLine = "\r\n";
-        string strBuff    = "{" + strNewLine;
-        
-        // 테이블별 내용작성
-        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesInfo", strNewLine);
-        SHUtils.ForToDic(dicTable, (pKey, pValue) =>
-        {
-            strBuff += "\t\t{" + strNewLine;
-            strBuff += SHResourcesLister.MakeSaveFormat(pValue, "\t\t");
-            strBuff += "\t\t}," + strNewLine;
-        });
-        strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-        strBuff += string.Format("\t]{0}", strNewLine);
-        strBuff += "}";
-
-        // 저장
-        SHUtils.SaveFile(strBuff, strSaveFilePath);
-    }
-
-    // 인터페이스 : 리소스 리스트를 Json형태로 번들정보파일포맷으로 쓰기
-    public static void SaveToResourcesOfBundleFormat(Dictionary<string, SHResourcesInfo> dicTable, string strSaveFilePath)
-    {
-        if (0 == dicTable.Count)
-            return;
-
-        string strNewLine = "\r\n";
-        string strBuff = "{" + strNewLine;
-
-        // 테이블별 내용작성
-        strBuff += string.Format("\t\"{0}\": [{1}", "ResourcesInfo", strNewLine);
-        SHUtils.ForToDic(dicTable, (pKey, pValue) =>
-        {
-            strBuff += "\t\t{" + strNewLine;
-
-            strBuff += string.Format("\t\t\t\"s_BundleName\": \"{0}\",{1}",
-                pValue.m_strName,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"s_BundleSize\": \"{0}\",{1}",
-                0,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"s_BundleHash\": \"{0}\",{1}",
-                0,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"p_Resources\": {0}", strNewLine);
-            strBuff += "\t\t\t[" + strNewLine;
-            strBuff += "\t\t\t\t{" + strNewLine;
-            strBuff += SHResourcesLister.MakeSaveFormat(pValue, "\t\t\t\t");
-            strBuff += "\t\t\t\t}" + strNewLine;
-            strBuff += "\t\t\t]" + strNewLine;
-            strBuff += "\t\t}," + strNewLine;
-        });
-        strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-        strBuff += string.Format("\t]{0}", strNewLine);
-        strBuff += "}";
-
-        // 저장
-        SHUtils.SaveFile(strBuff, strSaveFilePath);
-    }
-
     // 인터페이스 : 번들 리스트를 Json형태로 번들정보파일포맷으로 쓰기
     public static void SaveToAssetBundleInfo(Dictionary<string, AssetBundleInfo> dicTable, string strSaveFilePath)
     {
         if (0 == dicTable.Count)
             return;
 
-        string strNewLine = "\r\n";
-        string strBuff = "{" + strNewLine;
-
-        // 테이블별 내용작성
-        strBuff += string.Format("\t\"{0}\": [{1}", "AssetBundleInfo", strNewLine);
+        var pBundleListJsonData = new JsonData();
         SHUtils.ForToDic(dicTable, (pKey, pValue) =>
         {
-            strBuff += "\t\t{" + strNewLine;
-
-            strBuff += string.Format("\t\t\t\"s_BundleName\": \"{0}\",{1}",
-                pValue.m_strBundleName,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"s_BundleSize\": \"{0}\",{1}",
-                pValue.m_lBundleSize,
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"s_BundleHash\": \"{0}\",{1}",
-                pValue.m_pHash128.ToString(),
-                strNewLine);
-
-            strBuff += string.Format("\t\t\t\"p_Resources\": {0}", strNewLine);
-            strBuff += "\t\t\t[" + strNewLine;
-
+            var pBundleJsonData = new JsonData();
+            pBundleJsonData["s_BundleName"] = pValue.m_strBundleName;
+            pBundleJsonData["s_BundleSize"] = pValue.m_lBundleSize;
+            pBundleJsonData["s_BundleHash"] = pValue.m_pHash128.ToString();
+            
             SHUtils.ForToDic(pValue.m_dicResources, (pResKey, pResValue) =>
             {
-                strBuff += "\t\t\t\t{" + strNewLine;
-                strBuff += MakeSaveFormat(pResValue, "\t\t\t\t");
-                strBuff += "\t\t\t\t}," + strNewLine;
+                pBundleJsonData["p_Resources"].Add(MakeResourceJsonData(pResValue));
             });
-            strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
 
-            strBuff += "\t\t\t]" + strNewLine;
-            strBuff += "\t\t}," + strNewLine;
+            pBundleListJsonData.Add(pBundleJsonData);
         });
-        strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-        strBuff += string.Format("\t]{0}", strNewLine);
-        strBuff += "}";
 
-        // 저장
-        SHUtils.SaveFile(strBuff, strSaveFilePath);
+        var pJsonData = new JsonData();
+        pJsonData["AssetBundleInfo"] = pBundleListJsonData;
+
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
+
+        SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
     }
 
     // 인터페이스 : 중복파일 리스트 내보내기
@@ -195,66 +134,41 @@ public class SHResourcesLister
         if (0 == dicDuplications.Count)
             return;
 
-        string strNewLine = "\r\n";
-        string strBuff    = string.Empty;
+        var pDuplicationJsonData = new JsonData();
         SHUtils.ForToDic(dicDuplications, (pKey, pValue) =>
         {
-            strBuff += string.Format("FileName : {0}{1}", pKey, strNewLine);
+            var pFilesJsonData = new JsonData();
             SHUtils.ForToList(pValue, (strPath) =>
             {
-                strBuff += string.Format("\tPath : Resources/{0}{1}", strPath, strNewLine);
+                pFilesJsonData.Add(strPath);
             });
-            strBuff += string.Format("{0}", strNewLine);
+            pDuplicationJsonData[string.Format("FileName_{0}", pKey)] = pFilesJsonData;
         });
+        
+        var pJsonData = new JsonData();
+        pJsonData["DuplicationList"] = pDuplicationJsonData;
 
-        SHUtils.SaveFile(strBuff, strSaveFilePath);
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
+
+        SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
     }
 
     // 인터페이스 : 파일정보 Json 포맷으로 만들어주기
-    public static string MakeSaveFormat(SHResourcesInfo pInfo, string strPreFix)
+    public static JsonData MakeResourceJsonData(SHResourcesInfo pInfo)
     {
-        if (null == pInfo)
-            return string.Empty;
+        JsonData pJsonData = new JsonData();
 
-        string strNewLine   = "\r\n";
-        string strBuff      = string.Empty;
+        pJsonData["s_Name"]      = pInfo.m_strName;
+        pJsonData["s_FileName"]  = pInfo.m_strFileName;
+        pJsonData["s_Extension"] = pInfo.m_strExtension;
+        pJsonData["s_Size"]      = pInfo.m_strSize;
+        //pJsonData["s_LastWriteTime"] = pInfo.m_strLastWriteTime;
+        pJsonData["s_Hash"]      = pInfo.m_strHash;
+        pJsonData["s_Path"]      = pInfo.m_strPath;
 
-        strBuff += string.Format("{0}\t\"s_Name\": \"{1}\",{2}",
-            strPreFix,
-            pInfo.m_strName,
-            strNewLine);
-
-        strBuff += string.Format("{0}\t\"s_FileName\": \"{1}\",{2}",
-            strPreFix,
-            pInfo.m_strFileName,
-            strNewLine);
-
-        strBuff += string.Format("{0}\t\"s_Extension\": \"{1}\",{2}",
-            strPreFix,
-            pInfo.m_strExtension,
-            strNewLine);
-
-        strBuff += string.Format("{0}\t\"s_Size\": \"{1}\",{2}",
-            strPreFix,
-            pInfo.m_strSize,
-            strNewLine);
-
-        //strBuff += string.Format("{0}\t\"s_LastWriteTime\": \"{1}\",{2}",
-        //    strPreFix,
-        //    pInfo.m_strLastWriteTime,
-        //    strNewLine);
-
-        strBuff += string.Format("{0}\t\"s_Hash\": \"{1}\",{2}",
-            strPreFix,
-            pInfo.m_strHash,
-            strNewLine);
-
-        strBuff += string.Format("{0}\t\"s_Path\": \"{1}\"{2}",
-            strPreFix,
-            pInfo.m_strPath,
-            strNewLine);
-
-        return strBuff;
+        return pJsonData;
     }
     #endregion
 
@@ -289,7 +203,7 @@ public class SHResourcesLister
         // 번들정보 생성하기
         if (false == m_dicAssetBundles.ContainsKey(strBundleName))
         {
-            AssetBundleInfo pBundleInfo = new AssetBundleInfo();
+            var pBundleInfo = new AssetBundleInfo();
             pBundleInfo.m_strBundleName = strBundleName;
             m_dicAssetBundles.Add(strBundleName, pBundleInfo);
         }

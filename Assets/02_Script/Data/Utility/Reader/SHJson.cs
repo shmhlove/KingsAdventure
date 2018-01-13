@@ -123,31 +123,28 @@ public class SHJson
             return;
         }
 
-        string strNewLine = "\r\n";
-        string strBuff = "{" + strNewLine;
+        var pJsonData = new JsonData();
+        
         SHUtils.ForToDic(dicData, (pKey, pValue) =>
         {
-            strBuff += string.Format("\t\"{0}\": [{1}", pKey, strNewLine);
+            var pTableJsonData = new JsonData();
             SHUtils.ForToList(pValue, (pData) =>
             {
-                strBuff += "\t\t{" + strNewLine;
+                var pRowJsonData = new JsonData();
                 SHUtils.For(0, pData.m_iMaxCol, (iCol) =>
                 {
-                    strBuff += string.Format("\t\t\t\"{0}\": {1},{2}",
-                        pData.m_ColumnNames[iCol],
-                        pData.m_pDatas[iCol],
-                        strNewLine);
+                    pRowJsonData[pData.m_ColumnNames[iCol]].Add(pData.m_pDatas[iCol]);
                 });
-                strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-                strBuff += "\t\t}," + strNewLine;
+                pTableJsonData.Add(pRowJsonData);
             });
-            strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-            strBuff += string.Format("\t],{0}", strNewLine);
+            pJsonData[pKey] = pTableJsonData;
         });
-        strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-        strBuff += "}";
 
-        SHUtils.SaveFile(strBuff, string.Format("{0}/{1}.json", SHPath.GetPathToJson(), Path.GetFileNameWithoutExtension(strFileName)));
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
+
+        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", SHPath.GetPathToJson(), Path.GetFileNameWithoutExtension(strFileName)));
         #endif
     }
     #endregion

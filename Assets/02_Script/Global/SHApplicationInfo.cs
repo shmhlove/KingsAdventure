@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
+using LitJson;
+
 using DicRealLoadInfo = System.Collections.Generic.Dictionary<eSceneType, System.Collections.Generic.List<string>>;
 
 public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
@@ -241,18 +243,23 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     [FuncButton]
     public void SaveLoadResourceList()
     {
-        string strBuff = string.Empty;
+        var pJsonData = new JsonData();
+        
         SHUtils.ForToDic(m_dicRealLoadInfo, (pKey, pValue) =>
         {
-            strBuff += string.Format("Scene : {0}\n", pKey);
             SHUtils.ForToList(pValue, (pInfo) =>
             {
-                strBuff += string.Format("\t{0}\n", pInfo);
+                pJsonData[string.Format("Scene : {0}", pKey)].Add(pInfo);
             });
         });
+        
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-        string strSavePath = string.Format("{0}/{1}", SHPath.GetPathToAssets(), "RealTimeLoadResource.txt");
-        SHUtils.SaveFile(strBuff, strSavePath);
+        string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPathToAssets(), "RealTimeLoadResource");
+        SHUtils.SaveFile(pJsonWriter.ToString(), strSavePath);
+
         System.Diagnostics.Process.Start(strSavePath);
     }
     [FuncButton]

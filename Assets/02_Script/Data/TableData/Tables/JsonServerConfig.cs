@@ -270,64 +270,36 @@ public class JsonServerConfig : SHBaseTable
     // 인터페이스 : 데이터 내용 Json파일로 저장하기
     public void SaveJsonFile(string strSavePath)
     {
-        string strNewLine = "\r\n";
-        string strBuff = "{" + strNewLine;
-
-        strBuff += string.Format("\t\"{0}\": {1}", "ServerConfig", strNewLine);
-        strBuff += "\t{" + strNewLine;
+        var pServerConfigJsonData = new JsonData();
+        
+        pServerConfigJsonData["AOS_MarketURL"] = m_strAOSMarketURL;
+        pServerConfigJsonData["IOS_MarketURL"] = m_strIOSMarketURL;
+        
+        SHUtils.ForToEnum<eServiceMode>((eMode) =>
         {
-            strBuff += string.Format("\t\t\"AOS_MarketURL\": \"{0}\",{1}",
-                m_strAOSMarketURL,
-                strNewLine);
+            if (eServiceMode.None == eMode)
+                return;
+        
+            var pServerJsonData = new JsonData();
+        
+            var pData = m_dicServerInfo[eMode];
+            pServerJsonData["ClientVersion"] = pData.m_strClientVersion;
+            pServerJsonData["GameServerURL"] = pData.m_strGameServerURL;
+            pServerJsonData["BundleCDN"]     = pData.m_strBundleCDN;
+            pServerJsonData["CheckMessage"]  = pData.m_strCheckMessage;
+            pServerJsonData["ServiceState"]  = pData.m_strServiceState;
+        
+            pServerConfigJsonData[eMode.ToString()] = pServerJsonData;
+        });
+        
+        var pJsonData = new JsonData();
+        pJsonData["ServerConfig"] = pServerConfigJsonData;
 
-            strBuff += string.Format("\t\t\"IOS_MarketURL\": \"{0}\",{1}",
-                m_strIOSMarketURL,
-                strNewLine);
+        var pJsonWriter = new JsonWriter();
+        pJsonWriter.PrettyPrint = true;
+        JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-            // 모드별 정보
-            SHUtils.ForToEnum<eServiceMode>((eMode) =>
-            {
-                if (eServiceMode.None == eMode)
-                    return;
-
-                strBuff += string.Format("\t\t\"{0}\":{1}",
-                    eMode.ToString(),
-                    strNewLine);
-                strBuff += "\t\t{" + strNewLine;
-                {
-                    var pData = m_dicServerInfo[eMode];
-
-                    strBuff += string.Format("\t\t\t\"ClientVersion\": \"{0}\",{1}",
-                        pData.m_strClientVersion,
-                        strNewLine);
-
-                    strBuff += string.Format("\t\t\t\"GameServerURL\": \"{0}\",{1}",
-                        pData.m_strGameServerURL,
-                        strNewLine);
-
-                    strBuff += string.Format("\t\t\t\"BundleCDN\": \"{0}\",{1}",
-                        pData.m_strBundleCDN,
-                        strNewLine);
-
-                    strBuff += string.Format("\t\t\t\"CheckMessage\": \"{0}\",{1}",
-                        pData.m_strCheckMessage,
-                        strNewLine);
-
-                    strBuff += string.Format("\t\t\t\"ServiceState\": \"{0}\"{1}",
-                        pData.m_strServiceState,
-                        strNewLine);
-                }
-                strBuff += "\t\t}," + strNewLine;
-            });
-
-            strBuff = string.Format("{0}{1}", strBuff.Substring(0, strBuff.Length - (strNewLine.Length + 1)), strNewLine);
-        }
-        strBuff += "\t}";
-        strBuff += string.Format("{0}", strNewLine);
-        strBuff += "}";
-
-        // 저장
-        SHUtils.SaveFile(strBuff, string.Format("{0}/{1}.json", strSavePath, m_strFileName));
+        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     }
     #endregion
 
