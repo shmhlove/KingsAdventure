@@ -38,7 +38,7 @@ namespace LunarConsoleEditorInternal
     static class BuildPostProcessor
     {
         #if UNITY_IOS || UNITY_IPHONE
-        [PostProcessBuild(1000)]
+        [PostProcessBuildAttribute(1000)]
         static void OnPostprocessBuild(BuildTarget target, string buildPath)
         {
             Debug.Log("===OnPostprocessBuild");
