@@ -82,7 +82,7 @@ class SHBuildScript
 		BuildApplication(SCENES, eTarget, eOption);
 
         // 후처리
-        PostProcessor();
+        PostProcessor(eTarget);
     }
 
     // 유틸 : App Build + BundlePacking
@@ -101,7 +101,7 @@ class SHBuildScript
 		BuildApplication(SCENES, eTarget, eOption);
 
         // 후처리
-        PostProcessor();
+        PostProcessor(eTarget);
     }
 
     // 유틸 : Only Bundle Packing
@@ -114,7 +114,7 @@ class SHBuildScript
         PackingAssetBundles(eTarget, ePackType, false);
 
         // 후처리
-        PostProcessor();
+        PostProcessor(eTarget);
     }
 
     // 유틸 : 국가별 설정 처리
@@ -216,10 +216,14 @@ class SHBuildScript
     }
     
     // 후처리
-    static void PostProcessor()
+    static void PostProcessor(BuildTarget eTarget)
     {
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(DontDestroy)"));
+
+        #if !UNITY_EDITOR
+        LunarConsoleEditorInternal.OnPostprocessBuild(eTarget, SHPath.GetPathToBuild())
+        #endif
     }
     #endregion
 }
