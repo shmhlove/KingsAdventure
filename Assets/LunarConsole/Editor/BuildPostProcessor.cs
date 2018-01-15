@@ -41,6 +41,7 @@ namespace LunarConsoleEditorInternal
         [PostProcessBuild(1000)]
         static void OnPostprocessBuild(BuildTarget target, string buildPath)
         {
+            Debug.Log("===OnPostprocessBuild");
             if (LunarConsoleConfig.consoleEnabled)
             {
                 if (target == BuildTarget.iOS)
@@ -52,6 +53,7 @@ namespace LunarConsoleEditorInternal
 
         static void OnPostprocessIOS(string buildPath)
         {
+            Debug.Log("===OnPostprocessIOS");
             // Workaround for:
             // FileNotFoundException: Could not load file or assembly 'UnityEditor.iOS.Extensions.Xcode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies.
             // For more information see: http://answers.unity3d.com/questions/1016975/filenotfoundexception-when-using-xcode-api.html
