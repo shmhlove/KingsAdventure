@@ -215,15 +215,15 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     // 유틸 : 크래시 래포트 설정
     void SetCrittercism()
     {
-#if UNITY_ANDROID
-        UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismAndroid.DidCrashOnLastLoad());
-        CrittercismAndroid.Init("20fb64bf760d44589b6aefeb6bcb220700555300");
-        CrittercismAndroid.SetLogUnhandledExceptionAsCrash(true);
-#elif UNITY_IPHONE || UNITY_IOS
-        UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismIOS.DidCrashOnLastLoad());
-        CrittercismIOS.Init("7d02af2372694b93b84d75a999dd7dd400555300");
-        CrittercismIOS.SetLogUnhandledExceptionAsCrash(true);
-#endif
+// #if UNITY_ANDROID
+//         UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismAndroid.DidCrashOnLastLoad());
+//         CrittercismAndroid.Init("20fb64bf760d44589b6aefeb6bcb220700555300");
+//         CrittercismAndroid.SetLogUnhandledExceptionAsCrash(true);
+// #elif UNITY_IPHONE || UNITY_IOS
+//         UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismIOS.DidCrashOnLastLoad());
+//         CrittercismIOS.Init("7d02af2372694b93b84d75a999dd7dd400555300");
+//         CrittercismIOS.SetLogUnhandledExceptionAsCrash(true);
+// #endif
     }
     
     // 유틸 : 해상도 비율값
