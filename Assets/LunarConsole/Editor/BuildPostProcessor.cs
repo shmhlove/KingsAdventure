@@ -24,9 +24,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using System;
 
-#if UNITY_IOS || UNITY_IPHONE
 using UnityEditor.iOS.Xcode;
-#endif
 
 using System.Collections;
 using System.IO;
@@ -37,9 +35,8 @@ namespace LunarConsoleEditorInternal
 {
     static class BuildPostProcessor
     {
-        #if UNITY_IOS || UNITY_IPHONE
         [PostProcessBuildAttribute(1)]
-        static void OnPostprocessBuild(BuildTarget target, string buildPath)
+        public static void OnPostprocessBuild(BuildTarget target, string buildPath)
         {
             Debug.Log("!@@ OnPostprocessBuild : " + buildPath);
             if (LunarConsoleConfig.consoleEnabled)
@@ -75,10 +72,8 @@ namespace LunarConsoleEditorInternal
             var projectMod = new XcodeProjMod(buildPath, pluginPath);
             projectMod.UpdateProject();
         }
-        #endif //UNITY_IOS || UNITY_IPHONE
     }
-
-    #if UNITY_IOS || UNITY_IPHONE
+    
     class XcodeProjMod
     {
         private readonly string m_buildPath;
@@ -145,6 +140,4 @@ namespace LunarConsoleEditorInternal
 
     #pragma warning restore 0649
     #pragma warning restore 0414
-
-    #endif // UNITY_IOS || UNITY_IPHONE
 }

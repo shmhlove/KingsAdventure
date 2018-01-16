@@ -226,7 +226,7 @@ class SHBuildScript
         if (BuildTarget.iOS == eTarget)
         {
             Debug.Log("Call BuildScript LunarConsoleEditorInternal!!!");
-            LunarConsoleEditorInternal.OnPostprocessBuild(eTarget, SHPath.GetPathToBuild() + "/xcode");
+            LunarConsoleEditorInternal.BuildPostProcessor.OnPostprocessBuild(eTarget, SHPath.GetPathToBuild() + "/xcode");
         }
     }
     #endregion
