@@ -223,7 +223,7 @@ class SHBuildScript
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(DontDestroy)"));
 
-        #if !UNITY_EDITOR && (UNITY_IOS || UNITY_IPHONE)
+        #if !UNITY_EDITOR && UNITY_IOS
         Debug.Log("Call BuildScript LunarConsoleEditorInternal!!!");
         LunarConsoleEditorInternal.OnPostprocessBuild(eTarget, SHPath.GetPathToBuild() + "/xcode");
         #endif
