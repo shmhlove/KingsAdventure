@@ -218,16 +218,8 @@ class SHBuildScript
     // 후처리
     static void PostProcessor(BuildTarget eTarget)
     {
-        Debug.Log("Call BuildScript PostProcessor!!!");
-
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(DontDestroy)"));
-
-        if (BuildTarget.iOS == eTarget)
-        {
-            Debug.Log("Call BuildScript LunarConsoleEditorInternal!!!");
-            LunarConsoleEditorInternal.BuildPostProcessor.OnPostprocessBuild(eTarget, SHPath.GetPathToBuild() + "/xcode");
-        }
     }
     #endregion
 }
