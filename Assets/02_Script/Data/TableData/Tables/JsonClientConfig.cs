@@ -84,12 +84,12 @@ public class JsonClientConfig : SHBaseTable
 
         SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     }
-    public void SetConfigurationCDN(string strCDN)
+    public void SetConfigurationCDN(string strServerConfigURL)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        m_strServerConfigURL = strCDN;
+        m_strServerConfigURL = strServerConfigURL;
     }
     public void SetServiceMode(string strServiceMode)
     {

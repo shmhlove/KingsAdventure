@@ -212,7 +212,7 @@ class SHBuildScript
     // 유틸 : 한국 ServerConfig CDN 주소
     static string GetURLToConfigurationCDNOfKorea()
     {
-        return string.Format("{0}/{1}", "http://blueasa.synology.me/home/shmhlove/KOR", Application.productName);
+        return string.Format("{0}/{1}/ServerConfig.json", "http://blueasa.synology.me/home/shmhlove/KOR", Application.productName);
     }
     
     // 후처리
