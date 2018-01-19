@@ -15,17 +15,17 @@ class SHBuildScript
     // 인터페이스 : 한국 AOS App빌드 ( 전체 패킹 )
     [MenuItem("SHTools/CI/Korea Android To Full AppBuild")]
 	static void KOR_AndroidToOnlyAppBuild()
-    {   OnlyAppBuild(eNationType.Korea, BuildTarget.Android, eServiceMode.DevQA, BuildOptions.None);   }
+    {   OnlyAppBuild(eNationType.Korea, BuildTarget.Android, eServiceMode.Dev, BuildOptions.None);   }
 
     // 인터페이스 : 한국 AOS App빌드 + 번들(ALL) 패킹
     [MenuItem("SHTools/CI/Korea Android To AppBuild With All AssetBundles")]
 	static void KOR_AndroidToAppBuildWithAllAssetBundlesPacking()
-    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.Android, eServiceMode.DevQA, eBundlePackType.All, BuildOptions.None);  }
+    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.Android, eServiceMode.Dev, eBundlePackType.All, BuildOptions.None);  }
 
     // 인터페이스 : 한국 AOS App빌드 + 번들(Update) 패킹
     [MenuItem("SHTools/CI/Korea Android To AppBuild With Update AssetBundles")]
 	static void KOR_AndroidToAppBuildWithUpdateAssetBundlesPacking()
-    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.Android, eServiceMode.DevQA, eBundlePackType.Update, BuildOptions.None);   }
+    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.Android, eServiceMode.Dev, eBundlePackType.Update, BuildOptions.None);   }
 
     // 인터페이스 : 한국 AOS 번들(ALL) 패킹
     [MenuItem("SHTools/CI/Korea Android To Only AssetBundles Of All")]
@@ -44,17 +44,17 @@ class SHBuildScript
     // 인터페이스 : 한국 IOS App빌드 ( 전체 패킹 )
     [MenuItem("SHTools/CI/Korea IPhone To Full AppBuild")]
 	static void KOR_IPhoneToOnlyAppBuild()
-    {   OnlyAppBuild(eNationType.Korea, BuildTarget.iOS, eServiceMode.DevQA, BuildOptions.AcceptExternalModificationsToPlayer);   }
+    {   OnlyAppBuild(eNationType.Korea, BuildTarget.iOS, eServiceMode.Dev, BuildOptions.AcceptExternalModificationsToPlayer);   }
 
     // 인터페이스 : 한국 IOS App빌드 + 번들(ALL) 패킹
     [MenuItem("SHTools/CI/Korea IPhone To AppBuild With All AssetBundles")]
 	static void KOR_IPhoneToAppBuildWithAllAssetBundlesPacking()
-    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.iOS, eServiceMode.DevQA, eBundlePackType.All, BuildOptions.AcceptExternalModificationsToPlayer);  }
+    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.iOS, eServiceMode.Dev, eBundlePackType.All, BuildOptions.AcceptExternalModificationsToPlayer);  }
 
     // 인터페이스 : 한국 IOS App빌드 + 번들(Update) 패킹
     [MenuItem("SHTools/CI/Korea IPhone To AppBuild With Update AssetBundles")]
 	static void KOR_IPhoneToAppBuildWithUpdateAssetBundlesPacking()
-    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.iOS, eServiceMode.DevQA, eBundlePackType.Update, BuildOptions.AcceptExternalModificationsToPlayer);   }
+    {   AppBuildWithBundlePacking(eNationType.Korea, BuildTarget.iOS, eServiceMode.Dev, eBundlePackType.Update, BuildOptions.AcceptExternalModificationsToPlayer);   }
 
     // 인터페이스 : 한국 IOS 번들(ALL) 패킹
     [MenuItem("SHTools/CI/Korea IPhone To Only AssetBundles Of All")]

@@ -10,12 +10,12 @@ using LitJson;
 public class JsonClientConfig : SHBaseTable
 {
     #region Members
-    public string        m_strCDN         = string.Empty;
-    public string        m_strServiceMode = string.Empty;
-    public string        m_strVersion     = string.Empty;
-    public bool          m_bVSyncCount    = false;
-    public int           m_iFrameRate     = 60;
-    public int           m_iCacheSize     = 200;
+    public string        m_strServerConfigURL = string.Empty;
+    public string        m_strServiceMode     = string.Empty;
+    public string        m_strVersion         = string.Empty;
+    public bool          m_bVSyncCount        = false;
+    public int           m_iFrameRate         = 60;
+    public int           m_iCacheSize         = 200;
     #endregion
 
 
@@ -30,12 +30,12 @@ public class JsonClientConfig : SHBaseTable
     #region Virtual Functions
     public override void Initialize()
     {
-        m_strCDN         = string.Empty;
-        m_strServiceMode = string.Empty;
-        m_strVersion     = string.Empty;
-        m_bVSyncCount    = false;
-        m_iFrameRate     = 60;
-        m_iCacheSize     = 200;
+        m_strServerConfigURL = string.Empty;
+        m_strServiceMode     = string.Empty;
+        m_strVersion         = string.Empty;
+        m_bVSyncCount        = false;
+        m_iFrameRate         = 60;
+        m_iCacheSize         = 200;
     }
     public override bool IsLoadTable()
     {
@@ -48,12 +48,12 @@ public class JsonClientConfig : SHBaseTable
 
         JsonData pDataNode = pJson["ClientConfig"];
 
-        m_strCDN           = GetStrToJson(pDataNode, "ServerConfigCDN");
-        m_strServiceMode   = GetStrToJson(pDataNode, "ServiceMode");
-        m_strVersion       = GetStrToJson(pDataNode, "Version");
-        m_bVSyncCount      = GetBoolToJson(pDataNode, "VSyncCount");
-        m_iFrameRate       = GetIntToJson(pDataNode, "FrameRate");
-        m_iCacheSize       = GetIntToJson(pDataNode, "CacheSize(MB)");
+        m_strServerConfigURL = GetStrToJson(pDataNode, "ServerConfigURL");
+        m_strServiceMode     = GetStrToJson(pDataNode, "ServiceMode");
+        m_strVersion         = GetStrToJson(pDataNode, "Version");
+        m_bVSyncCount        = GetBoolToJson(pDataNode, "VSyncCount");
+        m_iFrameRate         = GetIntToJson(pDataNode, "FrameRate");
+        m_iCacheSize         = GetIntToJson(pDataNode, "CacheSize(MB)");
         
         return eErrorCode.Succeed;
     }
@@ -68,7 +68,7 @@ public class JsonClientConfig : SHBaseTable
     public void SaveJsonFile(string strSavePath)
     {
         var pClientConfigJsonData = new JsonData();
-        pClientConfigJsonData["ServerConfigCDN"] = m_strCDN;
+        pClientConfigJsonData["ServerConfigURL"] = m_strServerConfigURL;
         pClientConfigJsonData["ServiceMode"]     = m_strServiceMode;
         pClientConfigJsonData["Version"]         = m_strVersion;
         pClientConfigJsonData["VSyncCount"]      = m_bVSyncCount;
@@ -89,7 +89,7 @@ public class JsonClientConfig : SHBaseTable
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        m_strCDN = strCDN;
+        m_strServerConfigURL = strCDN;
     }
     public void SetServiceMode(string strServiceMode)
     {
@@ -103,7 +103,7 @@ public class JsonClientConfig : SHBaseTable
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        return m_strCDN;
+        return m_strServerConfigURL;
     }
     public string GetServiceMode()
     {

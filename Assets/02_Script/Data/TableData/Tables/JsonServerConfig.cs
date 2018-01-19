@@ -106,7 +106,7 @@ public class JsonServerConfig : SHBaseTable
                 Debug.LogErrorFormat("Error!!! Download ServerConfig.json : (Error : {0}, URL : {1}", pWWW.error, pWWW.url);
             }
 
-        }, new WWW(string.Format("{0}/{1}.json", SHPath.GetURLToServerConfigCDN(), m_strFileName)));
+        }, new WWW(SHPath.GetURLToServerConfig()));
     }
 
     // 인터페이스 : CDN에서 정보파일 다운로드
@@ -116,7 +116,7 @@ public class JsonServerConfig : SHBaseTable
         if (true == string.IsNullOrEmpty(strURL))
             return false;
 
-        WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(string.Format("{0}/{1}.json", strURL, m_strFileName)));
+        WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strURL));
         if (false == string.IsNullOrEmpty(pWWW.error))
             return false;
 
@@ -138,7 +138,6 @@ public class JsonServerConfig : SHBaseTable
             eServiceMode.Live,
             eServiceMode.Review,
             eServiceMode.QA,
-            eServiceMode.DevQA,
             eServiceMode.Dev,
         };
         
@@ -187,21 +186,21 @@ public class JsonServerConfig : SHBaseTable
     // 인터페이스 : 번들 다운로드 CDN URL
     public string GetBundleCDN()
     {
-        return GetBundleCDN(Single.Table.GetClientServiceMode(), Single.Table.GetClientVersion());
-    }
-    public string GetBundleCDN(string strMode, string strVersion)
-    {
-        return GetBundleCDN(SHHard.GetEnumToServiceMode(strMode), strVersion);
-    }
-    public string GetBundleCDN(eServiceMode eMode, string strVersion)
-    {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        var pServerInfo = GetServerInfo(eMode);
+        var ClientConfig = Single.Table.GetTable<JsonClientConfig>();
+        if (null == ClientConfig)
+            return string.Empty;
+
+        var ServiceMode   = ClientConfig.GetServiceMode();
+        var ClientVersion = ClientConfig.GetVersion();
+
+        var pServerInfo = GetServerInfo(ServiceMode);
         if (null == pServerInfo)
-            pServerInfo = GetServerInfo(strVersion);
-        if (null == pServerInfo)
+            return string.Empty;
+
+        if (false == pServerInfo.m_strClientVersion.Equals(ClientVersion))
             return string.Empty;
 
         return pServerInfo.m_strBundleCDN;
@@ -265,41 +264,6 @@ public class JsonServerConfig : SHBaseTable
             return string.Empty;
 
         return pServerInfo.m_strCheckMessage;
-    }
-
-    // 인터페이스 : 데이터 내용 Json파일로 저장하기
-    public void SaveJsonFile(string strSavePath)
-    {
-        var pServerConfigJsonData = new JsonData();
-        
-        pServerConfigJsonData["AOS_MarketURL"] = m_strAOSMarketURL;
-        pServerConfigJsonData["IOS_MarketURL"] = m_strIOSMarketURL;
-        
-        SHUtils.ForToEnum<eServiceMode>((eMode) =>
-        {
-            if (eServiceMode.None == eMode)
-                return;
-        
-            var pServerJsonData = new JsonData();
-        
-            var pData = m_dicServerInfo[eMode];
-            pServerJsonData["ClientVersion"] = pData.m_strClientVersion;
-            pServerJsonData["GameServerURL"] = pData.m_strGameServerURL;
-            pServerJsonData["BundleCDN"]     = pData.m_strBundleCDN;
-            pServerJsonData["CheckMessage"]  = pData.m_strCheckMessage;
-            pServerJsonData["ServiceState"]  = pData.m_strServiceState;
-        
-            pServerConfigJsonData[eMode.ToString()] = pServerJsonData;
-        });
-        
-        var pJsonData = new JsonData();
-        pJsonData["ServerConfig"] = pServerConfigJsonData;
-
-        var pJsonWriter = new JsonWriter();
-        pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
-
-        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     }
     #endregion
 

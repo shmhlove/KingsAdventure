@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 using System;
 using System.Text;
@@ -30,15 +30,11 @@ public partial class SHAssetBundleData : SHBaseData
         m_dicBundles.Clear();
     }
     public override void FrameMove() { }
-    public override Dictionary<string, SHLoadData> GetLoadList(eSceneType eType)
-    {
-        return new Dictionary<string, SHLoadData>();;
-    }
     public override Dictionary<string, SHLoadData> GetPatchList()
     {
         var dicLoadList = new Dictionary<string, SHLoadData>();
         
-        // ¼­¹öÁ¤º¸ÆÄÀÏ(ServerConfig.json)¿¡ URLÀÌ ¾øÀ¸¸é ÆĞÄ¡ÇÏÁö ¾Ê´Â´Ù.
+        // ì„œë²„ì •ë³´íŒŒì¼(ServerConfig.json)ì— CDN URLì´ ì—†ìœ¼ë©´ íŒ¨ì¹˜í•˜ì§€ ì•ŠëŠ”ë‹¤.
         if (true == string.IsNullOrEmpty(SHPath.GetURLToBundleCDN()))
             return dicLoadList;
 

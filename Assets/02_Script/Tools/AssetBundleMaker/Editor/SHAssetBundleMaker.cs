@@ -177,8 +177,7 @@ public static class SHAssetBundleMaker
             // 번들정보 테이블 준비
             var pBundleInfo = GetBundleTable(pTableData);
             pBundleInfo.SetData(
-                pBundleInfo.UpdateAssetBundlesMakeInfoByStreamingPath(
-                pServerInfo.GetBundleCDN(pClientInfo.GetServiceMode(), pClientInfo.GetVersion()), eTarget));
+                pBundleInfo.UpdateAssetBundlesMakeInfoByStreamingPath(pServerInfo.GetBundleCDN(), eTarget));
 
             // 리소스 리스트 테이블 준비
             var pResourceInfo = GetResourceTable(pTableData);

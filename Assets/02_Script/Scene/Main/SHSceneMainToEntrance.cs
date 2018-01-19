@@ -2,12 +2,8 @@
 using System;
 using System.Collections;
 
-public class SHSceneMainToIntro : SHMonoWrapper
+public class SHSceneMainToEntrance : SHMonoWrapper
 {
-    #region Members
-    #endregion
-
-
     #region System Functions
     public override void Start() 
     {

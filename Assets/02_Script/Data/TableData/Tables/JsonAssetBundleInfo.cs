@@ -261,11 +261,11 @@ public class JsonAssetBundleInfo : SHBaseTable
     public Dictionary<string, AssetBundleInfo> UpdateAssetBundlesMakeInfoByStreamingPath(string strCDN, BuildTarget eTarget)
     {
         // Download 경로
-        var strDownloadPath = string.Format("{0}/{1}/{2}.json", strCDN, SHHard.GetStrToPlatform(eTarget), m_strFileName);
+        var strAssetBundleInfoURL = string.Format("{0}/{1}/{2}.json", strCDN, SHHard.GetStrToPlatform(eTarget), m_strFileName);
         
         // CDN에 있는 AssetBundleInfo.Json 다운로드
         var pCDNInfo = new JsonAssetBundleInfo();
-        pCDNInfo.LoadJsonTable((new SHJson()).LoadWWW(strDownloadPath), m_strFileName);
+        pCDNInfo.LoadJsonTable((new SHJson()).LoadWWW(strAssetBundleInfoURL), m_strFileName);
         
         // 로컬 Streaming에 저장된 AssetBundleInfo 로드
         var pStreamingInfo = new JsonAssetBundleInfo();

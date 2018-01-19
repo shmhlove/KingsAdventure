@@ -30,7 +30,7 @@ public partial class SHTableData : SHBaseData
     #endregion
 
     #region JsonClientConfig
-    public string GetServerConfigCDN()
+    public string GetServerConfigURL()
     {
         var pTable = GetTable<JsonClientConfig>();
         if (null == pTable)
@@ -122,7 +122,7 @@ public partial class SHTableData : SHBaseData
             return;
         }
 
-        pTable.DownloadByCDN(pComplete, SHPath.GetURLToServerConfigCDN());
+        pTable.DownloadByCDN(pComplete, SHPath.GetURLToServerConfig());
     }
     public bool IsLoadServerConfig()
     {

@@ -11,7 +11,6 @@ public enum eServiceMode
     Live,           // Live
     Review,         // 리뷰제출용
     QA,             // QA용
-    DevQA,          // 개발QA용
     Dev,            // 개발용
 }
 
@@ -36,7 +35,7 @@ public enum eBundlePackType
 public enum eSceneType
 {
     None,
-    Intro,
+    Entrance,
     Patch,
     Login,
     Loading,

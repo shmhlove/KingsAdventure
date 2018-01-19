@@ -1,14 +1,14 @@
 ﻿{
     "ServerConfig":
     {
-        "AOS_MarketURL":             "market://details?id=com.SHFunction.Framework",
-        "IOS_MarketURL":             "itms-apps://itunes.apple.com/app/idcom.SHFunction.Framework",
+        "AOS_MarketURL":             "",
+        "IOS_MarketURL":             "",
         
         "Live":
         {
             "ClientVersion":          "1.0.0",
             "GameServerURL":          "",
-            "BundleCDN":              "",
+            "BundleCDN_URL":          "",
             "CheckMessage":           "0시부터 0시까지 점검입니다.",
             "ServiceState":           "Run"
         },
@@ -16,7 +16,7 @@
         {
             "ClientVersion":          "1.0.0",
             "GameServerURL":          "",
-            "BundleCDN":              "",
+            "BundleCDN_URL":          "",
             "CheckMessage":           "0시부터 0시까지 점검입니다.",
             "ServiceState":           "Run"
         },
@@ -24,15 +24,7 @@
         {
             "ClientVersion":          "1.0.0",
             "GameServerURL":          "",
-            "BundleCDN":              "",
-            "CheckMessage":           "0시부터 0시까지 점검입니다.",
-            "ServiceState":           "Run"
-        },
-        "DevQA":
-        {
-            "ClientVersion":          "1.0.0",
-            "GameServerURL":          "",
-            "BundleCDN":              "",
+            "BundleCDN_URL":          "",
             "CheckMessage":           "0시부터 0시까지 점검입니다.",
             "ServiceState":           "Run"
         },
@@ -40,12 +32,10 @@
         {
             "ClientVersion":          "1.0.0",
             "GameServerURL":          "",
-            "BundleCDN":              "",
+            "BundleCDN_URL":          "",
             "CheckMessage":           "0시부터 0시까지 점검입니다.",
             "ServiceState":           "Run"
         },
-        
-        
         
         "Description_ServiceState_List":
         [
