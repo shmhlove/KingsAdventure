@@ -1,5 +1,5 @@
 SET adbpath="C:\Program Files (x86)\Android\android-sdk\platform-tools"
-SET bundlename=com.gameon.cook2TEST
+SET bundlename=com.mangogames.kingsadventure
 
 %adbpath%\adb.exe kill-server
 %adbpath%\adb.exe start-server
