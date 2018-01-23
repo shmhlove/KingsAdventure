@@ -26,8 +26,14 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
     #region Interface Functions
     // 인터페이스 : 씬 추가
-    public void Addtive(eSceneType eType, bool bIsUseFade = true, Action<eSceneType> pCallback = null)
+    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<eSceneType> pCallback = null)
     {
+        if (true == IsLoadedScene(eType))
+            return;
+
+        if (null == pCallback)
+            pCallback = (eSceneType e) => { };
+
         Action LoadScene = () =>
         {
             LoadProcess(SceneManager.LoadSceneAsync(eType.ToString(), LoadSceneMode.Additive), (pAsyncOperation) =>
@@ -50,20 +56,16 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     // 인터페이스 : 씬 제거
     public void Remove(eSceneType eType)
     {
+        if (false == IsLoadedScene(eType))
+            return;
+
         SceneManager.UnloadSceneAsync(eType.ToString());
     }
     
     // 인터페이스 : 현재 로드되어 있는 씬 인가?
     public bool IsLoadedScene(eSceneType eType)
     {
-        for (int iLoop = 0; iLoop < SceneManager.sceneCount; ++iLoop)
-        {
-            var Scene = SceneManager.GetSceneAt(iLoop);
-            if (true == Scene.name.Equals(eType))
-                return true;
-        }
-
-        return false;
+        return SceneManager.GetSceneByName(eType.ToString()).isLoaded;
     }
 
     // 인터페이스 : 현재 활성화 되어 있는 씬

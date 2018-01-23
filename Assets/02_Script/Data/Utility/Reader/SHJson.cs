@@ -98,11 +98,17 @@ public class SHJson
     // 인터페이스 : string으로 Json파싱
     public JsonData GetJsonParseToString(string strBuff)
     {
+        if (true == string.IsNullOrEmpty(strBuff))
+            return null;
+            
         MemoryStream pStream = new MemoryStream(Encoding.UTF8.GetBytes(strBuff));
         StreamReader pReader = new StreamReader(pStream, true);
         string strEncodingBuff = pReader.ReadToEnd();
         pReader.Close();
         pStream.Close();
+
+        if (true == string.IsNullOrEmpty(strEncodingBuff))
+            return null;
 
         return JsonMapper.ToObject(strEncodingBuff);
     }

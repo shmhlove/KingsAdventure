@@ -4,10 +4,6 @@ using System.Collections;
 
 public class SHSceneMainToInGame : MonoBehaviour 
 {
-    #region Members
-    #endregion
-
-
     #region System Functions
     void Start()
     {
@@ -18,21 +14,5 @@ public class SHSceneMainToInGame : MonoBehaviour
     {
         Single.Engine.FrameMove();
     }
-    #endregion
-
-
-    #region Virtual Functions
-    #endregion
-
-
-    #region Interface Functions
-    #endregion
-
-
-    #region Utility Functions
-    #endregion
-
-
-    #region Event Handler
     #endregion
 }

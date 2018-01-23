@@ -11,10 +11,4 @@ public class SHSceneMainToIntro : SHMonoWrapper
         Single.AppInfo.CreateSingleton();
 	}
     #endregion
-    
-
-    public void OnClick()
-    {
-        Single.Scene.Addtive(eSceneType.InGame);
-    }
 }
