@@ -13,10 +13,8 @@ public class SHSceneMainToEntrance : SHMonoWrapper
     #endregion
     
 
-    #region Event Handler
-    void OnEventToNextScene()
+    public void OnClick()
     {
-        Single.Scene.GoTo(eSceneType.InGame);
+        Single.Scene.Addtive(eSceneType.InGame);
     }
-    #endregion
 }

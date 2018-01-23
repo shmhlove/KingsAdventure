@@ -52,7 +52,7 @@ public partial class SHTableData : SHBaseData
         if (null == pTable)
             return eServiceMode.None;
 
-        return SHHard.GetEnumToServiceMode(pTable.GetServiceMode());
+        return SHHard.GetServiceModeByString(pTable.GetServiceMode());
     }
     public int GetClientVersionToOrder(eOrderNum eOrder)
     {

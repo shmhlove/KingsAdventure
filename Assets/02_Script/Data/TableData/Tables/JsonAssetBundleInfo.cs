@@ -121,7 +121,7 @@ public class JsonAssetBundleInfo : SHBaseTable
                 //pUnit.m_strLastWriteTime  = GetStrToJson(pUnitNode, "s_LastWriteTime");
                 pUnit.m_strHash             = GetStrToJson(pUnitNode, "s_Hash");
                 pUnit.m_strPath             = GetStrToJson(pUnitNode, "s_Path");
-                pUnit.m_eResourceType       = SHHard.GetResourceTypeToExtension(pUnit.m_strExtension);
+                pUnit.m_eResourceType       = SHHard.GetResourceTypeByExtension(pUnit.m_strExtension);
 
                 pData.AddResourceInfo(pUnit);
             }
@@ -261,7 +261,7 @@ public class JsonAssetBundleInfo : SHBaseTable
     public Dictionary<string, AssetBundleInfo> UpdateAssetBundlesMakeInfoByStreamingPath(string strCDN, BuildTarget eTarget)
     {
         // Download 경로
-        var strAssetBundleInfoURL = string.Format("{0}/{1}/{2}.json", strCDN, SHHard.GetStrToPlatform(eTarget), m_strFileName);
+        var strAssetBundleInfoURL = string.Format("{0}/{1}/{2}.json", strCDN, SHHard.GetPlatformStringByEnum(eTarget), m_strFileName);
         
         // CDN에 있는 AssetBundleInfo.Json 다운로드
         var pCDNInfo = new JsonAssetBundleInfo();

@@ -39,16 +39,16 @@ namespace LunarConsolePluginInternal
         static readonly object[] kEmptyArgs = {};
 
         [SerializeField]
-        string m_name;
+        string m_name = string.Empty;
 
         [SerializeField]
-        GameObject m_target;
+        GameObject m_target = null;
 
         [SerializeField]
-        string m_componentTypeName;
+        string m_componentTypeName = string.Empty;
 
         [SerializeField]
-        string m_componentMethodName;
+        string m_componentMethodName = string.Empty;
 
         Type m_componentType;
         MethodInfo m_componentMethod;
@@ -177,11 +177,11 @@ namespace LunarConsolePluginInternal
     public class LunarConsoleLegacyActions : MonoBehaviour
     {
         [SerializeField]
-        bool m_dontDestroyOnLoad;
+        bool m_dontDestroyOnLoad = true;
 
         [SerializeField]
         [HideInInspector]
-        List<LunarConsoleLegacyAction> m_actions;
+        List<LunarConsoleLegacyAction> m_actions = new List<LunarConsoleLegacyAction>();
 
         void Awake()
         {

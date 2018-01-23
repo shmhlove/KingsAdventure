@@ -23,7 +23,7 @@ public static class SHAssetBundleMaker
     }
     public static bool PackingAssetBundle(BuildTarget eTarget, eBundlePackType ePackType, bool bIsDelOriginal, string strOutputPath)
     {
-        strOutputPath = string.Format("{0}/{1}", strOutputPath, SHHard.GetStrToPlatform(eTarget));
+        strOutputPath = string.Format("{0}/{1}", strOutputPath, SHHard.GetPlatformStringByEnum(eTarget));
 
         // 정보 테이블 준비
         var pTableData = CreateTableData(eTarget);
@@ -114,8 +114,8 @@ public static class SHAssetBundleMaker
             // Manifest제거 ( 사용하지 않는 불필요한 파일이라 그냥 제거시킴 )
             SHUtils.DeleteFile(string.Format("{0}/{1}.manifest", strOutputPath, pBundle.assetBundleName));
         });
-        SHUtils.DeleteFile(string.Format("{0}/{1}", strOutputPath, SHHard.GetStrToPlatform(eTarget)));
-        SHUtils.DeleteFile(string.Format("{0}/{1}.manifest", strOutputPath, SHHard.GetStrToPlatform(eTarget)));
+        SHUtils.DeleteFile(string.Format("{0}/{1}", strOutputPath, SHHard.GetPlatformStringByEnum(eTarget)));
+        SHUtils.DeleteFile(string.Format("{0}/{1}.manifest", strOutputPath, SHHard.GetPlatformStringByEnum(eTarget)));
         
         return true;
     }

@@ -5,35 +5,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using HistoryList   = System.Collections.Generic.List<SHSceneHistory>;
-using EventList     = System.Collections.Generic.List<System.Action<eSceneType, eSceneType>>;
-
-public class SHSceneHistory
-{
-    public eSceneType m_eTo;
-    public eSceneType m_eFrom;
-
-    public SHSceneHistory(eSceneType eTo, eSceneType eFrom)
-    {
-        m_eTo   = eTo;
-        m_eFrom = eFrom;
-    }
-}
-
 public class SHSceneManager : SHSingleton<SHSceneManager>
 {
     #region Members
-    // 씬 상태
-    private eSceneType      m_eCurrentScene   = eSceneType.None;
-    private eSceneType      m_eBeforeScene    = eSceneType.None;
-
-    // 히스토리
-    public HistoryList      m_pHistory        = new HistoryList();
-
-    // 이벤트
-    private EventList       m_pEventToChangeScene = new EventList();
-
-    public bool             m_bIsChanging     = false;
+    private SHEvent m_pEventOfAddtiveScene = new SHEvent();
     #endregion
 
 
@@ -50,181 +25,78 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
 
     #region Interface Functions
-    // 인터페이스 : 씬 이동
-    public void GoTo(eSceneType eChange)
+    // 인터페이스 : 씬 추가
+    public void Addtive(eSceneType eType, bool bIsUseFade = true, Action<eSceneType> pCallback = null)
     {
-        // 알리아싱
-        eSceneType eCurrent = GetCurrentScene();
-
-        // 씬 변경시 처리해야 할 여러가지 작업들
-        PerformanceToChangeScene(eCurrent, eChange);
-
-        // 로드명령
-		ExcuteGoTo(eChange); 
-    }
-
-    // 인터페이스 : 현재 씬 얻기
-    public eSceneType GetCurrentScene()
-    {
-        if (eSceneType.None == m_eCurrentScene)
-            return GetActiveScene();
-        
-        return m_eCurrentScene;
-    }
-
-    // 인터페이스 : 현재 씬 얻기
-    public eSceneType GetActiveScene()
-    {
-        return SHHard.GetSceneTypeToString(SceneManager.GetActiveScene().name);
-    }
-
-    // 인터페이스 : 이전 씬 얻기
-    public eSceneType GetBeforeScene()
-    {
-        return m_eBeforeScene;
-    }
-
-    // 인터페이스 : 현재 씬 인가?
-    public bool IsCurrentScene(eSceneType eType)
-    {
-        return (GetCurrentScene() == eType);
-    }
-
-    // 인터페이스 : 이전 씬 인가?
-    public bool IsBeforeScene(eSceneType eType)
-    {
-        int iLastIndex = m_pHistory.Count - 1;
-        if (0 > iLastIndex)
-            return false;
-
-        return (m_pHistory[iLastIndex].m_eTo == eType);
-    }
-
-    // 인터페이스 : X씬을 거친적이 있는가?
-    public bool IsPassedScene(eSceneType eType)
-    {
-        foreach (var pHistory in m_pHistory)
+        Action LoadScene = () =>
         {
-            if (eType == pHistory.m_eFrom)
+            LoadProcess(SceneManager.LoadSceneAsync(eType.ToString(), LoadSceneMode.Additive), (pAsyncOperation) =>
+            {
+                if (true == bIsUseFade)
+                    PlayFadeOut(() => pCallback(eType));
+                else
+                    pCallback(eType);
+
+                CallEventOfAddtiveScene(eType);
+            });
+        };
+
+        if (true == bIsUseFade)
+            PlayFadeIn(() => LoadScene());
+        else
+            LoadScene();
+    }
+
+    // 인터페이스 : 씬 제거
+    public void Remove(eSceneType eType)
+    {
+        SceneManager.UnloadSceneAsync(eType.ToString());
+    }
+    
+    // 인터페이스 : 현재 로드되어 있는 씬 인가?
+    public bool IsLoadedScene(eSceneType eType)
+    {
+        for (int iLoop = 0; iLoop < SceneManager.sceneCount; ++iLoop)
+        {
+            var Scene = SceneManager.GetSceneAt(iLoop);
+            if (true == Scene.name.Equals(eType))
                 return true;
         }
 
         return false;
     }
 
-    // 인터페이스 : 로딩이 필요한씬
-    public bool IsNeedLoading(eSceneType eType)
+    // 인터페이스 : 현재 활성화 되어 있는 씬
+    public eSceneType GetActiveScene()
     {
-        return false;
+        return SHHard.GetSceneTypeByString(SceneManager.GetActiveScene().name);
     }
 
-    // 인터페이스 : 콜백등록
-    public void AddEventToChangeScene(Action<eSceneType, eSceneType> pAction)
+    // 인터페이스 : 씬 추가 이벤트 등록
+    public void AddEventOfAddtiveScene(EventHandler pCallback)
     {
-        if (null == pAction)
-            return;
-
-        if (true == IsAddEvent(pAction))
-            return;
-
-        m_pEventToChangeScene.Add(pAction);
+        m_pEventOfAddtiveScene.Add(pCallback);
     }
 
-    // 인터페이스 : 콜백제거
-    public void DelEventToChangeScene(Action<eSceneType, eSceneType> pAction)
+    // 인터페이스 : 씬 추가 이벤트 해제
+    public void RemoveEventOfAddtiveScene(EventHandler pCallback)
     {
-        if (false == IsAddEvent(pAction))
-            return;
-
-        m_pEventToChangeScene.Remove(pAction);
+        m_pEventOfAddtiveScene.Remove(pCallback);
     }
     #endregion
 
 
     #region Utility Functions
-    // 유틸 : 씬 이동 실행
-    void ExcuteGoTo(eSceneType eType)
+    // 유틸 : 씬 로드
+    void LoadProcess(AsyncOperation pAsyncInfo, Action<AsyncOperation> pDone)
     {
-        PlayFadeIn(() =>
-        {
-            if (true == IsNeedLoading(eType))
-                LoadScene(eSceneType.Loading, (bIsSuccess) => PlayFadeOut(null));
-            else
-                LoadScene(eType,              (bIsSuccess) => PlayFadeOut(null));
-        });
-    }
-
-    // 유틸 : 씬 로드 ( Change 방식 : GoTo 명령시 호출됨 )
-    AsyncOperation LoadScene(eSceneType eType, Action<bool> pComplete)
-    {
-        return SetLoadPostProcess(pComplete,
-            SceneManager.LoadSceneAsync(eType.ToString(), LoadSceneMode.Single));
+        Single.Coroutine.Async(() => pDone(pAsyncInfo), pAsyncInfo);
     }
     
-    // 유틸 : 씬 로드 ( Add 방식 : SceneData 클래스에서 호출됨 )
-    AsyncOperation AddScene(string strSceneName, Action<bool> pComplete)
+    // 유틸 : 씬 추가 이벤트 콜
+    void CallEventOfAddtiveScene(eSceneType eType)
     {
-        return SetLoadPostProcess(pComplete,
-            SceneManager.LoadSceneAsync(strSceneName, LoadSceneMode.Additive));
-    }
-
-    // 유틸 : 씬 로드 후 처리를 위한 코루틴 등록
-    AsyncOperation SetLoadPostProcess(Action<bool> pComplete, AsyncOperation pAsyncInfo)
-    {
-        if (null == pAsyncInfo)
-        {
-            Debug.LogError(string.Format("씬 로드 실패!!(SceneType : {0})", GetCurrentScene()));
-
-            if (null != pComplete)
-                pComplete(false);
-        }
-        else
-        {
-            Single.Coroutine.Async(() =>
-            {
-                if (null != pComplete)
-                    pComplete(true);
-            },
-            pAsyncInfo);
-        }
-
-        return pAsyncInfo;
-    }
-    
-    // 유틸 : 등록된 콜백인가?
-    bool IsAddEvent(Action<eSceneType, eSceneType> pAction)
-    {
-        return m_pEventToChangeScene.Contains(pAction);
-    }
-
-    // 유틸 : 씬 변경이 시작될때 알려달라고 한 곳에 알려주자
-    void SendCallback(eSceneType eCurrent, eSceneType eChange)
-    {
-        SHUtils.ForToList(m_pEventToChangeScene, (pAction) =>
-        {
-            if (null == pAction)
-                return;
-
-            pAction(eCurrent, eChange);
-        });
-    }
-
-    // 유틸 : 씬 변경시 처리해야할 하드한 작업들
-    void PerformanceToChangeScene(eSceneType eCurrent, eSceneType eChange)
-    {
-        // 씬 변경 이벤트 콜
-        SendCallback(eCurrent, eChange);
-
-        // 히스토리 남기기
-        SetHistory(eChange);
-    }
-
-    // 유틸 : 씬 변경 히스토리 기록
-    void SetHistory(eSceneType eType)
-    {
-        m_pHistory.Add(new SHSceneHistory(m_eCurrentScene, eType));
-        m_eBeforeScene  = m_eCurrentScene;
-        m_eCurrentScene = eType;
+        m_pEventOfAddtiveScene.Callback(this, eType);
     }
 
     // 유틸 : 페이드 인

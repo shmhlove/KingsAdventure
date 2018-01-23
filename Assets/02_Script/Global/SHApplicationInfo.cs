@@ -66,23 +66,19 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         CheckServiceState((eResult) =>
         {
             if (eServiceState.Run != eResult)
-                Single.Scene.GoTo(eSceneType.Entrance);
+                Single.Scene.Addtive(eSceneType.Entrance, true);
         });
     }
-
-    // 시스템 : Net Disconnect
-    void OnDisconnectedFromServer(NetworkDisconnection pInfo)
-    {
-
-    }
-
+    
     // 시스템 : 업데이트
     public override void Update()
     {
         m_fDeltaTime += (Time.deltaTime - m_fDeltaTime) * 0.1f;
 
         if (true == Input.GetKeyDown(KeyCode.Escape))
+        {
             SHUtils.GameQuit();
+        }
     }
 
     // 시스템 : GUI 업데이트
@@ -102,6 +98,9 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
 
         // 어플리케이션 정보설정
         SetApplicationInfo();
+
+        // 스크린 로그 초기화
+        ScreenLog(string.Empty);
 
         // 디버그 기능
         StartCoroutine(CheckReleaseTime());
@@ -123,16 +122,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         SetSleepMode();
         SetCrittercism();
     }
-
-    // 인터페이스 : 화면 회전모드 확인
-    public bool IsLandscape()
-    {
-        return ((true == IsEditorMode()) ||
-                (Screen.orientation == ScreenOrientation.Landscape) ||
-                (Screen.orientation == ScreenOrientation.LandscapeLeft) ||
-                (Screen.orientation == ScreenOrientation.LandscapeRight));
-    }
-
+    
     // 인터페이스 : 에디터 모드 체크
     public bool IsEditorMode()
     {
@@ -144,10 +134,6 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     public RuntimePlatform GetRuntimePlatform()
     {
         return Application.platform;
-    }
-    public string GetStrToRuntimePlatform()
-    {
-        return SHHard.GetStrToPlatform(GetRuntimePlatform());
     }
     
     // 인터페이스 : 현재 서비스 상태 체크
@@ -182,6 +168,15 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     public SystemLanguage GetSystemLanguage()
     {
         return Application.systemLanguage;
+    }
+
+    // 인터페이스 : Screen Log
+    public void ScreenLog(string strLog)
+    {
+        if (null == m_pDebugText)
+            return;
+
+        m_pDebugText.text = strLog;
     }
     #endregion
 
@@ -282,7 +277,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         pStyle.fontSize = GetRatioW(20);
 
         GUI.Box(new Rect(0, (Screen.height - GetRatioH(30)), GetRatioW(250), GetRatioH(30)),
-            string.Format("{0} : {1} : {2} Scene", Single.Table.GetServiceMode(), GetRuntimePlatform(), Single.Scene.GetCurrentScene()), pStyle);
+            string.Format("{0} : {1} : {2} Scene", Single.Table.GetServiceMode(), GetRuntimePlatform(), Single.Scene.GetActiveScene()), pStyle);
 
         GUI.Box(new Rect((Screen.width * 0.5f) - (GetRatioW(120) * 0.5f), (Screen.height - GetRatioH(30)), GetRatioW(120), GetRatioH(30)),
             string.Format("Ver {0}", Single.Table.GetClientVersion()), pStyle);

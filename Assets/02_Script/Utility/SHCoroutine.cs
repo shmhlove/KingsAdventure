@@ -10,7 +10,7 @@ public class SHCoroutine : SHSingleton<SHCoroutine>
     public override void OnInitialize()
     {
         SetDontDestroy();
-        Single.Scene.AddEventToChangeScene(OnEventToChangeScene);
+        Single.Scene.AddEventOfAddtiveScene(OnEventOfAddtiveScene);
     }
     public override void OnFinalize() { }
     public override void Awake() { }
@@ -21,7 +21,7 @@ public class SHCoroutine : SHSingleton<SHCoroutine>
 
 
     #region Event Handler
-    public void OnEventToChangeScene(eSceneType eCurrentScene, eSceneType eNextScene)
+    public void OnEventOfAddtiveScene(object pSender, EventArgs vArgs)
     {
         StopAllCoroutines();
     }

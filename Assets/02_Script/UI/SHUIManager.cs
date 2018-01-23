@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,7 +17,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
     public override void OnInitialize()
     {
         SetDontDestroy();
-        Single.Scene.AddEventToChangeScene(OnEventToChangeScene);
+        Single.Scene.AddEventOfAddtiveScene(OnEventOfAddtiveScene);
         SHGameObject.SetParent(Single.Resource.GetGameObject("UIRoot_Global"), gameObject);
     }
     public override void OnFinalize()
@@ -123,7 +125,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
 
 
     #region Event Handler
-    public void OnEventToChangeScene(eSceneType eCurrentScene, eSceneType eNextScene)
+    public void OnEventOfAddtiveScene(object pSender, EventArgs vArgs)
     {
         var pDestroyPanels = new DicPanels();
         SHUtils.ForToDic(m_dicPanels, (pKey, pValue) =>

@@ -123,7 +123,7 @@ public sealed class SHEvent
         m_pHandler += pObserver;
     }
 
-    public void Del(EventHandler pObserver)
+    public void Remove(EventHandler pObserver)
     {
         m_pHandler -= pObserver;
     }

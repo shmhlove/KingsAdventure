@@ -127,7 +127,7 @@ public class SHObjectPool : SHSingleton<SHObjectPool>
         SetDontDestroy();
 
         ClearAll();
-        Single.Scene.AddEventToChangeScene(OnEventToChangeScene);
+        Single.Scene.AddEventOfAddtiveScene(OnEventOfAddtiveScene);
 
         StartCoroutine(CoroutineCheckAutoProcess());
     }
@@ -396,7 +396,7 @@ public class SHObjectPool : SHSingleton<SHObjectPool>
 
 
     #region Event Handler
-    public void OnEventToChangeScene(eSceneType eCurrentScene, eSceneType eNextScene)
+    public void OnEventOfAddtiveScene(object pSender, EventArgs vArgs)
     {
         CheckAutoReturnObject(true);
         CheckAutoDestroyObject(true);

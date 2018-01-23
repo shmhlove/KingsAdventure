@@ -7,7 +7,7 @@ using System.Collections;
 
 public static partial class SHHard
 {
-    public static eSceneType GetSceneTypeToString(string strType)
+    public static eSceneType GetSceneTypeByString(string strType)
     {
         switch(strType.ToLower())
         {
@@ -19,7 +19,7 @@ public static partial class SHHard
         return eSceneType.None;
     }
 
-    public static string GetResourceTypeToString(eResourceType eType)
+    public static string GetResourceTypeByEnum(eResourceType eType)
     {
         switch(eType)
         {
@@ -32,21 +32,8 @@ public static partial class SHHard
         }
         return string.Empty;
     }
-    public static eResourceType GetResourceTypeToEnum(string strType)
-    {
-        switch(strType.ToLower())
-        {
-            case "prefab":      return eResourceType.Prefab;
-            case "animation":   return eResourceType.Animation;
-            case "texture":     return eResourceType.Texture;
-            case "sound":       return eResourceType.Sound;
-            case "material":    return eResourceType.Material;
-            case "text":        return eResourceType.Text;
-        }
-        return eResourceType.None;
-    }
-    
-    public static eResourceType GetResourceTypeToExtension(string strExtension)
+
+    public static eResourceType GetResourceTypeByExtension(string strExtension)
     {
         switch(strExtension.ToLower())
         {
@@ -68,7 +55,7 @@ public static partial class SHHard
         return eResourceType.None;
     }
 
-    public static string GetStrToPlatform(RuntimePlatform eType)
+    public static string GetPlatformStringByEnum(RuntimePlatform eType)
     {
         switch(eType)
         {
@@ -79,7 +66,7 @@ public static partial class SHHard
     }
 
 #if UNITY_EDITOR
-    public static string GetStrToPlatform(BuildTarget eType)
+    public static string GetPlatformStringByEnum(BuildTarget eType)
     {
         switch (eType)
         {
@@ -90,7 +77,7 @@ public static partial class SHHard
     }
 #endif
 
-    public static eServiceMode GetEnumToServiceMode(string strMode)
+    public static eServiceMode GetServiceModeByString(string strMode)
     {
         switch(strMode.ToLower())
         {

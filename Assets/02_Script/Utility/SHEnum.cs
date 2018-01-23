@@ -1,4 +1,15 @@
-﻿// 국가
+﻿// 씬 종류
+public enum eSceneType
+{
+    None,
+    Entrance,
+    Patch,
+    Login,
+    Loading,
+    InGame,
+}
+
+// 국가
 public enum eNationType
 {
     Korea,
@@ -29,17 +40,6 @@ public enum eBundlePackType
     None,           // 아무것도 안함
     All,            // 전체 번들 리패킹
     Update,         // 변경된 리소스가 포함되는 번들만 패킹
-}
-
-// 씬 종류
-public enum eSceneType
-{
-    None,
-    Entrance,
-    Patch,
-    Login,
-    Loading,
-    InGame,
 }
 
 // 데이터 종류

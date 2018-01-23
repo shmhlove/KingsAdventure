@@ -75,7 +75,7 @@ public static partial class SHPath
     // 경로 : (Root : Root/GetPathToAssetBundlesMakeInfo/플랫폼/)
     public static string GetPathToAssetBundlesMakeInfo(BuildTarget eTarget)
     {
-        return string.Format("{0}/{1}/{2}", GetPathToRoot(), "AssetBundlesInfo", SHHard.GetStrToPlatform(eTarget));
+        return string.Format("{0}/{1}/{2}", GetPathToRoot(), "AssetBundlesInfo", SHHard.GetPlatformStringByEnum(eTarget));
     }
 #endif
 
@@ -83,9 +83,9 @@ public static partial class SHPath
     public static string GetPathToPersistentData()
     {
 #if UNITY_EDITOR
-        return string.Format("{0}/{1}", Application.persistentDataPath, SHHard.GetStrToPlatform(EditorUserBuildSettings.activeBuildTarget));
+        return string.Format("{0}/{1}", Application.persistentDataPath, SHHard.GetPlatformStringByEnum(EditorUserBuildSettings.activeBuildTarget));
 #else
-        return string.Format("{0}/{1}", Application.persistentDataPath, SHHard.GetStrToPlatform(Single.AppInfo.GetRuntimePlatform()));
+        return string.Format("{0}/{1}", Application.persistentDataPath, SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform()));
 #endif
     }
 

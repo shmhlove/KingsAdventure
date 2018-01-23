@@ -182,16 +182,16 @@ namespace LunarConsolePluginInternal
         };
 
         [SerializeField]
-        Object m_target;
+        Object m_target = null;
 
         [SerializeField]
-        string m_methodName;
+        string m_methodName = string.Empty;
 
         [SerializeField]
-        LunarPersistentListenerMode m_mode;
+        LunarPersistentListenerMode m_mode = LunarPersistentListenerMode.Void;
 
         [SerializeField]
-        LunarArgumentCache m_arguments;
+        LunarArgumentCache m_arguments = null;
 
         public void Invoke()
         {
@@ -388,7 +388,7 @@ namespace LunarConsolePluginInternal
 
         [SerializeField]
         [HideInInspector]
-        List<LunarConsoleActionCall> m_calls;
+        List<LunarConsoleActionCall> m_calls = new List<LunarConsoleActionCall>();
 
         void Awake()
         {
