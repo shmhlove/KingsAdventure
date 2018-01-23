@@ -11,11 +11,12 @@ public static partial class SHHard
     {
         switch(strType.ToLower())
         {
-            case "entrance":    return eSceneType.Entrance;
-            case "patch":       return eSceneType.Patch;
-            case "login":       return eSceneType.Login;
-            case "loading":     return eSceneType.Loading;
-        }
+            case "administrator": return eSceneType.Administrator;
+            case "intro":         return eSceneType.Intro;
+            case "patch":         return eSceneType.Patch;
+            case "login":         return eSceneType.Login;
+            case "loading":       return eSceneType.Loading;
+        }                        
         return eSceneType.None;
     }
 

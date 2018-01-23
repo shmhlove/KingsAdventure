@@ -62,11 +62,11 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         if (eBOOL.True != (m_eIsFocus = bIsFocus ? eBOOL.True : eBOOL.False))
             return;
 
-        // 서비스 상태 체크 후 Run이 아니면 Entrance로 보낸다.
+        // 서비스 상태 체크 후 Run이 아니면 Intro로 보낸다.
         CheckServiceState((eResult) =>
         {
             if (eServiceState.Run != eResult)
-                Single.Scene.Addtive(eSceneType.Entrance, true);
+                Single.Scene.Addtive(eSceneType.Intro, true);
         });
     }
     

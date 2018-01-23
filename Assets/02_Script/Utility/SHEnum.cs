@@ -2,7 +2,8 @@
 public enum eSceneType
 {
     None,
-    Entrance,
+    Administrator,
+    Intro,
     Patch,
     Login,
     Loading,
