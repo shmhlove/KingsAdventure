@@ -36,7 +36,7 @@ public partial class SHTableData : SHBaseData
         if (null == pTable)
             return string.Empty;
 
-        return pTable.GetConfigurationCDN();
+        return pTable.GetServerConfigPath();
     }
     public string GetClientVersion()
     {

@@ -16,10 +16,6 @@ public class SHDataManager : SHSingleton<SHDataManager>
     private SHResourceData  m_pResources = new SHResourceData();
     public SHResourceData   Resources { get { return m_pResources; } }
 
-    // 애셋번들 데이터
-    private SHAssetBundleData  m_pAssetBundle = new SHAssetBundleData();
-    public SHAssetBundleData   AssetBundle { get { return m_pAssetBundle; } }
-
     // 서버 데이터 : 로딩타임에 Req하려는 서버 데이터
     private SHServerData    m_pServer = new SHServerData();
     public SHServerData     Server { get { return m_pServer; } }
@@ -37,7 +33,6 @@ public class SHDataManager : SHSingleton<SHDataManager>
     {
         Table.OnInitialize();
         Resources.OnInitialize();
-        AssetBundle.OnInitialize();
         Server.OnInitialize();
 
         SetDontDestroy();
@@ -48,7 +43,6 @@ public class SHDataManager : SHSingleton<SHDataManager>
     {
         Table.OnFinalize();
         Resources.OnFinalize();
-        AssetBundle.OnFinalize();
     }
 
     #endregion
@@ -63,7 +57,6 @@ public class SHDataManager : SHSingleton<SHDataManager>
 
         Table.FrameMove();
         Resources.FrameMove();
-        AssetBundle.FrameMove();
         Server.FrameMove();
     }
 
@@ -148,8 +141,7 @@ public class SHDataManager : SHSingleton<SHDataManager>
         {
             Server.GetLoadList(eType),
             Table.GetLoadList(eType),
-            Resources.GetLoadList(eType),
-            AssetBundle.GetLoadList(eType)
+            Resources.GetLoadList(eType)
         };
     }
 
@@ -160,8 +152,7 @@ public class SHDataManager : SHSingleton<SHDataManager>
         {
             Server.GetPatchList(),
             Table.GetPatchList(),
-            Resources.GetPatchList(),
-            AssetBundle.GetPatchList()
+            Resources.GetPatchList()
         };
     }
 

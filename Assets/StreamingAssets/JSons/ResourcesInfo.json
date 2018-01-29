@@ -13,25 +13,17 @@
             "s_Name" : "Panel_FadeIn",
             "s_FileName" : "Panel_FadeIn.prefab",
             "s_Extension" : ".prefab",
-            "s_Size"      : "12392",
-            "s_Hash"      : "741097947E7D2A401343A2A869B4E4F0",
+            "s_Size"      : "12992",
+            "s_Hash"      : "FF56F8707992556A573DE8E868B4505B",
             "s_Path"      : "Prefab/UI/Panel/Panel_FadeIn"
         },
         {
             "s_Name" : "Panel_FadeOut",
             "s_FileName" : "Panel_FadeOut.prefab",
             "s_Extension" : ".prefab",
-            "s_Size"      : "12400",
-            "s_Hash"      : "0E92BC73E11F4BF0B36728393B43715C",
+            "s_Size"      : "12992",
+            "s_Hash"      : "41EF20810D4C2A9C14D01B4ECD85EED5",
             "s_Path"      : "Prefab/UI/Panel/Panel_FadeOut"
-        },
-        {
-            "s_Name" : "Panel_Notice",
-            "s_FileName" : "Panel_Notice.prefab",
-            "s_Extension" : ".prefab",
-            "s_Size"      : "41908",
-            "s_Hash"      : "7C282A67EB1B8F6F16E1D78C6E0DD070",
-            "s_Path"      : "Prefab/UI/Panel/Panel_Notice"
         }
     ]
 }

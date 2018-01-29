@@ -90,4 +90,14 @@ public static partial class SHHard
 
         return eServiceMode.None;
     }
+
+    public static string GetNationByEnum(eNationType eMode)
+    {
+        switch (eMode)
+        {
+            case eNationType.Korea: return "KOR";
+        }
+
+        return "KOR";
+    }
 }

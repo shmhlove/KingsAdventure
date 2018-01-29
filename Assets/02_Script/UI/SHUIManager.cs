@@ -25,11 +25,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         
     }
     #endregion
-
-
-    #region System Functions
-    #endregion
-
+    
 
     #region Interface Functions
     public void AddPanel(SHUIBasePanel pPanel, bool bIsActive)
@@ -137,20 +133,6 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         });
         
         DestoryPanel(pDestroyPanels);
-    }
-    #endregion
-
-
-    #region Temp Functions
-    public void ShowNotice_NoMake()
-    {
-        Show("Panel_Notice", new NoticeUI_Param()
-        {
-            m_eButtonType   = eNoticeButton.One,
-            m_eIconType     = eNoticeIcon.Information,
-            m_strTitle      = "알림",
-            m_strMessage    = "업데이트 예정입니다!",
-        });
     }
     #endregion
 }

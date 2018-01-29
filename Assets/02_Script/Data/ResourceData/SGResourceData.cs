@@ -260,15 +260,15 @@ public partial class SHResourceData : SHBaseData
 #endif
 
         Object pObject = null;
-        var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
-        if (null != pBundleData)
-        {
-            var pRequest = pBundleData.m_pBundle.LoadAssetAsync<T>(pTable.m_strName);
-            yield return pRequest;
+        //var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
+        //if (null != pBundleData)
+        //{
+        //    var pRequest = pBundleData.m_pBundle.LoadAssetAsync<T>(pTable.m_strName);
+        //    yield return pRequest;
 
-            pObject = pRequest.asset;
-        }
-        else
+        //    pObject = pRequest.asset;
+        //}
+        //else
         {
             var pRequest = Resources.LoadAsync<T>(pTable.m_strPath);
             yield return pRequest;
@@ -303,10 +303,10 @@ public partial class SHResourceData : SHBaseData
 #endif
 
         T pObject       = null;
-        var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
-        if (null != pBundleData)
-            pObject = pBundleData.m_pBundle.LoadAsset<T>(pTable.m_strName);
-        else
+        //var pBundleData = Single.AssetBundle.GetBundleData(Single.Table.GetBundleInfoToResourceName(pTable.m_strName));
+        //if (null != pBundleData)
+        //    pObject = pBundleData.m_pBundle.LoadAsset<T>(pTable.m_strName);
+        //else
             pObject = Resources.Load<T>(pTable.m_strPath);
 
         if (null == pObject)

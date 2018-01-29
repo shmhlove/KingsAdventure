@@ -8,7 +8,6 @@ public static class Single
     // 데이터
     public static SHDataManager             Data                { get { return SHDataManager.Instance; } }
     public static SHResourceData            Resource            { get { return Data.Resources; } }
-    public static SHAssetBundleData         AssetBundle         { get { return Data.AssetBundle; } }
     public static SHTableData               Table               { get { return Data.Table; } }
     
     // 씬

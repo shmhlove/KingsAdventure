@@ -84,12 +84,12 @@ public class JsonClientConfig : SHBaseTable
 
         SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     }
-    public void SetConfigurationCDN(string strServerConfigURL)
+    public void SetServerConfigPath(string strPath)
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
 
-        m_strServerConfigURL = strServerConfigURL;
+        m_strServerConfigURL = strPath;
     }
     public void SetServiceMode(string strServiceMode)
     {
@@ -98,7 +98,7 @@ public class JsonClientConfig : SHBaseTable
 
         m_strServiceMode = strServiceMode;
     }
-    public string GetConfigurationCDN()
+    public string GetServerConfigPath()
     {
         if (false == IsLoadTable())
             LoadJson(m_strFileName);
