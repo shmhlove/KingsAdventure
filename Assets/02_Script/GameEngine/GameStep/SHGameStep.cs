@@ -65,18 +65,21 @@ public class SHGameStep : SHBaseEngine
     #endregion
     
 
-    #region System Functions
-    #endregion
-
-
     #region Virtual Functions
     public override void OnInitialize()
     {
         m_dicSteps.Clear();
-        
-        MoveTo(eGameStep.None);
+
+        m_iCallCnt     = 0;
+        m_eBeforeStep  = eGameStep.None;
+        m_eCurrentStep = eGameStep.None;
+        m_eMoveTo      = eGameStep.None;
     }
-    public override void OnFinalize() { }
+
+    public override void OnFinalize()
+    {
+    }
+
     public override void OnFrameMove()
     {
         if (true == m_bIsPause)
@@ -128,10 +131,6 @@ public class SHGameStep : SHBaseEngine
     #endregion
 
 
-    #region Interface : Helpper
-    #endregion
-
-
     #region Utility Functions
     private void ChangeStep()
     {
@@ -155,9 +154,5 @@ public class SHGameStep : SHBaseEngine
     {
         return m_dicSteps.ContainsKey(eStep);
     }
-    #endregion
-
-
-    #region Event Handler
     #endregion
 }
