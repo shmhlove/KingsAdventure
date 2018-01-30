@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using LitJson;
 
@@ -109,8 +110,8 @@ public class SHJson
 
         if (true == string.IsNullOrEmpty(strEncodingBuff))
             return null;
-
-        return JsonMapper.ToObject(strEncodingBuff);
+        
+        return JsonMapper.ToObject(Regex.Replace(strEncodingBuff, "(?<!\r)\n", ""));
     }
 
     // 인터페이스 : Json파일 로드 체크
