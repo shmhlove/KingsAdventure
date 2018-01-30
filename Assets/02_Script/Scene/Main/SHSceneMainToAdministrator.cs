@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 using System;
 using System.Collections;
@@ -89,30 +90,63 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     AssetBundle pAssetBundle;
     public void OnClickOfDownloadBundle()
     {
-        Single.Coroutine.CachingWait(() => 
+        StartCoroutine(DownloadBundle());
+        //Single.Coroutine.CachingWait(() => 
+        //{
+        //    Single.Timer.StartDeltaTime("DownloadBundle");
+        //    string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+        //    strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
+        //    Single.Coroutine.WWW((pWWW) =>
+        //    {
+        //        if (null == pWWW.assetBundle)
+        //            return;
+
+        //        var strScenes = pWWW.assetBundle.GetAllScenePaths();
+        //        foreach (string strScene in strScenes)
+        //        {
+        //            if (true == strScene.Contains(eSceneType.Intro.ToString()))
+        //            {
+        //                strLoadScenePath = strScene;
+        //                break;
+        //            }
+        //        }
+
+        //        pAssetBundle = pWWW.assetBundle;
+        //        Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
+        //    }, WWW.LoadFromCacheOrDownload(strURL, 0));
+
+        //});
+    }
+
+    IEnumerator DownloadBundle()
+    {
+        Single.Timer.StartDeltaTime("DownloadBundle");
         {
-            Single.Timer.StartDeltaTime("DownloadBundle");
-            string strPath = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-            var strScenePath = string.Format("{0}/AssetBundles/scene/{1}.scene", strPath, eSceneType.Intro.ToString().ToLower());
-            Single.Coroutine.WWW((pWWW) =>
+            while (false == Caching.ready)
+                yield return null;
+
+            string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+            strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
+            UnityWebRequest pRequest = UnityWebRequest.Get(strURL);
+            pRequest.chunkedTransfer = true;
+            yield return pRequest.Send();
+
+            if (pRequest.isError)
             {
-                if (null == pWWW.assetBundle)
-                    return;
+                Debug.LogErrorFormat("Download Bundle Error is {0}", pRequest.error);
+            }
+            else
+            {
+                //var Async = AssetBundle.LoadFromMemoryAsync(pRequest.downloadHandler.data);
+                //while (false == Async.isDone)
+                //    yield return null;
 
-                var strScenes = pWWW.assetBundle.GetAllScenePaths();
-                foreach (string strScene in strScenes)
-                {
-                    if (true == strScene.Contains(eSceneType.Intro.ToString()))
-                    {
-                        strLoadScenePath = strScene;
-                        break;
-                    }
-                }
-
-                pAssetBundle = pWWW.assetBundle;
-                Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
-            }, WWW.LoadFromCacheOrDownload(strScenePath, 0));
-        });
+                // pAssetBundle = Async.assetBundle;
+                // pAssetBundle = ((DownloadHandlerAssetBundle)pRequest.downloadHandler).assetBundle;
+                pAssetBundle = DownloadHandlerAssetBundle.GetContent(pRequest);
+            }
+        }
+        Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
     }
 
     public void OnClickOfLoadSceneByBundle()

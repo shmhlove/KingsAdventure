@@ -13,19 +13,16 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
 
     #region Virtual Functions
-    // 다양화 : 초기화
     public override void OnInitialize()
     {
         SetDontDestroy();
     }
-
-    // 다양화 : 종료
+    
     public override void OnFinalize() { }
     #endregion
 
 
     #region Interface Functions
-    // 인터페이스 : 씬 추가
     public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<eSceneType> pCallback = null)
     {
         if (true == IsLoadedScene(eType))
@@ -36,52 +33,63 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
         Action LoadScene = () =>
         {
-            string strPath = string.Empty;
+            Single.Coroutine.CachingWait(()=> 
+            {
+                string strURL = string.Empty;
 
-            // StreamingAssets 로컬 다운로드
+                // StreamingAssets 로컬 다운로드
 #if UNITY_EDITOR || UNITY_STANDALONE
-            strPath = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
+                strURL = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
 #elif UNITY_ANDROID
-            strPath = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
+                strURL = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
 #elif UNITY_IOS
-            strPath = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
+                strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
 #endif
 
-            // CDN 다운로드
-            strPath = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-
-            var strScenePath = string.Format("{0}/AssetBundles/scene/{1}.scene", strPath, eType.ToString().ToLower());
-            Single.Coroutine.WWW((pWWW) =>
-            {
-                if (null == pWWW.assetBundle)
+                // CDN 다운로드
+                strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+                strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+                Debug.LogWarningFormat("URL : {0}", strURL);
+                Single.Coroutine.WWW((pWWW) =>
                 {
-                    pCallback(eType);
-                    return;
-                }
-                
-                var strScenes = pWWW.assetBundle.GetAllScenePaths();
-                var strLoadScenePath = string.Empty;
-                foreach (string strScene in strScenes)
-                {
-                    if (true == strScene.Contains(eType.ToString()))
+                    if (null == pWWW.assetBundle)
                     {
-                        strLoadScenePath = strScene;
-                        break;
-                    }
-                }
-
-                LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
-                {
-                    pWWW.assetBundle.Unload(false);
-
-                    if (true == bIsUseFade)
-                        PlayFadeOut(() => pCallback(eType));
-                    else
+                        Debug.LogErrorFormat("Scene bundle download error is {0}", pWWW.error);
                         pCallback(eType);
-                    
-                    CallEventOfAddtiveScene(eType);
-                });
-            }, WWW.LoadFromCacheOrDownload(strScenePath, 0));
+                        return;
+                    }
+
+                    var strScenes = pWWW.assetBundle.GetAllScenePaths();
+                    var strLoadScenePath = string.Empty;
+                    foreach (string strScene in strScenes)
+                    {
+                        if (true == strScene.Contains(eType.ToString()))
+                        {
+                            strLoadScenePath = strScene;
+                            break;
+                        }
+                    }
+
+                    if (true == string.IsNullOrEmpty(strLoadScenePath))
+                    {
+                        Debug.LogErrorFormat("Scene bundle Not matching of name");
+                        pCallback(eType);
+                        return;
+                    }
+
+                    LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
+                    {
+                        pWWW.assetBundle.Unload(false);
+
+                        if (true == bIsUseFade)
+                            PlayFadeOut(() => pCallback(eType));
+                        else
+                            pCallback(eType);
+
+                        CallEventOfAddtiveScene(eType);
+                    });
+                }, WWW.LoadFromCacheOrDownload(strURL, 0));
+            });
         };
 
         if (true == bIsUseFade)
@@ -89,8 +97,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         else
             LoadScene();
     }
-
-    // 인터페이스 : 씬 제거
+    
     public void Remove(eSceneType eType)
     {
         if (false == IsLoadedScene(eType))
@@ -99,25 +106,21 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         SceneManager.UnloadSceneAsync(eType.ToString());
     }
     
-    // 인터페이스 : 현재 로드되어 있는 씬 인가?
     public bool IsLoadedScene(eSceneType eType)
     {
         return SceneManager.GetSceneByName(eType.ToString()).isLoaded;
     }
-
-    // 인터페이스 : 현재 활성화 되어 있는 씬
+    
     public eSceneType GetActiveScene()
     {
         return SHHard.GetSceneTypeByString(SceneManager.GetActiveScene().name);
     }
-
-    // 인터페이스 : 씬 추가 이벤트 등록
+    
     public void AddEventOfAddtiveScene(EventHandler pCallback)
     {
         m_pEventOfAddtiveScene.Add(pCallback);
     }
-
-    // 인터페이스 : 씬 추가 이벤트 해제
+    
     public void RemoveEventOfAddtiveScene(EventHandler pCallback)
     {
         m_pEventOfAddtiveScene.Remove(pCallback);
@@ -126,19 +129,16 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
 
     #region Utility Functions
-    // 유틸 : 씬 로드
     void LoadProcess(AsyncOperation pAsyncInfo, Action<AsyncOperation> pDone)
     {
         Single.Coroutine.Async(() => pDone(pAsyncInfo), pAsyncInfo);
     }
     
-    // 유틸 : 씬 추가 이벤트 콜
     void CallEventOfAddtiveScene(eSceneType eType)
     {
         m_pEventOfAddtiveScene.Callback(this, eType);
     }
-
-    // 유틸 : 페이드 인
+    
     void PlayFadeIn(Action pCallback)
     {
         if (false == Single.UI.Show("Panel_FadeIn", pCallback))
@@ -149,8 +149,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
         SHCoroutine.Instance.NextUpdate(() => Single.UI.Close("Panel_FadeOut"));
     }
-
-    // 유틸 : 페이드 아웃
+    
     void PlayFadeOut(Action pCallback)
     {
         if (false == Single.UI.Show("Panel_FadeOut", pCallback))
