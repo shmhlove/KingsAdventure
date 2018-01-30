@@ -36,7 +36,22 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
         Action LoadScene = () =>
         {
-            LoadProcess(SceneManager.LoadSceneAsync(eType.ToString(), LoadSceneMode.Additive), (pAsyncOperation) =>
+            
+            var strScenePath = string.Format("{0}/AssetBundles/scene/{1}.scene", SHPath.GetPathToResources(), eType.ToString().ToLower());
+            var pAssetBundle = AssetBundle.LoadFromFile(strScenePath);
+            var strScenes = pAssetBundle.GetAllScenePaths();
+            
+            string strLoadScenePath = null;
+            foreach (string strScene in strScenes)
+            {
+                if (true == strScene.Contains(eType.ToString()))
+                {
+                    strLoadScenePath = strScene;
+                    break;
+                }
+            }
+            
+            LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
             {
                 if (true == bIsUseFade)
                     PlayFadeOut(() => pCallback(eType));
