@@ -36,30 +36,52 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
         Action LoadScene = () =>
         {
-            
-            var strScenePath = string.Format("{0}/AssetBundles/scene/{1}.scene", SHPath.GetPathToResources(), eType.ToString().ToLower());
-            var pAssetBundle = AssetBundle.LoadFromFile(strScenePath);
-            var strScenes = pAssetBundle.GetAllScenePaths();
-            
-            string strLoadScenePath = null;
-            foreach (string strScene in strScenes)
-            {
-                if (true == strScene.Contains(eType.ToString()))
-                {
-                    strLoadScenePath = strScene;
-                    break;
-                }
-            }
-            
-            LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
-            {
-                if (true == bIsUseFade)
-                    PlayFadeOut(() => pCallback(eType));
-                else
-                    pCallback(eType);
+            string strPath = string.Empty;
 
-                CallEventOfAddtiveScene(eType);
-            });
+            // StreamingAssets 로컬 다운로드
+#if UNITY_EDITOR || UNITY_STANDALONE
+            strPath = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
+#elif UNITY_ANDROID
+            strPath = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
+#elif UNITY_IOS
+            strPath = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
+#endif
+
+            // CDN 다운로드
+            strPath = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+
+            var strScenePath = string.Format("{0}/AssetBundles/scene/{1}.scene", strPath, eType.ToString().ToLower());
+            Single.Coroutine.WWW((pWWW) =>
+            {
+                if (null == pWWW.assetBundle)
+                {
+                    pCallback(eType);
+                    return;
+                }
+                
+                var strScenes = pWWW.assetBundle.GetAllScenePaths();
+                var strLoadScenePath = string.Empty;
+                foreach (string strScene in strScenes)
+                {
+                    if (true == strScene.Contains(eType.ToString()))
+                    {
+                        strLoadScenePath = strScene;
+                        break;
+                    }
+                }
+
+                LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
+                {
+                    pWWW.assetBundle.Unload(false);
+
+                    if (true == bIsUseFade)
+                        PlayFadeOut(() => pCallback(eType));
+                    else
+                        pCallback(eType);
+                    
+                    CallEventOfAddtiveScene(eType);
+                });
+            }, WWW.LoadFromCacheOrDownload(strScenePath, 0));
         };
 
         if (true == bIsUseFade)

@@ -117,7 +117,19 @@ public class SHCoroutine : SHSingleton<SHCoroutine>
         while (false == pWWW.isDone);
         return pWWW;
     }
-    
+    public void CachingWait(Action pAction)
+    {
+        StartCoroutine(InvokeToCachingWait(pAction));
+    }
+    IEnumerator InvokeToCachingWait(Action pAction)
+    {
+        while (false == Caching.ready)
+            yield return null;
+
+        if (null != pAction)
+            pAction.Invoke();
+    }
+
 
     //yield return new AsyncOperation : 비동기 작업이 끝날 때 까지 대기 (씬로딩)
     //-----------------------------------------------
