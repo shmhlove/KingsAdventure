@@ -101,17 +101,19 @@ public class SHJson
     {
         if (true == string.IsNullOrEmpty(strBuff))
             return null;
-            
+
+        strBuff = Regex.Replace(strBuff, "(?<!\\r)\\n", "");
+
         MemoryStream pStream = new MemoryStream(Encoding.UTF8.GetBytes(strBuff));
         StreamReader pReader = new StreamReader(pStream, true);
-        string strEncodingBuff = pReader.ReadToEnd();
+        string strEncodingBuff = pReader.ReadToEnd().Trim();
         pReader.Close();
         pStream.Close();
 
         if (true == string.IsNullOrEmpty(strEncodingBuff))
             return null;
         
-        return JsonMapper.ToObject(Regex.Replace(strEncodingBuff, "(?<!\r)\n", ""));
+        return JsonMapper.ToObject(strEncodingBuff.TrimEnd());
     }
 
     // 인터페이스 : Json파일 로드 체크
