@@ -120,9 +120,9 @@ class SHBuildScript
 
     static string GetServerConfigPath(eNationType eNation)
     {
-        
-        return string.Format("{0}/{1}/{2}/ServerConfig.json", 
-            "http://blueasa.synology.me/home/shmhlove", SHHard.GetNationByEnum(eNation), Application.productName);
+        return string.Empty;
+        //return string.Format("{0}/{1}/{2}/ServerConfig.json", 
+        //    "http://blueasa.synology.me/home/shmhlove", SHHard.GetNationByEnum(eNation), Application.productName);
     }
 
     static string[] FindEnabledEditorScenes()

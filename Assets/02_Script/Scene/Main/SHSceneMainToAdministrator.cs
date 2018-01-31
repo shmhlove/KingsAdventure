@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 using System;
+using System.IO;
+using System.Text;
 using System.Collections;
 
 public class SHSceneMainToAdministrator : SHMonoWrapper
@@ -86,7 +88,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Scene.Remove(eSceneType.InGame);
     }
 
-    string strLoadScenePath;
     AssetBundle pAssetBundle;
     public void OnClickOfDownloadBundle()
     {
@@ -121,37 +122,72 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     IEnumerator DownloadBundle()
     {
         Single.Timer.StartDeltaTime("DownloadBundle");
-        {
-            while (false == Caching.ready)
-                yield return null;
+        //{
+        //    while (false == Caching.ready)
+        //        yield return null;
 
-            string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-            strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
-            UnityWebRequest pRequest = UnityWebRequest.Get(strURL);
-            pRequest.chunkedTransfer = true;
-            yield return pRequest.Send();
+        //    string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+        //    strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
+        //    UnityWebRequest pRequest = UnityWebRequest.Get(strURL);
+        //    pRequest.chunkedTransfer = true;
+        //    yield return pRequest.Send();
 
-            if (pRequest.isError)
-            {
-                Debug.LogErrorFormat("Download Bundle Error is {0}", pRequest.error);
-            }
-            else
-            {
-                //var Async = AssetBundle.LoadFromMemoryAsync(pRequest.downloadHandler.data);
-                //while (false == Async.isDone)
-                //    yield return null;
+        //    if (pRequest.isError)
+        //    {
+        //        Debug.LogErrorFormat("Download Bundle Error is {0}", pRequest.error);
+        //    }
+        //    else
+        //    {
+        //        //var Async = AssetBundle.LoadFromMemoryAsync(pRequest.downloadHandler.data);
+        //        //while (false == Async.isDone)
+        //        //    yield return null;
 
-                // pAssetBundle = Async.assetBundle;
-                // pAssetBundle = ((DownloadHandlerAssetBundle)pRequest.downloadHandler).assetBundle;
-                pAssetBundle = DownloadHandlerAssetBundle.GetContent(pRequest);
-            }
-        }
+        //        // pAssetBundle = Async.assetBundle;
+        //        // pAssetBundle = ((DownloadHandlerAssetBundle)pRequest.downloadHandler).assetBundle;
+        //        pAssetBundle = DownloadHandlerAssetBundle.GetContent(pRequest);
+        //    }
+        //}
+
+        string strURL = "https://blueasa.synology.me:5000/home/shmhlove/KOR/KingsAdventure/AOS/AssetBundles/scene/intro.scene";
+        strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
+        UnityWebRequest request = UnityWebRequest.Get(strURL);
+        yield return request.Send();
+
+        SHUtils.CreateDirectory(SHPath.GetPathToPersistentAssetBundle());
+        
+        FileStream fs = new FileStream(string.Format("{0}/{1}.scene", SHPath.GetPathToPersistentAssetBundle(), eSceneType.Intro.ToString().ToLower()), System.IO.FileMode.Create);
+        fs.Write(request.downloadHandler.data, 0, (int)request.downloadedBytes);
+        fs.Close();
+        
         Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
     }
 
     public void OnClickOfLoadSceneByBundle()
     {
         Single.Timer.StartDeltaTime("LoadSceneByBundle");
+        
+        var myLoadedAssetBundle = AssetBundle.LoadFromFile(string.Format("{0}/{1}.scene", SHPath.GetPathToPersistentAssetBundle(), eSceneType.Intro.ToString().ToLower()));
+        if (myLoadedAssetBundle == null)
+        {
+            Debug.Log("Failed to load AssetBundle!");
+            return;
+        }
+        else
+        {
+            Debug.Log("Successed to load AssetBundle!");
+        }
+
+        var strScenes = myLoadedAssetBundle.GetAllScenePaths();
+        var strLoadScenePath = string.Empty;
+        foreach (string strScene in strScenes)
+        {
+            if (true == strScene.Contains(eSceneType.Intro.ToString()))
+            {
+                strLoadScenePath = strScene;
+                break;
+            }
+        }
+        
         Single.Coroutine.Async(() => 
         {
             Debug.LogErrorFormat("Load Scene By Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("LoadSceneByBundle"));

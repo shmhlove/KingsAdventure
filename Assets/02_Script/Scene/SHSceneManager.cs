@@ -45,10 +45,16 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 #elif UNITY_IOS
                 strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
 #endif
+                strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+
 
                 // CDN 다운로드
-                strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-                strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+                //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+                //strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+                //strURL = "http://blueasa.synology.me:5000/index.cgi?launchApp=SYNO.SDS.App.FileStation3.Instance&launchParam=openfile%3D%252Fhome%252Fshmhlove%252FKOR%252FKingsAdventure%252FAOS%252FAssetBundles%252Fscene%252F{0}.scene";
+                //strURL = string.Format(strURL, eType.ToString().ToLower());
+                //strURL = "https://drive.google.com/file/d/1NMgY5mSwCsg9gG06J-xfVQAAQ2Kewknn/view?usp=sharing";
+
                 Debug.LogWarningFormat("URL : {0}", strURL);
                 Single.Coroutine.WWW((pWWW) =>
                 {

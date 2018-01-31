@@ -89,6 +89,12 @@ public static partial class SHPath
 #endif
     }
 
+    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/AssetBundle)
+    public static string GetPathToPersistentAssetBundle()
+    {
+        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "AssetBundle");
+    }
+
     // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/Byte)
     public static string GetPathToPersistentByte()
     {
