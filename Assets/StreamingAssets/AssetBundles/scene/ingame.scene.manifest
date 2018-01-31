@@ -1,0 +1,14 @@
+ManifestFileVersion: 0
+CRC: 3473809803
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: df0c44bbc7687ac7edf1e63dc6974da4
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
+HashAppended: 0
+ClassTypes: []
+Assets:
+- Assets/01_Scene/InGame.unity
+Dependencies: []
