@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="firebase_database_url" translatable="false">https://kingsadventure-c004a.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">757372116968</string>
+  <string name="google_storage_bucket" translatable="false">kingsadventure-c004a.appspot.com</string>
+  <string name="project_id" translatable="false">kingsadventure-c004a</string>
+  <string name="google_api_key" translatable="false">AIzaSyDouWnFRe_ZpQyfEDyD5_IPtqDBYGWGVJ4</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDouWnFRe_ZpQyfEDyD5_IPtqDBYGWGVJ4</string>
+  <string name="google_app_id" translatable="false">1:757372116968:android:9d4affa239fd566d</string>
+  <string name="default_web_client_id" translatable="false">757372116968-229b0hmn00p7hisbj7t0afsdd2m2hk8k.apps.googleusercontent.com</string>
+</resources>
