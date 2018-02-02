@@ -251,6 +251,9 @@ public abstract class SHBaseTable
         if (null == pNode)
             return string.Empty;
 
+        if (false == pNode.Keys.Contains(strKey))
+            return string.Empty;
+
         if (JsonType.String != pNode[strKey].GetJsonType())
             return string.Empty;
 
@@ -260,6 +263,9 @@ public abstract class SHBaseTable
     public int GetIntToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
+            return 0;
+
+        if (false == pNode.Keys.Contains(strKey))
             return 0;
 
         if ((JsonType.Int != pNode[strKey].GetJsonType()) &&
@@ -275,6 +281,9 @@ public abstract class SHBaseTable
         if (null == pNode)
             return 0.0f;
 
+        if (false == pNode.Keys.Contains(strKey))
+            return 0.0f;
+
         if ((JsonType.Int != pNode[strKey].GetJsonType()) &&
             (JsonType.Long != pNode[strKey].GetJsonType()) &&
             (JsonType.Double != pNode[strKey].GetJsonType()))
@@ -286,6 +295,9 @@ public abstract class SHBaseTable
     public bool GetBoolToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
+            return false;
+
+        if (false == pNode.Keys.Contains(strKey))
             return false;
 
         if (JsonType.Boolean != pNode[strKey].GetJsonType())
