@@ -127,7 +127,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
             string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
             strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
-            UnityWebRequest pRequest = UnityWebRequest.Get(strURL);
+            UnityWebRequest pRequest = UnityWebRequest.GetAssetBundle(strURL);
             pRequest.chunkedTransfer = true;
             yield return pRequest.Send();
 
