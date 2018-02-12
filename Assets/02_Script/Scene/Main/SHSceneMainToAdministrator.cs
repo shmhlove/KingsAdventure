@@ -116,11 +116,11 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
         //    StorageReference pStorageRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-c004a.appspot.com/");
 
-            string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-            strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
-            UnityWebRequest pRequest = UnityWebRequest.GetAssetBundle(strURL);
-            pRequest.chunkedTransfer = true;
-            yield return pRequest.Send();
+        // string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+        // strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
+        // UnityWebRequest pRequest = UnityWebRequest.GetAssetBundle(strURL);
+        // pRequest.chunkedTransfer = true;
+        // yield return pRequest.Send();
 
         //    // Create a reference to the file you want to upload
         //    StorageReference RiversRef = pStorageRef.Child("AssetBundles/scene/intro.scene");
@@ -156,15 +156,16 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         // 파일 다운로드
         {
             // Get a reference to the storage service, using the default Firebase App
-            Firebase.Storage.FirebaseStorage pStorage = Firebase.Storage.FirebaseStorage.DefaultInstance;
+            FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
             
             // This is equivalent to creating the full reference
-            Firebase.Storage.StorageReference space_ref = pStorage.GetReferenceFromUrl(
+            StorageReference pSpaceRef = pStorage.GetReferenceFromUrl(
                 "gs://kingsadventure-c004a.appspot.com/AssetBundles/scene/intro.scene");
             
             // Create a reference from an HTTPS URL
             // Note that in the URL, characters are URL escaped!
-            StorageReference pHttpsRef = pStorage.GetReferenceFromUrl("https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
+            StorageReference pHttpsRef = pStorage.GetReferenceFromUrl(
+                "https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
 
             // Fetch the download URL
             pHttpsRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
