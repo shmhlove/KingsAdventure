@@ -1,0 +1,14 @@
+ManifestFileVersion: 0
+CRC: 3341887423
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6c262eededd9a946d61cbfae93cdbee9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
+HashAppended: 0
+ClassTypes: []
+Assets:
+- Assets/01_Scene/Loading.unity
+Dependencies: []

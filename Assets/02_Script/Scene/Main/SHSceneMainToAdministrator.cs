@@ -3,7 +3,12 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 using System;
+using System.IO;
+using System.Text;
 using System.Collections;
+using System.Threading.Tasks;
+
+using Firebase.Storage;
 
 public class SHSceneMainToAdministrator : SHMonoWrapper
 {
@@ -86,44 +91,30 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Scene.Remove(eSceneType.InGame);
     }
 
-    string strLoadScenePath;
-    AssetBundle pAssetBundle;
-    public void OnClickOfDownloadBundle()
+    public void OnClickOfFirebaseStorage()
     {
-        StartCoroutine(DownloadBundle());
-        //Single.Coroutine.CachingWait(() => 
+        //// 참조 얻기
         //{
-        //    Single.Timer.StartDeltaTime("DownloadBundle");
-        //    string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-        //    strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
-        //    Single.Coroutine.WWW((pWWW) =>
-        //    {
-        //        if (null == pWWW.assetBundle)
-        //            return;
+        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
+        //    StorageReference pStorageRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-c004a.appspot.com/");
+        //    StorageReference pSceneBundleRef = pStorageRef.Child("AssetBundles/scene");
+        //}
 
-        //        var strScenes = pWWW.assetBundle.GetAllScenePaths();
-        //        foreach (string strScene in strScenes)
-        //        {
-        //            if (true == strScene.Contains(eSceneType.Intro.ToString()))
-        //            {
-        //                strLoadScenePath = strScene;
-        //                break;
-        //            }
-        //        }
+        //// 참조 만들기
+        //{
+        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
 
-        //        pAssetBundle = pWWW.assetBundle;
-        //        Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
-        //    }, WWW.LoadFromCacheOrDownload(strURL, 0));
+        //    // Create a root reference
+        //    StorageReference pStorageRef = pStorage.GetReference("gs://kingsadventure-c004a.appspot.com/");
 
-        //});
-    }
+        //    // Create a reference to "mountains.jpg"
+        //    StorageReference pSceneBundleRef = pStorageRef.Child("AssetBundles/scene/intro.scene");
+        //}
 
-    IEnumerator DownloadBundle()
-    {
-        Single.Timer.StartDeltaTime("DownloadBundle");
-        {
-            while (false == Caching.ready)
-                yield return null;
+        //// 파일 업로드
+        //{
+        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
+        //    StorageReference pStorageRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-c004a.appspot.com/");
 
             string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
             strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
@@ -131,39 +122,65 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             pRequest.chunkedTransfer = true;
             yield return pRequest.Send();
 
-            if (pRequest.isError)
-            {
-                Debug.LogErrorFormat("Download Bundle Error is {0}", pRequest.error);
-            }
-            else
-            {
-                //var Async = AssetBundle.LoadFromMemoryAsync(pRequest.downloadHandler.data);
-                //while (false == Async.isDone)
-                //    yield return null;
+        //    // Create a reference to the file you want to upload
+        //    StorageReference RiversRef = pStorageRef.Child("AssetBundles/scene/intro.scene");
 
-                // pAssetBundle = Async.assetBundle;
-                // pAssetBundle = ((DownloadHandlerAssetBundle)pRequest.downloadHandler).assetBundle;
-                pAssetBundle = DownloadHandlerAssetBundle.GetContent(pRequest);
-            }
-        }
-        Debug.LogErrorFormat("Download Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("DownloadBundle"));
-    }
+        //    // Upload the file to the path
+        //    var pProgress = RiversRef.PutFileAsync(strLocalFile).ContinueWith((Task<StorageMetadata> pTask) =>
+        //    {
+        //        if (pTask.IsFaulted || pTask.IsCanceled)
+        //        {
+        //            Debug.Log(pTask.Exception.ToString());
+        //            // Uh-oh, an error occurred!
+        //        }
+        //        else
+        //        {
+        //            // Metadata contains file metadata such as size, content-type, and download URL.
+        //            StorageMetadata pMetadata = pTask.Result;
+        //            string download_url = pMetadata.DownloadUrl.ToString();
+        //            Debug.Log("Finished uploading...");
+        //            Debug.Log("download url = " + download_url);
+        //        }
+        //    });
 
-    public void OnClickOfLoadSceneByBundle()
-    {
-        Single.Timer.StartDeltaTime("LoadSceneByBundle");
-        Single.Coroutine.Async(() => 
+        //    // Progress
+        //    pProgress.ContinueWith(pResultTask =>
+        //    {
+        //        if ((false == pResultTask.IsFaulted) && (false == pResultTask.IsCanceled))
+        //        {
+        //            Debug.Log("Upload finished.");
+        //        }
+        //    });
+        //}
+
+        // 파일 다운로드
         {
-            Debug.LogErrorFormat("Load Scene By Bundle Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("LoadSceneByBundle"));
-        }, SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive));
-    }
+            // Get a reference to the storage service, using the default Firebase App
+            Firebase.Storage.FirebaseStorage pStorage = Firebase.Storage.FirebaseStorage.DefaultInstance;
+            
+            // This is equivalent to creating the full reference
+            Firebase.Storage.StorageReference space_ref = pStorage.GetReferenceFromUrl(
+                "gs://kingsadventure-c004a.appspot.com/AssetBundles/scene/intro.scene");
+            
+            // Create a reference from an HTTPS URL
+            // Note that in the URL, characters are URL escaped!
+            StorageReference pHttpsRef = pStorage.GetReferenceFromUrl("https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
 
-    public void OnClickOfUnLoadBundle()
-    {
-        if (null == pAssetBundle)
-            return;
+            // Fetch the download URL
+            pHttpsRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
+            {
+                if (!pTask.IsFaulted && !pTask.IsCanceled)
+                {
+                    Debug.Log("Download URL: " + pTask.Result);
 
-        pAssetBundle.Unload(false);
-        pAssetBundle = null;
+                    // ... now download the file via WWW or UnityWebRequest.
+                    Single.Coroutine.WWW((pWWW) => 
+                    {
+                        Debug.Log("Download Complate");
+                    }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
+                    
+                }
+            });
+        }
     }
 }

@@ -251,12 +251,26 @@ public abstract class SHBaseTable
         if (null == pNode)
             return string.Empty;
 
+        if (false == pNode.Keys.Contains(strKey))
+            return string.Empty;
+
+        if (JsonType.String != pNode[strKey].GetJsonType())
+            return string.Empty;
+
         return (string)pNode[strKey];
     }
     // 유틸함수 : Json에서 int데이터 얻기
     public int GetIntToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
+            return 0;
+
+        if (false == pNode.Keys.Contains(strKey))
+            return 0;
+
+        if ((JsonType.Int != pNode[strKey].GetJsonType()) &&
+            (JsonType.Long != pNode[strKey].GetJsonType()) &&
+            (JsonType.Double != pNode[strKey].GetJsonType()))
             return 0;
 
         return (int)pNode[strKey];
@@ -267,12 +281,26 @@ public abstract class SHBaseTable
         if (null == pNode)
             return 0.0f;
 
+        if (false == pNode.Keys.Contains(strKey))
+            return 0.0f;
+
+        if ((JsonType.Int != pNode[strKey].GetJsonType()) &&
+            (JsonType.Long != pNode[strKey].GetJsonType()) &&
+            (JsonType.Double != pNode[strKey].GetJsonType()))
+            return 0.0f;
+
         return (float)pNode[strKey];
     }
     // 유틸함수 : Json에서 bool데이터 얻기
     public bool GetBoolToJson(JsonData pNode, string strKey)
     {
         if (null == pNode)
+            return false;
+
+        if (false == pNode.Keys.Contains(strKey))
+            return false;
+
+        if (JsonType.Boolean != pNode[strKey].GetJsonType())
             return false;
 
         return (bool)pNode[strKey];
@@ -282,7 +310,7 @@ public abstract class SHBaseTable
     {
         if ((null == pArray) || (3 > pArray.Count))
             return Vector3.zero;
-
+        
         return new Vector3((float)pArray[0],
                            (float)pArray[1],
                            (float)pArray[2]);
