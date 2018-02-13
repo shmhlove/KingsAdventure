@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>757372116968-u1lh05h1njc27n4vnihrb31lvg3ta2hq.apps.googleusercontent.com</string>
+	<string>647752013233-di3gjn656rrve2tem6frvecsrb090fp6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.757372116968-u1lh05h1njc27n4vnihrb31lvg3ta2hq</string>
+	<string>com.googleusercontent.apps.647752013233-di3gjn656rrve2tem6frvecsrb090fp6</string>
 	<key>API_KEY</key>
-	<string>AIzaSyARoUdq3Oh21j4BoGwJ6UU1iWkoOxPurEI</string>
+	<string>AIzaSyCEIRIm0Kt3eHb0AHeCX1m2F0YTy1KOy0I</string>
 	<key>GCM_SENDER_ID</key>
-	<string>757372116968</string>
+	<string>647752013233</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.mangogames.kingsadventure</string>
 	<key>PROJECT_ID</key>
-	<string>kingsadventure-c004a</string>
+	<string>kingsadventure-4e10d</string>
 	<key>STORAGE_BUCKET</key>
-	<string>kingsadventure-c004a.appspot.com</string>
+	<string>kingsadventure-4e10d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:757372116968:ios:9d4affa239fd566d</string>
+	<string>1:647752013233:ios:9d4affa239fd566d</string>
 	<key>DATABASE_URL</key>
-	<string>https://kingsadventure-c004a.firebaseio.com</string>
+	<string>https://kingsadventure-4e10d.firebaseio.com</string>
 </dict>
 </plist>
