@@ -30,8 +30,8 @@ class SHiOSFixupFiles
 
     public static void FixFirebaseCode(string strPath)
     {
-        string strFullPath = Path.Combine(strPath, Path.Combine("Classes", "UnityAppController.mm"));
-        string strData = Load(strFullPath);
+        // string strFullPath = Path.Combine(strPath, Path.Combine("Classes", "UnityAppController.mm"));
+        // string strData = Load(strFullPath);
 
         // if (!Regex.IsMatch(strData, "<NcMobileSdkBase/NcMobileSdkBase.h>"))
         // {
@@ -45,6 +45,6 @@ class SHiOSFixupFiles
         //     );
         // }
 
-        Save(strFullPath, strData);
+        // Save(strFullPath, strData);
     }
 }
