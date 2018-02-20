@@ -33,17 +33,17 @@ class SHiOSFixupFiles
         string strFullPath = Path.Combine(strPath, Path.Combine("Classes", "UnityAppController.mm"));
         string strData = Load(strFullPath);
 
-        if (!Regex.IsMatch(strData, "<NcMobileSdkBase/NcMobileSdkBase.h>"))
-        {
-            strData = Regex.Replace(strData,
-                "#import\\s+\"UnityAppController.h\"\\s*\n",
-                "#import \"UnityAppController.h\"\n" +
-                AutoGenerateMessageBegin + "\n" +
-                "#import <NcMobileSdkBase/NcMobileSdkBase.h>\n" +
-                "#import <UserNotifications/UserNotifications.h>\n" +
-                AutoGenerateMessageEnd + "\n"
-            );
-        }
+        // if (!Regex.IsMatch(strData, "<NcMobileSdkBase/NcMobileSdkBase.h>"))
+        // {
+        //     strData = Regex.Replace(strData,
+        //         "#import\\s+\"UnityAppController.h\"\\s*\n",
+        //         "#import \"UnityAppController.h\"\n" +
+        //         AutoGenerateMessageBegin + "\n" +
+        //         "#import <NcMobileSdkBase/NcMobileSdkBase.h>\n" +
+        //         "#import <UserNotifications/UserNotifications.h>\n" +
+        //         AutoGenerateMessageEnd + "\n"
+        //     );
+        // }
 
         Save(strFullPath, strData);
     }
