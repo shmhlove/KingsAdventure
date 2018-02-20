@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "757372116968",
-    "firebase_url": "https://kingsadventure-c004a.firebaseio.com",
-    "project_id": "kingsadventure-c004a",
-    "storage_bucket": "kingsadventure-c004a.appspot.com"
+    "project_number": "647752013233",
+    "firebase_url": "https://kingsadventure-4e10d.firebaseio.com",
+    "project_id": "kingsadventure-4e10d",
+    "storage_bucket": "kingsadventure-4e10d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:757372116968:android:9d4affa239fd566d",
+        "mobilesdk_app_id": "1:647752013233:android:9d4affa239fd566d",
         "android_client_info": {
           "package_name": "com.mangogames.kingsadventure"
         }
       },
       "oauth_client": [
         {
-          "client_id": "757372116968-229b0hmn00p7hisbj7t0afsdd2m2hk8k.apps.googleusercontent.com",
+          "client_id": "647752013233-gap5f3koictklv02bgt81p7r2nc8l0nn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDouWnFRe_ZpQyfEDyD5_IPtqDBYGWGVJ4"
+          "current_key": "AIzaSyCsP8AfgP8aFOfCbL_ytZZDURoayV8GnLE"
         }
       ],
       "services": {

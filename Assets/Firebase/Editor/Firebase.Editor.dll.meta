@@ -3,9 +3,9 @@ guid: 9f2edbf81053418f879076c05f816dc2
 labels:
 - gvh
 - gvh_targets-editor
-- gvh_version-4.4.1
-timeCreated: 1517454253
-licenseType: Free
+- gvh_version-4.4.2
+timeCreated: 1519097303
+licenseType: Pro
 PluginImporter:
   serializedVersion: 1
   iconMap: {}

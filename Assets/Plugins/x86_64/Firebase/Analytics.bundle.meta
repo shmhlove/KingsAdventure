@@ -3,7 +3,7 @@ guid: 041d332f4c74419ab5ec636abcd0282f
 labels:
 - gvh
 - gvh_linuxlibname-Analytics
-- gvh_version-4.4.1
+- gvh_version-4.4.2
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
