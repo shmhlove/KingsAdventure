@@ -6,9 +6,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
-using Firebase.Storage;
+//using Firebase.Storage;
 
 public class SHSceneMainToAdministrator : SHMonoWrapper
 {
@@ -154,34 +154,34 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         //}
 
         // 파일 다운로드
-        {
-            // Get a reference to the storage service, using the default Firebase App
-            FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
+        // {
+        //     // Get a reference to the storage service, using the default Firebase App
+        //     FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
             
-            // This is equivalent to creating the full reference
-            StorageReference pSpaceRef = pStorage.GetReferenceFromUrl(
-                "gs://kingsadventure-c004a.appspot.com/AssetBundles/scene/intro.scene");
+        //     // This is equivalent to creating the full reference
+        //     StorageReference pSpaceRef = pStorage.GetReferenceFromUrl(
+        //         "gs://kingsadventure-c004a.appspot.com/AssetBundles/scene/intro.scene");
             
-            // Create a reference from an HTTPS URL
-            // Note that in the URL, characters are URL escaped!
-            StorageReference pHttpsRef = pStorage.GetReferenceFromUrl(
-                "https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
+        //     // Create a reference from an HTTPS URL
+        //     // Note that in the URL, characters are URL escaped!
+        //     StorageReference pHttpsRef = pStorage.GetReferenceFromUrl(
+        //         "https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
 
-            // Fetch the download URL
-            pHttpsRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
-            {
-                if (!pTask.IsFaulted && !pTask.IsCanceled)
-                {
-                    Debug.Log("Download URL: " + pTask.Result);
+        //     // Fetch the download URL
+        //     pHttpsRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
+        //     {
+        //         if (!pTask.IsFaulted && !pTask.IsCanceled)
+        //         {
+        //             Debug.Log("Download URL: " + pTask.Result);
 
-                    // ... now download the file via WWW or UnityWebRequest.
-                    Single.Coroutine.WWW((pWWW) => 
-                    {
-                        Debug.Log("Download Complate");
-                    }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
+        //             // ... now download the file via WWW or UnityWebRequest.
+        //             Single.Coroutine.WWW((pWWW) => 
+        //             {
+        //                 Debug.Log("Download Complate");
+        //             }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
                     
-                }
-            });
-        }
+        //         }
+        //     });
+        // }
     }
 }
