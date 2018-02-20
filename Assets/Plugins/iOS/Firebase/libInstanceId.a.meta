@@ -1,11 +1,8 @@
 fileFormatVersion: 2
-guid: 192ba027105e4d5d8c10dbed8de2ffe8
+guid: a31808b4a8044f79a3fac94c69a5e28a
 labels:
 - gvh
-- gvh_targets-editor
-- gvh_version-1.2.61.0
-timeCreated: 1519104218
-licenseType: Pro
+- gvh_version-4.4.2
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -17,13 +14,12 @@ PluginImporter:
       enabled: 0
       settings: {}
     Editor:
-      enabled: 1
-      settings:
-        DefaultValueInitialized: true
-    WindowsStoreApps:
       enabled: 0
       settings:
-        CPU: AnyCPU
+        DefaultValueInitialized: true
+    iOS:
+      enabled: 1
+      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
