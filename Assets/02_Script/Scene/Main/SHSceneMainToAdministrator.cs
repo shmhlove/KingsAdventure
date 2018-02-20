@@ -6,9 +6,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
-//using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-//using Firebase.Storage;
+using Firebase.Storage;
 
 public class SHSceneMainToAdministrator : SHMonoWrapper
 {
@@ -154,34 +154,39 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         //}
 
         // 파일 다운로드
-        // {
-        //     // Get a reference to the storage service, using the default Firebase App
-        //     FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
-            
-        //     // This is equivalent to creating the full reference
-        //     StorageReference pSpaceRef = pStorage.GetReferenceFromUrl(
-        //         "gs://kingsadventure-c004a.appspot.com/AssetBundles/scene/intro.scene");
-            
-        //     // Create a reference from an HTTPS URL
-        //     // Note that in the URL, characters are URL escaped!
-        //     StorageReference pHttpsRef = pStorage.GetReferenceFromUrl(
-        //         "https://firebasestorage.googleapis.com/b/bucket/o/AssetBundles%20scene%20intro.scene");
+        {
+            FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
 
-        //     // Fetch the download URL
-        //     pHttpsRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
-        //     {
-        //         if (!pTask.IsFaulted && !pTask.IsCanceled)
-        //         {
-        //             Debug.Log("Download URL: " + pTask.Result);
+            StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-4e10d.appspot.com/");
+            StorageReference pSceneRef = pRootRef.Child("/AssetBundles/scene/");
+            StorageReference pIntroRef = pSceneRef.Child("intro.scene");
+            
+            Debug.LogFormat("Root Path : {0}", pRootRef.Path);
+            Debug.LogFormat("Root Name : {0}", pRootRef.Name);
+            Debug.LogFormat("Root Bucket : {0}", pRootRef.Bucket);
 
-        //             // ... now download the file via WWW or UnityWebRequest.
-        //             Single.Coroutine.WWW((pWWW) => 
-        //             {
-        //                 Debug.Log("Download Complate");
-        //             }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
-                    
-        //         }
-        //     });
-        // }
+            Debug.LogFormat("Scene Path : {0}", pSceneRef.Path);
+            Debug.LogFormat("Scene Name : {0}", pSceneRef.Name);
+            Debug.LogFormat("Scene Bucket : {0}", pSceneRef.Bucket);
+
+            Debug.LogFormat("Intro Path : {0}", pIntroRef.Path);
+            Debug.LogFormat("Intro Name : {0}", pIntroRef.Name);
+            Debug.LogFormat("Intro Bucket : {0}", pIntroRef.Bucket);
+
+            pIntroRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
+            {
+                Debug.Log("Done GetDownloadUrl");
+
+                if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
+                {
+                    Debug.LogFormat("Download Path is {0}", pTask.Result);
+
+                    Single.Coroutine.WWW((pWWW) => 
+                    {
+                        Debug.Log("Intro Scene Bundle Download Complate");
+                    }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
+                }
+            });
+        }
     }
 }
