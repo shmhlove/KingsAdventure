@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Firebase.Storage;
@@ -93,66 +94,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFirebaseStorage()
     {
-        //// 참조 얻기
-        //{
-        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
-        //    StorageReference pStorageRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-c004a.appspot.com/");
-        //    StorageReference pSceneBundleRef = pStorageRef.Child("AssetBundles/scene");
-        //}
-
-        //// 참조 만들기
-        //{
-        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
-
-        //    // Create a root reference
-        //    StorageReference pStorageRef = pStorage.GetReference("gs://kingsadventure-c004a.appspot.com/");
-
-        //    // Create a reference to "mountains.jpg"
-        //    StorageReference pSceneBundleRef = pStorageRef.Child("AssetBundles/scene/intro.scene");
-        //}
-
-        //// 파일 업로드
-        //{
-        //    FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
-        //    StorageReference pStorageRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-c004a.appspot.com/");
-
-        // string strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-        // strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eSceneType.Intro.ToString().ToLower());
-        // UnityWebRequest pRequest = UnityWebRequest.GetAssetBundle(strURL);
-        // pRequest.chunkedTransfer = true;
-        // yield return pRequest.Send();
-
-        //    // Create a reference to the file you want to upload
-        //    StorageReference RiversRef = pStorageRef.Child("AssetBundles/scene/intro.scene");
-
-        //    // Upload the file to the path
-        //    var pProgress = RiversRef.PutFileAsync(strLocalFile).ContinueWith((Task<StorageMetadata> pTask) =>
-        //    {
-        //        if (pTask.IsFaulted || pTask.IsCanceled)
-        //        {
-        //            Debug.Log(pTask.Exception.ToString());
-        //            // Uh-oh, an error occurred!
-        //        }
-        //        else
-        //        {
-        //            // Metadata contains file metadata such as size, content-type, and download URL.
-        //            StorageMetadata pMetadata = pTask.Result;
-        //            string download_url = pMetadata.DownloadUrl.ToString();
-        //            Debug.Log("Finished uploading...");
-        //            Debug.Log("download url = " + download_url);
-        //        }
-        //    });
-
-        //    // Progress
-        //    pProgress.ContinueWith(pResultTask =>
-        //    {
-        //        if ((false == pResultTask.IsFaulted) && (false == pResultTask.IsCanceled))
-        //        {
-        //            Debug.Log("Upload finished.");
-        //        }
-        //    });
-        //}
-
         // 파일 다운로드
         {
             FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
@@ -173,6 +114,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             Debug.LogFormat("Intro Name : {0}", pIntroRef.Name);
             Debug.LogFormat("Intro Bucket : {0}", pIntroRef.Bucket);
 
+            // URL로 다운로드
             pIntroRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
             {
                 Debug.Log("Done GetDownloadUrl");
@@ -187,6 +129,37 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
                     }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
                 }
             });
+
+            // Byte 배열로 다운로드
+            //const long lMaxAllowedSize = 1 * 1024 * 1024;
+            //pIntroRef.GetBytesAsync(lMaxAllowedSize).ContinueWith((Task<byte[]> pTask) =>
+            //{
+            //    if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
+            //    {
+            //        byte[] byteFileContents = pTask.Result;
+            //        Debug.Log("Finished downloading!");
+            //    }
+            //    else
+            //    {
+            //        Debug.Log(pTask.Exception.ToString());
+            //    }
+            //});
+
+            // 스트리밍으로 다운로드
+            //pIntroRef.GetStreamAsync((pStream) =>
+            //{
+            //    Debug.Log("Finished downloading!");
+            //}, null, CancellationToken.None);
+            
+            // 로컬파일로 다운로드
+            //string strLocalURL = "file:///local/scene/intro.scene";
+            //pIntroRef.GetFileAsync(strLocalURL).ContinueWith(pTask =>
+            //{
+            //    if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
+            //    {
+            //        Debug.Log("File downloaded.");
+            //    }
+            //});
         }
     }
 }
