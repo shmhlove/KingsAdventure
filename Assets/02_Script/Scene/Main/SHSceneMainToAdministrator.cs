@@ -126,7 +126,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
                     Single.Coroutine.WWW((pWWW) => 
                     {
                         Debug.Log("Intro Scene Bundle Download Complate");
-                    }, WWW.LoadFromCacheOrDownload(pTask.Result.Host, 0));
+                    }, WWW.LoadFromCacheOrDownload(pTask.Result.AbsoluteUri, 0));
                 }
             });
 
