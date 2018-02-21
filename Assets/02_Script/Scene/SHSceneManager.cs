@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Firebase.Storage;
 
 public class SHSceneManager : SHSingleton<SHSceneManager>
 {
@@ -20,7 +24,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     
     public override void OnFinalize() { }
     #endregion
-
+    
 
     #region Interface Functions
     public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<eSceneType> pCallback = null)
@@ -35,66 +39,49 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         {
             Single.Coroutine.CachingWait(()=> 
             {
-                string strURL = string.Empty;
-
-                // StreamingAssets 로컬 다운로드
-#if UNITY_EDITOR || UNITY_STANDALONE
-                strURL = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
-#elif UNITY_ANDROID
-                strURL = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
-#elif UNITY_IOS
-                strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
-#endif
-                strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
-
-
-                // CDN 다운로드
-                //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-                //strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
-                //strURL = "http://blueasa.synology.me:5000/index.cgi?launchApp=SYNO.SDS.App.FileStation3.Instance&launchParam=openfile%3D%252Fhome%252Fshmhlove%252FKOR%252FKingsAdventure%252FAOS%252FAssetBundles%252Fscene%252F{0}.scene";
-                //strURL = string.Format(strURL, eType.ToString().ToLower());
-                //strURL = "https://drive.google.com/file/d/1NMgY5mSwCsg9gG06J-xfVQAAQ2Kewknn/view?usp=sharing";
-
-                Debug.LogWarningFormat("URL : {0}", strURL);
-                Single.Coroutine.WWW((pWWW) =>
+                GetSceneBundleURL(eType, (strURL) =>
                 {
-                    if (null == pWWW.assetBundle)
+                    Debug.LogWarningFormat("URL : {0}", strURL);
+                    Single.Coroutine.WWW((pWWW) =>
                     {
-                        Debug.LogErrorFormat("Scene bundle download error is {0}", pWWW.error);
-                        pCallback(eType);
-                        return;
-                    }
-
-                    var strScenes = pWWW.assetBundle.GetAllScenePaths();
-                    var strLoadScenePath = string.Empty;
-                    foreach (string strScene in strScenes)
-                    {
-                        if (true == strScene.Contains(eType.ToString()))
+                        if (null == pWWW.assetBundle)
                         {
-                            strLoadScenePath = strScene;
-                            break;
-                        }
-                    }
-
-                    if (true == string.IsNullOrEmpty(strLoadScenePath))
-                    {
-                        Debug.LogErrorFormat("Scene bundle Not matching of name");
-                        pCallback(eType);
-                        return;
-                    }
-
-                    LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
-                    {
-                        pWWW.assetBundle.Unload(false);
-
-                        if (true == bIsUseFade)
-                            PlayFadeOut(() => pCallback(eType));
-                        else
+                            Debug.LogErrorFormat("Scene bundle download error is {0}", pWWW.error);
                             pCallback(eType);
+                            return;
+                        }
 
-                        CallEventOfAddtiveScene(eType);
-                    });
-                }, WWW.LoadFromCacheOrDownload(strURL, 0));
+                        var strScenes = pWWW.assetBundle.GetAllScenePaths();
+                        var strLoadScenePath = string.Empty;
+                        foreach (string strScene in strScenes)
+                        {
+                            if (true == strScene.Contains(eType.ToString()))
+                            {
+                                strLoadScenePath = strScene;
+                                break;
+                            }
+                        }
+
+                        if (true == string.IsNullOrEmpty(strLoadScenePath))
+                        {
+                            Debug.LogErrorFormat("Scene bundle Not matching of name");
+                            pCallback(eType);
+                            return;
+                        }
+
+                        LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
+                        {
+                            pWWW.assetBundle.Unload(false);
+
+                            if (true == bIsUseFade)
+                                PlayFadeOut(() => pCallback(eType));
+                            else
+                                pCallback(eType);
+
+                            CallEventOfAddtiveScene(eType);
+                        });
+                    }, WWW.LoadFromCacheOrDownload(strURL, 0));
+                });
             });
         };
 
@@ -135,6 +122,44 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
 
     #region Utility Functions
+    void GetSceneBundleURL(eSceneType eType, Action<string> pCallback)
+    {
+        // string strURL = string.Empty;
+
+        // StreamingAssets 로컬 다운로드
+        //#if UNITY_EDITOR || UNITY_STANDALONE
+        //        strURL = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
+        //#elif UNITY_ANDROID
+        //        strURL = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
+        //#elif UNITY_IOS
+        //        strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
+        //#endif
+        //        strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+
+        // NAS CDN 다운로드
+        //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
+        //strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+        //strURL = "http://blueasa.synology.me:5000/index.cgi?launchApp=SYNO.SDS.App.FileStation3.Instance&launchParam=openfile%3D%252Fhome%252Fshmhlove%252FKOR%252FKingsAdventure%252FAOS%252FAssetBundles%252Fscene%252F{0}.scene";
+        //strURL = string.Format(strURL, eType.ToString().ToLower());
+        //strURL = "https://drive.google.com/file/d/1NMgY5mSwCsg9gG06J-xfVQAAQ2Kewknn/view?usp=sharing";
+
+        // Firebase에서 다운로드
+        FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
+
+        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-4e10d.appspot.com/");
+        StorageReference pSceneRef = pRootRef.Child("/AssetBundles/scene/");
+        StorageReference pBundleRef = pSceneRef.Child(string.Format("{0}.scene", eType.ToString().ToLower()));
+
+        // URL 다운로드
+        pBundleRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
+        {
+            if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
+                pCallback(pTask.Result.OriginalString);
+            else
+                pCallback(string.Empty);
+        });
+    }
+
     void LoadProcess(AsyncOperation pAsyncInfo, Action<AsyncOperation> pDone)
     {
         Single.Coroutine.Async(() => pDone(pAsyncInfo), pAsyncInfo);
