@@ -1,15 +1,15 @@
 fileFormatVersion: 2
 guid: abc6998de69a4c8992691ba6ca0f4891
-time_created: 1480838400
 labels:
 - gvh
 - gvh_linuxlibname-Auth
-- gvh_v4.4.2
+- gvh_version-4.4.2
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
   executionOrder: {}
   isPreloaded: 0
+  isOverridable: 0
   platformData:
     Android:
       enabled: 0
@@ -69,5 +69,8 @@ PluginImporter:
     iOS:
       enabled: 0
       settings:
-        CompileFlags:
-        FrameworkDependencies:
+        CompileFlags: 
+        FrameworkDependencies: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
