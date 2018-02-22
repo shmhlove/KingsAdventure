@@ -32,7 +32,7 @@ public class SHFirebaseAuth
 
         m_pAuth.StateChanged -= OnEventByAuthStateChanged;
     }
-
+    
     public void CreateAccount(string strUserEmail, string strUserPassword)
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
@@ -77,6 +77,36 @@ public class SHFirebaseAuth
 
             m_pUser = pTask.Result;
 
+            Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+                m_pUser.DisplayName, m_pUser.UserId);
+        });
+    }
+
+    public void GuestLogin()
+    {
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is GuestLogin");
+        
+        // 계전전환
+        // 1. 사용자가 가입하면 해당 사용자가 선택한 인증 제공업체의 로그인 흐름을 진행하되 메소드 호출 전까지만 진행합니다. 
+        //    예를 들어 사용자의 Google ID 토큰, Facebook 액세스 토큰 또는 이메일 주소와 비밀번호를 가져옵니다.
+        // 2. 새로운 인증 제공업체의 을 가져옵니다.
+        // 3. 개체를 로그인 사용자의 메소드에 전달합니다.
+        // * 이 방법은 임의의 계정 2개를 연결할 때도 사용할 수 있습니다.
+
+        m_pAuth.SignInAnonymouslyAsync().ContinueWith((pTask) =>
+        {
+            if (pTask.IsCanceled)
+            {
+                Debug.LogError("[SHFirebaseAuth] SignInAnonymouslyAsync was canceled.");
+                return;
+            }
+            if (pTask.IsFaulted)
+            {
+                Debug.LogError("[SHFirebaseAuth] SignInAnonymouslyAsync encountered an error: " + pTask.Exception);
+                return;
+            }
+
+            m_pUser = pTask.Result;
             Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                 m_pUser.DisplayName, m_pUser.UserId);
         });
