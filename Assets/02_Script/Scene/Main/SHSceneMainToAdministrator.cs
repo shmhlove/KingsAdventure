@@ -199,4 +199,9 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Firebase.Auth.Logout();
     }
+
+    public void OnclickOfFBAuth_GoogleLogin()
+    {
+
+    }
 }

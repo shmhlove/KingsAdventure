@@ -14,6 +14,8 @@ public class SHFirebaseAuth
 
     public void OnInitialize()
     {
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnInitialize");
+
         if (null != m_pAuth)
             return;
 
@@ -23,6 +25,8 @@ public class SHFirebaseAuth
 
     public void OnFinalize()
     {
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnFinalize");
+
         if (null == m_pAuth)
             return;
 
@@ -31,76 +35,76 @@ public class SHFirebaseAuth
 
     public void CreateAccount(string strUserEmail, string strUserPassword)
     {
-        Debug.LogWarningFormat("CreateAccount!! (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
 
         m_pAuth.CreateUserWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                Debug.LogError("[SHFirebaseAuth] CreateUserWithEmailAndPasswordAsync was canceled.");
                 return;
             }
             if (pTask.IsFaulted)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
+                Debug.LogError("[SHFirebaseAuth] CreateUserWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
                 return;
             }
 
             // Firebase user has been created.
             m_pUser = pTask.Result;
 
-            Debug.LogWarningFormat("Firebase user created successfully: {0} ({1})",
+            Debug.LogWarningFormat("[SHFirebaseAuth] Firebase user created successfully: {0} ({1})",
                 m_pUser.DisplayName, m_pUser.UserId);
         });
     }
 
     public void Login(string strUserEmail, string strUserPassword)
     {
-        Debug.LogWarningFormat("Login!! (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is Login (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
         
         m_pAuth.SignInWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                Debug.LogError("[SHFirebaseAuth] SignInWithEmailAndPasswordAsync was canceled.");
                 return;
             }
             if (pTask.IsFaulted)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
+                Debug.LogError("[SHFirebaseAuth] SignInWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
                 return;
             }
 
             m_pUser = pTask.Result;
 
-            Debug.LogWarningFormat("User signed in successfully: {0} ({1})",
+            Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                 m_pUser.DisplayName, m_pUser.UserId);
         });
     }
 
     public void Logout()
     {
-        Debug.LogWarningFormat("Logout!!");
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
 
         m_pAuth.SignOut();
     }
 
     void OnEventByAuthStateChanged(object sender, System.EventArgs eventArgs)
     {
-        Debug.LogWarningFormat("OnEventByAuthStateChanged!!");
+        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnEventByAuthStateChanged");
 
         if (m_pAuth.CurrentUser != m_pUser)
         {
             bool bIsSignedIn = (m_pUser != m_pAuth.CurrentUser) && (null != m_pAuth.CurrentUser);
             if ((false == bIsSignedIn) && (null != m_pUser))
             {
-                Debug.LogWarningFormat("Signed out " + m_pUser.UserId);
+                Debug.LogWarningFormat("[SHFirebaseAuth] Signed out " + m_pUser.UserId);
             }
 
             m_pUser = m_pAuth.CurrentUser;
             if (true == bIsSignedIn)
             {
-                Debug.LogWarningFormat("Signed in {0}, DisplayName({1}), Email({2}), PhotoURL({3})", 
+                Debug.LogWarningFormat("[SHFirebaseAuth] Signed in {0}, DisplayName({1}), Email({2}), PhotoURL({3})", 
                     m_pUser.UserId, m_pUser.DisplayName, m_pUser.Email, m_pUser.PhotoUrl);
             }
         }
