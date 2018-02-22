@@ -125,7 +125,15 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     void GetSceneBundleURL(eSceneType eType, Action<string> pCallback)
     {
         // string strURL = string.Empty;
-        string strPlatform = SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform());
+
+        var ePlatform = Single.AppInfo.GetRuntimePlatform();
+        {
+            if (RuntimePlatform.WindowsEditor == ePlatform)
+                ePlatform = RuntimePlatform.Android;
+            if (RuntimePlatform.OSXEditor == ePlatform)
+                ePlatform = RuntimePlatform.IPhonePlayer;
+        }
+        string strPlatform = SHHard.GetPlatformStringByEnum(ePlatform);
 
         // StreamingAssets 로컬 다운로드
         //#if UNITY_EDITOR || UNITY_STANDALONE
