@@ -92,7 +92,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Scene.Remove(eSceneType.InGame);
     }
 
-    public void OnClickOfFirebaseStorage()
+    public void OnClickOfFBStorage_Download()
     {
         // 파일 다운로드
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
@@ -159,5 +159,28 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         //        Debug.Log("File downloaded.");
         //    }
         //});
+    }
+
+    string m_strUserEmail;
+    public void OnSubmitOfFBAuth_Email(string strEmail)
+    {
+        m_strUserEmail = strEmail;
+    }
+
+    string m_strUserPassword;
+    public void OnSubmitOfFBAuth_Password(string strPassword)
+    {
+        m_strUserPassword = strPassword;
+    }
+
+    public void OnClickOfFBAuth_CreateAccount()
+    {
+        if (string.IsNullOrEmpty(m_strUserEmail) || string.IsNullOrEmpty(m_strUserPassword))
+        {
+            Debug.LogError("Need E-mail and Password!!!");
+            return;
+        }
+
+        Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword);
     }
 }

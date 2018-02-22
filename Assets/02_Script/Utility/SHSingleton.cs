@@ -26,6 +26,9 @@ public static class Single
     // 렌더유틸
     public static SHRenderTextureManager    RenderTexture       { get { return SHRenderTextureManager.Instance; } }
 
+    // 플랫폼
+    public static SHFirebase                Firebase            { get { return SHFirebase.Instance; } }
+
     // 유틸리티
     public static SHApplicationInfo         AppInfo             { get { return SHApplicationInfo.Instance; } }
     public static SHEventUtil               Event               { get { return SHEventUtil.Instance; } }
@@ -45,10 +48,10 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
 
     #region Virtual Functions
     // 다양화 : 초기화( 게임오브젝트에 붙은경우 Awake시, 직접 생성인 경우 Instance에 접근하는 순간 호출 됨 )
-    public abstract void OnInitialize();
+    public virtual void OnInitialize() { }
 
     // 다양화 : 종료( DontDestory가 설정된경우 어플이 종료될때, 아닌 경우에는 씬이 변경될때, 혹은 DoDestory로 명시적으로 제거할때 호출 됨 )
-    public abstract void OnFinalize();
+    public virtual void OnFinalize() { }
     #endregion
 
 
