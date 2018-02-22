@@ -183,4 +183,20 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
         Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword);
     }
+
+    public void OnClickOfFBAuth_Login()
+    {
+        if (string.IsNullOrEmpty(m_strUserEmail) || string.IsNullOrEmpty(m_strUserPassword))
+        {
+            Debug.LogError("Need E-mail and Password!!!");
+            return;
+        }
+
+        Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword);
+    }
+
+    public void OnClickOfFBAuth_Logout()
+    {
+        Single.Firebase.Auth.Logout();
+    }
 }
