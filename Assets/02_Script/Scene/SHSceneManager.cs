@@ -125,6 +125,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     void GetSceneBundleURL(eSceneType eType, Action<string> pCallback)
     {
         // string strURL = string.Empty;
+        string strPlatform = SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform());
 
         // StreamingAssets 로컬 다운로드
         //#if UNITY_EDITOR || UNITY_STANDALONE
@@ -134,22 +135,19 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         //#elif UNITY_IOS
         //        strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
         //#endif
-        //        strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
+        //        strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
 
         // NAS CDN 다운로드
-        //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure/AOS";
-        //strURL = string.Format("{0}/AssetBundles/scene/{1}.scene", strURL, eType.ToString().ToLower());
-        //strURL = "http://blueasa.synology.me:5000/index.cgi?launchApp=SYNO.SDS.App.FileStation3.Instance&launchParam=openfile%3D%252Fhome%252Fshmhlove%252FKOR%252FKingsAdventure%252FAOS%252FAssetBundles%252Fscene%252F{0}.scene";
-        //strURL = string.Format(strURL, eType.ToString().ToLower());
-        //strURL = "https://drive.google.com/file/d/1NMgY5mSwCsg9gG06J-xfVQAAQ2Kewknn/view?usp=sharing";
+        //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure";
+        //strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
 
         // Firebase에서 다운로드
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
 
         StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-4e10d.appspot.com/");
-        StorageReference pSceneRef = pRootRef.Child("/AssetBundles/scene/");
+        StorageReference pSceneRef = pRootRef.Child(string.Format("/AssetBundles/{0}/scene/", strPlatform));
         StorageReference pBundleRef = pSceneRef.Child(string.Format("{0}.scene", eType.ToString().ToLower()));
-
+        
         // URL 다운로드
         pBundleRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
         {
