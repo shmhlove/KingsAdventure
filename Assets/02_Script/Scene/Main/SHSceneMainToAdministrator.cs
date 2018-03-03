@@ -205,4 +205,9 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Firebase.Auth.GuestLogin();
     }
+
+    public void OnclickOfFBAuth_GoogleLogin()
+    {
+        Single.Firebase.Auth.GoogleLogin();
+    }
 }
