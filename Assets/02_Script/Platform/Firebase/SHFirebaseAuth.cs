@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
 
-//using GooglePlayGames;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using GooglePlayGames.BasicApi.SavedGame;
 
 public class SHFirebaseAuth
 {
@@ -166,6 +168,35 @@ public class SHFirebaseAuth
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
 
         m_pAuth.SignOut();
+    }
+
+    public bool IsLogin()
+    {
+        return Social.localUser.authenticated;
+    }
+
+    public string GetUserID()
+    {
+        if (false == IsLogin())
+            return string.Empty;
+
+        return Social.localUser.id;
+    }
+
+    public string GetUserName()
+    {
+        if (false == IsLogin())
+            return string.Empty;
+
+        return Social.localUser.userName;
+    }
+
+    public Texture2D GetProfileImage()
+    {
+        if (false == IsLogin())
+            return null;
+
+        return Social.localUser.image;
     }
 
     void OnEventByAuthStateChanged(object sender, System.EventArgs eventArgs)
