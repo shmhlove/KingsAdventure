@@ -102,6 +102,9 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         // 스크린 로그 초기화
         ScreenLog(string.Empty);
 
+        // 디바이스 정보 로그
+        PrintDeviceInfo();
+
         // 디버그 기능
         StartCoroutine(CheckReleaseTime());
     }
@@ -121,6 +124,9 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         SetCacheInfo(pClientInfo.GetCacheSize(), 30);
         SetSleepMode();
         SetCrittercism();
+
+        UnityEngine.Debug.LogFormat("ProcessID : {0}", GetProcessID());
+        UnityEngine.Debug.LogFormat("DebugPort : {0}", GetDebugPort());
     }
     
     // 인터페이스 : 에디터 모드 체크
@@ -168,6 +174,19 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     public SystemLanguage GetSystemLanguage()
     {
         return Application.systemLanguage;
+    }
+
+    // 인터페이스 : 프로세스 ID
+    public int GetProcessID()
+    {
+        var pProcess = System.Diagnostics.Process.GetCurrentProcess();
+        return pProcess.Id;
+    }
+
+    // 인터페이스 : 유니티 프로세스 포트번호 ( 디버깅용 )
+    public int GetDebugPort()
+    {
+        return 56000 + (GetProcessID() % 1000);
     }
 
     // 인터페이스 : Screen Log
@@ -276,8 +295,8 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         GUIStyle pStyle = new GUIStyle(GUI.skin.box);
         pStyle.fontSize = GetRatioW(20);
 
-        GUI.Box(new Rect(0, (Screen.height - GetRatioH(30)), GetRatioW(250), GetRatioH(30)),
-            string.Format("{0} : {1} : {2} Scene", Single.Table.GetServiceMode(), GetRuntimePlatform(), Single.Scene.GetActiveScene()), pStyle);
+        GUI.Box(new Rect(0, (Screen.height - GetRatioH(30)), GetRatioW(350), GetRatioH(30)),
+            string.Format("{0} - {1} : {2} Scene", Single.Table.GetServiceMode(), GetRuntimePlatform(), Single.Scene.GetActiveScene()), pStyle);
 
         GUI.Box(new Rect((Screen.width * 0.5f) - (GetRatioW(120) * 0.5f), (Screen.height - GetRatioH(30)), GetRatioW(120), GetRatioH(30)),
             string.Format("Ver {0}", Single.Table.GetClientVersion()), pStyle);
@@ -316,6 +335,58 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         //strInfo += string.Format("\n< CallStack >\n{0}", SHUtils.GetCallStack());
 
         m_dicRealLoadInfo[Single.Scene.GetActiveScene()].Add(strInfo);
+    }
+
+    [FuncButton]
+    public void PrintDeviceInfo()
+    {
+        string strBuff = "<color=yellow>==================Device Information==================</color>\n";
+        {
+            strBuff += string.Format("Screen.currentResolution.height : {0}\n", Screen.currentResolution.height);
+            strBuff += string.Format("Screen.currentResolution.width : {0}\n", Screen.currentResolution.width);
+            strBuff += string.Format("Screen.dpi : {0}\n", Screen.dpi);
+            strBuff += string.Format("Screen.fullScreen : {0}\n", Screen.fullScreen);
+            strBuff += string.Format("Screen.sleepTimeout : {0}\n", Screen.sleepTimeout);
+            strBuff += string.Format("Screen.width : {0}\n", Screen.width);
+            strBuff += string.Format("Screen.height : {0}\n", Screen.height);
+            strBuff += string.Format("deviceModel : {0}\n", SystemInfo.deviceModel);
+            strBuff += string.Format("deviceName : {0}\n", SystemInfo.deviceName);
+            strBuff += string.Format("deviceType : {0}\n", SystemInfo.deviceType);
+#if UNITY_EDITOR
+            strBuff += string.Format("deviceUniqueIdentifier : {0}\n", SystemInfo.deviceUniqueIdentifier);
+#endif
+            strBuff += string.Format("graphicsDeviceID : {0}\n", SystemInfo.graphicsDeviceID);
+            strBuff += string.Format("graphicsDeviceName : {0}\n", SystemInfo.graphicsDeviceName);
+            strBuff += string.Format("graphicsDeviceType : {0}\n", SystemInfo.graphicsDeviceType);
+            strBuff += string.Format("graphicsDeviceVendor : {0}\n", SystemInfo.graphicsDeviceVendor);
+            strBuff += string.Format("graphicsDeviceVendorID : {0}\n", SystemInfo.graphicsDeviceVendorID);
+            strBuff += string.Format("graphicsDeviceVersion : {0}\n", SystemInfo.graphicsDeviceVersion);
+            strBuff += string.Format("graphicsMemorySize : {0}\n", SystemInfo.graphicsMemorySize);
+            strBuff += string.Format("graphicsMultiThreaded : {0}\n", SystemInfo.graphicsMultiThreaded);
+            strBuff += string.Format("graphicsShaderLevel : {0}\n", SystemInfo.graphicsShaderLevel);
+            strBuff += string.Format("maxTextureSize : {0}\n", SystemInfo.maxTextureSize);
+            strBuff += string.Format("npotSupport : {0}\n", SystemInfo.npotSupport);
+            strBuff += string.Format("operatingSystem : {0}\n", SystemInfo.operatingSystem);
+            strBuff += string.Format("processorCount : {0}\n", SystemInfo.processorCount);
+            strBuff += string.Format("processorFrequency : {0}\n", SystemInfo.processorFrequency);
+            strBuff += string.Format("processorType : {0}\n", SystemInfo.processorType);
+            strBuff += string.Format("supportedRenderTargetCount : {0}\n", SystemInfo.supportedRenderTargetCount);
+            strBuff += string.Format("supports3DTextures : {0}\n", SystemInfo.supports3DTextures);
+            strBuff += string.Format("supportsAccelerometer : {0}\n", SystemInfo.supportsAccelerometer);
+            strBuff += string.Format("supportsComputeShaders : {0}\n", SystemInfo.supportsComputeShaders);
+            strBuff += string.Format("supportsGyroscope : {0}\n", SystemInfo.supportsGyroscope);
+            strBuff += string.Format("supportsImageEffects : {0}\n", SystemInfo.supportsImageEffects);
+            strBuff += string.Format("supportsInstancing : {0}\n", SystemInfo.supportsInstancing);
+            strBuff += string.Format("supportsLocationService : {0}\n", SystemInfo.supportsLocationService);
+            strBuff += string.Format("supportsRawShadowDepthSampling : {0}\n", SystemInfo.supportsRawShadowDepthSampling);
+            strBuff += string.Format("supportsRenderToCubemap : {0}\n", SystemInfo.supportsRenderToCubemap);
+            strBuff += string.Format("supportsShadows : {0}\n", SystemInfo.supportsShadows);
+            strBuff += string.Format("supportsSparseTextures : {0}\n", SystemInfo.supportsSparseTextures);
+            strBuff += string.Format("supportsVibration : {0}\n", SystemInfo.supportsVibration);
+            strBuff += string.Format("systemMemorySize : {0}\n", SystemInfo.systemMemorySize);
+        }
+
+        UnityEngine.Debug.Log(strBuff);
     }
     #endregion
 }
