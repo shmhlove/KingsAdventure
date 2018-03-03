@@ -12,6 +12,18 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using GooglePlayGames.BasicApi.SavedGame;
 
+/*
+Google PlayGame Service OAuth Infomation
+
+keytool -exportcert -list -v -alias kingsadventure -keystore /Users/HoYaMacBook/Documents/GitHub/KingsAdventure/GoogleKeyStore/user.keystore
+MD5: B9:F4:48:12:3B:48:81:54:D0:2C:CD:0B:E2:09:D8:D6
+SHA1: 34:10:51:81:3D:B6:8C:DC:12:9B:5B:93:04:A4:75:C3:6D:D8:2B:94
+SHA256: F2:64:7B:78:1A:E4:AC:89:A3:7A:51:9D:7F:02:61:65:2F:0E:E7:E2:84:8E:48:B5:EC:98:E8:BD:D8:17:8D:20
+
+iOS Google Key
+590366760406-l923de3j119tjefi6214dkeoqlt7nl2f.apps.googleusercontent.com
+*/
+
 public class SHFirebaseAuth
 {
     private FirebaseAuth m_pAuth;
