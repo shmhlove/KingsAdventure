@@ -58,7 +58,6 @@ public enum eDataType
 public enum eTableType
 {
     None,
-    SQLite,
     Json,
     XML,
     Byte,

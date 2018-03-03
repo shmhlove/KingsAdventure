@@ -142,7 +142,6 @@ public partial class SHTableData : SHBaseData
         //    pLoadOrder.Add(() => { return pTable.LoadXML(pTable.m_strFileName);       });
         //    pLoadOrder.Add(() => { return pTable.LoadBytes(pTable.m_strByteFileName); });
         //    pLoadOrder.Add(() => { return pTable.LoadJson(pTable.m_strFileName);      });
-        //    pLoadOrder.Add(() => { return pTable.LoadDB(pTable.m_strFileName);        });
         //}
         //else
         {
@@ -150,7 +149,6 @@ public partial class SHTableData : SHBaseData
             pLoadOrder.Add(() => { return pTable.LoadBytes(pTable.m_strByteFileName); });
             pLoadOrder.Add(() => { return pTable.LoadXML(pTable.m_strFileName);       });
             pLoadOrder.Add(() => { return pTable.LoadJson(pTable.m_strFileName);      });
-            pLoadOrder.Add(() => { return pTable.LoadDB(pTable.m_strFileName);        });
         }
 
         return pLoadOrder;

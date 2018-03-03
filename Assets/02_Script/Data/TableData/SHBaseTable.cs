@@ -15,9 +15,6 @@ public abstract class SHBaseTable
 
     // 데이터 타입
     public eDataType    m_eDataType = eDataType.LocalTable;
-
-    // SQL 데이터 Reader
-    SQLiteQuery         m_pSQLiteReader  = null;
     #endregion
 
 
@@ -28,8 +25,6 @@ public abstract class SHBaseTable
     public virtual WWW LoadWebData(Action<bool> pDone)                              { return null; }
     // 다양화(로드) : 코드로 데이터를 생성(Hard한 데이터)
     public virtual eErrorCode LoadStaticTable()                                     { return eErrorCode.Table_Not_Override; }
-    // 다양화(로드) : SQLite파일에서 로드
-    public virtual eErrorCode LoadDBTable(SQLiteQuery pTable, string strTableName)  { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : Json파일에서 로드
     public virtual eErrorCode LoadJsonTable(JsonData pJson, string strTableName)    { return eErrorCode.Table_Not_Override; }
     // 다양화(로드) : XML파일에서 로드
@@ -53,43 +48,6 @@ public abstract class SHBaseTable
         Initialize();
 
         return LoadStaticTable();
-    }
-
-    // 인터페이스 : SQLite파일 로드
-    public eErrorCode LoadDB(string strFileName) 
-    {
-        if (eErrorCode.Table_Not_Override == LoadDBTable(null, null))
-            return ClearReturn(eErrorCode.Table_Not_Override);
-        
-        SHSQLite pSQLite = new SHSQLite(strFileName);
-        if (false == pSQLite.CheckDBFile())
-            return ClearReturn(eErrorCode.Table_Not_ExsitFile);
-        
-        SQLiteQuery pTableList = pSQLite.GetTable("TableList");
-        if (null == pTableList)
-            return ClearReturn(eErrorCode.Table_Error_Grammar);
-
-        Initialize();
-
-        while (true == pTableList.Step())
-        {
-            var strTableName = pTableList.GetString("s_Table");
-            m_pSQLiteReader  = pSQLite.GetTable(strTableName);
-            var eResult      = LoadDBTable(m_pSQLiteReader, strTableName);
-            if (null != m_pSQLiteReader)
-            {
-                m_pSQLiteReader.Release();
-                m_pSQLiteReader = null;
-            }
-
-            if (eErrorCode.Succeed != eResult)
-                return ClearReturn(eResult);
-        }
-
-        pTableList.Release();
-        pSQLite.Clear();
-
-        return ClearReturn(eErrorCode.Succeed);
     }
 
     // 인터페이스 : Json파일 로드
@@ -188,11 +146,6 @@ public abstract class SHBaseTable
     // 유틸 : 로드함수가 종료될때 Reader객체를 초기화하고, 리턴될 수 있도록
     eErrorCode ClearReturn(eErrorCode errorCode)
     {
-        if (null != m_pSQLiteReader)
-            m_pSQLiteReader.Release();
-
-        m_pSQLiteReader = null;
-
         return errorCode;
     }
     
@@ -201,45 +154,9 @@ public abstract class SHBaseTable
     {
         if (eErrorCode.Table_Not_Override != LoadXMLTable(null))        return eTableType.XML;
         if (eErrorCode.Table_Not_Override != LoadJsonTable(null, null)) return eTableType.Json;
-        if (eErrorCode.Table_Not_Override != LoadDBTable(null, null))   return eTableType.SQLite;
         if (eErrorCode.Table_Not_Override != LoadBytesTable(null))      return eTableType.Byte;
 
         return eTableType.None;
-    }
-    #endregion
-
-
-    #region Interface : SQLite
-    // 유틸함수 : DB에서 String데이터 얻기
-    public string GetStrToSQL(string strKey)
-    {
-        if (null == m_pSQLiteReader)
-            return string.Empty;
-
-        return m_pSQLiteReader.GetString(strKey);
-    }
-    // 유틸함수 : DB에서 int데이터 얻기
-    public int GetIntToSQL(string strKey)
-    {
-        if (null == m_pSQLiteReader)
-            return 0;
-
-        return m_pSQLiteReader.GetInteger(strKey);
-    }
-    // 유틸함수 : DB에서 float데이터 얻기
-    public float GetFloatToSQL(string strKey)
-    {
-        if (null == m_pSQLiteReader)
-            return 0.0f;
-
-        return (float)m_pSQLiteReader.GetDouble(strKey);
-    }
-    // 유틸함수 : DB에서 vector3데이터 얻기
-    public Vector3 GetVectorToSQL(string strKey)
-    {
-        return new Vector3(GetFloatToSQL(strKey + "X"),
-                           GetFloatToSQL(strKey + "Y"), 
-                           GetFloatToSQL(strKey + "Z"));
     }
     #endregion
 
