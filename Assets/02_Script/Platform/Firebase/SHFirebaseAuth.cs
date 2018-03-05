@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
 
-#if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using GooglePlayGames.BasicApi.SavedGame;
-#endif
 
 /*
 Google PlayGame Service OAuth Infomation
@@ -152,6 +150,7 @@ public class SHFirebaseAuth
             if (false == isSucceed)
                 return;
 
+#if UNITY_ANDROID
             string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
 
             Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
@@ -172,6 +171,7 @@ public class SHFirebaseAuth
                 Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                     m_pUser.DisplayName, m_pUser.UserId);
             });
+#endif
         });
     }
 
