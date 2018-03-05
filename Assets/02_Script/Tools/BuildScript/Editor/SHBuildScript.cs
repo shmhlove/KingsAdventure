@@ -2,6 +2,8 @@
 using UnityEditor;
 
 using System;
+using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 
 class SHBuildScript
@@ -62,12 +64,19 @@ class SHBuildScript
         switch(eTarget)
         {
             case BuildTarget.Android:
+                PlayerSettings.Android.keystoreName = Path.GetFullPath(Path.Combine(Application.dataPath, "../GoogleKeyStore/user.keystore"));
+                PlayerSettings.Android.keystorePass = "lee35235";
+                PlayerSettings.Android.keyaliasName = "kingsadventure";
+                PlayerSettings.Android.keyaliasPass = "lee35235";
+                PlayerSettings.Android.bundleVersionCode = 1;
                 EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ETC;
                 break;
             case BuildTarget.iOS:
                 EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.PVRTC;
                 break;
         }
+
+        PlayerSettings.bundleIdentifier = "com.mangogames.kingsadventure";
     }
     
 	static void BuildApplication(string[] strScenes, BuildTarget eTarget, BuildOptions eOptions)
