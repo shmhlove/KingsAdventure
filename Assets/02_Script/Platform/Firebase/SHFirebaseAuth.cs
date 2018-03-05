@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
 
+#if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using GooglePlayGames.BasicApi.SavedGame;
+#endif
 
 /*
 Google PlayGame Service OAuth Infomation
@@ -28,7 +30,10 @@ public class SHFirebaseAuth
 {
     private FirebaseAuth m_pAuth;
     private FirebaseUser m_pUser;
-    //private PlayGamesClientConfiguration m_pGPGConfig;
+
+#if UNITY_ANDROID
+    private PlayGamesClientConfiguration m_pGPGConfig;
+#endif
 
     public void OnInitialize()
     {
@@ -40,10 +45,12 @@ public class SHFirebaseAuth
         m_pAuth = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
         m_pAuth.StateChanged += OnEventByAuthStateChanged;
 
-        // m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
-        // PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
-        // PlayGamesPlatform.DebugLogEnabled = true;
-        // PlayGamesPlatform.Activate();
+#if UNITY_ANDROID
+        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+#endif
     }
 
     public void OnFinalize()
@@ -138,41 +145,34 @@ public class SHFirebaseAuth
     public void GoogleLogin()
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is GoogleLogin");
+        
+        Social.localUser.Authenticate(isSucceed => 
+        {
+            Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
+            if (false == isSucceed)
+                return;
 
-        // // Google 초기화
-        // PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().RequestIdToken().Build();
-        // PlayGamesPlatform.InitializeInstance(config);
-        // PlayGamesPlatform.DebugLogEnable = true;
-        // PlayGamesPlatform.Activate();
+            string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
 
-        // // 구글로그인
-        // Social.localUser.Authenticate(isSucceed => 
-        // {
-        //     Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
-        //     if (false == isSucceed)
-        //         return;
+            Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
+            m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
+            {
+                if (pTask.IsCanceled)
+                {
+                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
+                    return;
+                }
+                if (pTask.IsFaulted)
+                {
+                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+                    return;
+                }
 
-        //     string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-
-        //     Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
-        //     m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
-        //     {
-        //         if (pTask.IsCanceled)
-        //         {
-        //             Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
-        //             return;
-        //         }
-        //         if (pTask.IsFaulted)
-        //         {
-        //             Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-        //             return;
-        //         }
-
-        //         m_pUser = pTask.Result;
-        //         Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-        //             m_pUser.DisplayName, m_pUser.UserId);
-        //     });
-        // });
+                m_pUser = pTask.Result;
+                Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+                    m_pUser.DisplayName, m_pUser.UserId);
+            });
+        });
     }
 
     public void Logout()
