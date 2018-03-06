@@ -144,7 +144,12 @@ public class SHFirebaseAuth
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
         
-//        Social.localUser.Authenticate(isSucceed => 
+        Social.localUser.Authenticate((isSucceed, strMessage) =>
+        {
+            Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}({1})", isSucceed, strMessage);
+        });
+
+//        Social.localUser.Authenticate((isSucceed) =>
 //        {
 //            Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
 //            if (false == isSucceed)
