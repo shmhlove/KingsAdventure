@@ -151,26 +151,26 @@ public class SHFirebaseAuth
                 return;
 
 #if UNITY_ANDROID
-            string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
+            //string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
 
-            Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
-            m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
-            {
-                if (pTask.IsCanceled)
-                {
-                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
-                    return;
-                }
-                if (pTask.IsFaulted)
-                {
-                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-                    return;
-                }
+            //Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
+            //m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
+            //{
+            //    if (pTask.IsCanceled)
+            //    {
+            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
+            //        return;
+            //    }
+            //    if (pTask.IsFaulted)
+            //    {
+            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+            //        return;
+            //    }
 
-                m_pUser = pTask.Result;
-                Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-                    m_pUser.DisplayName, m_pUser.UserId);
-            });
+            //    m_pUser = pTask.Result;
+            //    Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+            //        m_pUser.DisplayName, m_pUser.UserId);
+            //});
 #endif
         });
     }
