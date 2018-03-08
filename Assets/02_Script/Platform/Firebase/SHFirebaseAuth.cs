@@ -143,7 +143,14 @@ public class SHFirebaseAuth
     public void GoogleLogin()
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
-        
+
+#if UNITY_ANDROID
+        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+#endif
+
         Social.localUser.Authenticate((isSucceed, strMessage) =>
         {
             Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}({1})", isSucceed, strMessage);
