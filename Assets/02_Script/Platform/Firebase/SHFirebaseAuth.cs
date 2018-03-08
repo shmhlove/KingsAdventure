@@ -43,12 +43,12 @@ public class SHFirebaseAuth
         m_pAuth = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
         m_pAuth.StateChanged += OnEventByAuthStateChanged;
 
-#if UNITY_ANDROID
-        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
-        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-#endif
+//#if UNITY_ANDROID
+//        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+//        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
+//        PlayGamesPlatform.DebugLogEnabled = true;
+//        PlayGamesPlatform.Activate();
+//#endif
     }
 
     public void OnFinalize()
