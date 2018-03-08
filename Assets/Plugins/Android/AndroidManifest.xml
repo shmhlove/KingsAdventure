@@ -18,6 +18,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
       <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+	  <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
     </activity>
     <service android:name="com.google.firebase.messaging.MessageForwardingService"
              android:exported="false"/>
