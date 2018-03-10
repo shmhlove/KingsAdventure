@@ -33,11 +33,11 @@
     <activity android:name="com.google.games.bridge.NativeBridgeActivity"
         android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 
-  </application>
-  
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    
+  </application>
 
 </manifest>
