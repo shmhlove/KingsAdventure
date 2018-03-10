@@ -144,40 +144,35 @@ public class SHFirebaseAuth
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
 
-        Social.localUser.Authenticate((isSucceed, strMessage) =>
+        Social.localUser.Authenticate((isSucceed) =>
         {
-            Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}({1})", isSucceed, strMessage);
+            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
+            if (false == isSucceed)
+                return;
+
+#if UNITY_ANDROID
+            string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
+
+            Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
+            m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
+            {
+                if (pTask.IsCanceled)
+                {
+                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");f
+                    return;
+                }
+                if (pTask.IsFaulted)
+                {
+                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+                    return;
+                }
+
+                m_pUser = pTask.Result;
+                Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+                    m_pUser.DisplayName, m_pUser.UserId);
+            });
+#endif
         });
-
-        //        Social.localUser.Authenticate((isSucceed) =>
-        //        {
-        //            Debug.LogWarningFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
-        //            if (false == isSucceed)
-        //                return;
-
-        //#if UNITY_ANDROID
-        //            //string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-
-        //            //Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
-        //            //m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
-        //            //{
-        //            //    if (pTask.IsCanceled)
-        //            //    {
-        //            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");f
-        //            //        return;
-        //            //    }
-        //            //    if (pTask.IsFaulted)
-        //            //    {
-        //            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-        //            //        return;
-        //            //    }
-
-        //            //    m_pUser = pTask.Result;
-        //            //    Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-        //            //        m_pUser.DisplayName, m_pUser.UserId);
-        //            //});
-        //#endif
-        //        });
     }
 
     public void Logout()
