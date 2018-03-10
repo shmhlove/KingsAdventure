@@ -151,14 +151,13 @@ public class SHFirebaseAuth
                 return;
 
 #if UNITY_ANDROID
-            string strIdToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-
-            Credential credential = GoogleAuthProvider.GetCredential(strIdToken, null);
-            m_pAuth.SignInWithCredentialAsync(credential).ContinueWith(pTask => 
+            m_pAuth.SignInWithCredentialAsync(
+                GoogleAuthProvider.GetCredential(
+                    ((PlayGamesLocalUser)Social.localUser).GetIdToken(), null)).ContinueWith(pTask => 
             {
                 if (pTask.IsCanceled)
                 {
-                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");f
+                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
                     return;
                 }
                 if (pTask.IsFaulted)
