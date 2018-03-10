@@ -123,6 +123,7 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         SetFrameRate(pClientInfo.GetFrameRate());
         SetCacheInfo(pClientInfo.GetCacheSize(), 30);
         SetSleepMode();
+        SetOrientation();
         SetCrittercism();
 
         UnityEngine.Debug.LogFormat("ProcessID : {0}", GetProcessID());
@@ -217,6 +218,16 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     void SetSleepMode()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+    }
+
+    // 유틸 : 화면회전 방향 설정
+    void SetOrientation()
+    {
+        Screen.orientation = ScreenOrientation.AutoRotation;
+        Screen.autorotateToPortrait = false;
+        Screen.autorotateToPortraitUpsideDown = false;
+        Screen.autorotateToLandscapeRight = true;
+        Screen.autorotateToLandscapeLeft = true;
     }
 
     // 유틸 : 캐시크기 및 완료기간 설정
