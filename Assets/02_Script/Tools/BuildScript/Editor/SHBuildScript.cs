@@ -64,9 +64,9 @@ class SHBuildScript
         switch(eTarget)
         {
             case BuildTarget.Android:
-                PlayerSettings.Android.keystoreName = Path.GetFullPath(Path.Combine(Application.dataPath, "../GoogleKeyStore/user.keystore"));
+                PlayerSettings.Android.keystoreName = Path.GetFullPath(Path.Combine(Application.dataPath, "../GoogleKeyStore/kingsadventure.keystore"));
                 PlayerSettings.Android.keystorePass = "lee35235";
-                PlayerSettings.Android.keyaliasName = "kingsadventure";
+                PlayerSettings.Android.keyaliasName = "KingsAdventure";
                 PlayerSettings.Android.keyaliasPass = "lee35235";
                 PlayerSettings.Android.bundleVersionCode = 1;
                 EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ETC;
