@@ -1,0 +1,11 @@
+
+{
+    "ClientConfig" : {
+        "ServerConfigURL" : "",
+        "ServiceMode"     : "Dev",
+        "Version"         : "",
+        "VSyncCount"      : false,
+        "FrameRate"       : 60,
+        "CacheSize(MB)"   : 200
+    }
+}
