@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-  <string name="firebase_database_url" translatable="false">https://kingsadventure-4e10d.firebaseio.com</string>
-  <string name="gcm_defaultSenderId" translatable="false">647752013233</string>
-  <string name="google_storage_bucket" translatable="false">kingsadventure-4e10d.appspot.com</string>
-  <string name="project_id" translatable="false">kingsadventure-4e10d</string>
-  <string name="google_api_key" translatable="false">AIzaSyCsP8AfgP8aFOfCbL_ytZZDURoayV8GnLE</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCsP8AfgP8aFOfCbL_ytZZDURoayV8GnLE</string>
-  <string name="google_app_id" translatable="false">1:647752013233:android:9d4affa239fd566d</string>
-  <string name="default_web_client_id" translatable="false">647752013233-gap5f3koictklv02bgt81p7r2nc8l0nn.apps.googleusercontent.com</string>
+  <string name="firebase_database_url" translatable="false">https://kingsadventure-dev.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">1067457578719</string>
+  <string name="google_storage_bucket" translatable="false">kingsadventure-dev.appspot.com</string>
+  <string name="project_id" translatable="false">kingsadventure-dev</string>
+  <string name="google_api_key" translatable="false">AIzaSyC0zlIL1HPwraS5UXGqJrJ_FxM_w_MVsQk</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC0zlIL1HPwraS5UXGqJrJ_FxM_w_MVsQk</string>
+  <string name="google_app_id" translatable="false">1:1067457578719:android:e75b69e96dbcbffe</string>
+  <string name="default_web_client_id" translatable="false">1067457578719-hku6i59q4i9k0baqi6ei20c3bcb31q0k.apps.googleusercontent.com</string>
 </resources>

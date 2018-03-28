@@ -98,7 +98,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
 
         string strPlatform = SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform());
-        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-4e10d.appspot.com/");
+        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-dev.appspot.com/");
         StorageReference pSceneRef = pRootRef.Child(string.Format("/AssetBundles/{0}/scene/", strPlatform));
         StorageReference pIntroRef = pSceneRef.Child("intro.scene");
         

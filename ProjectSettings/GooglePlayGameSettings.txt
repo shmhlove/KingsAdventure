@@ -1,9 +1,9 @@
 lastUpgrade=00950
 proj.pluginVersion=0.9.50
-proj.AppId=590366760406
-and.BundleId=com.mangogames.kingsadventure
+proj.AppId=442552820721
+and.BundleId=com.mangogames.kingsadventure.dev
 proj.classDir=Assets
 proj.ConstantsClassName=GPGSIds
-and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--%0d%0aGoogle+Play+game+services+IDs.%0d%0aSave+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.%0d%0a--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--+app_id+--%3e%0d%0a++%3cstring+name%3d%22app_id%22%3e590366760406%3c%2fstring%3e%0d%0a++%3c%21--+package_name+--%3e%0d%0a++%3cstring+name%3d%22package_name%22%3ecom.mangogames.kingsadventure%3c%2fstring%3e%0d%0a++%3c%21--+achievement+AchievementsTest+--%3e%0d%0a++%3cstring+name%3d%22achievement_achievementstest%22%3eCgkI1rvnpJcREAIQAw%3c%2fstring%3e%0d%0a++%3c%21--+leaderboard+LeaderBoardTest+--%3e%0d%0a++%3cstring+name%3d%22leaderboard_leaderboardtest%22%3eCgkI1rvnpJcREAIQBA%3c%2fstring%3e%0d%0a%3c%2fresources%3e
-and.ClientId=590366760406-hgn2hturn09li45kevsk3ni143paoqfs.apps.googleusercontent.com
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--%0d%0aGoogle+Play+game+services+IDs.%0d%0aSave+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.%0d%0a--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--+app_id+--%3e%0d%0a++%3cstring+name%3d%22app_id%22%3e442552820721%3c%2fstring%3e%0d%0a++%3c%21--+package_name+--%3e%0d%0a++%3cstring+name%3d%22package_name%22%3ecom.mangogames.kingsadventure.dev%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ClientId=442552820721-6144dnatuhdlsu3simotfo5gqs14jmov.apps.googleusercontent.com
 android.SetupDone=true

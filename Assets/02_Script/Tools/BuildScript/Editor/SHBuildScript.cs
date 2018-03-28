@@ -76,7 +76,7 @@ class SHBuildScript
                 break;
         }
 
-        PlayerSettings.bundleIdentifier = "com.mangogames.kingsadventure";
+        PlayerSettings.bundleIdentifier = "com.mangogames.kingsadventure.dev";
     }
     
 	static void BuildApplication(string[] strScenes, BuildTarget eTarget, BuildOptions eOptions)

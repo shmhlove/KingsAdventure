@@ -7,7 +7,7 @@
     <application>
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.mangogames.kingsadventure.firebaseinitprovider"
+            android:authorities="com.mangogames.kingsadventure.dev.firebaseinitprovider"
             android:exported="false"
             android:initOrder="100" />
     </application>
