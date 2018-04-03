@@ -96,9 +96,9 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         // 파일 다운로드
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
-
+    
         string strPlatform = SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform());
-        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-dev.appspot.com/");
+        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-72926297.appspot.com/");
         StorageReference pSceneRef = pRootRef.Child(string.Format("/AssetBundles/{0}/scene/", strPlatform));
         StorageReference pIntroRef = pSceneRef.Child("intro.scene");
         
