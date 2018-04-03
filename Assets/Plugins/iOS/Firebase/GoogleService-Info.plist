@@ -7,23 +7,23 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>1067457578719-lrjqa43tidmkhhva6sqbee6m15j719fr.apps.googleusercontent.com</string>
+	<string>442552820721-sb69imh8fdahstmjp2rfibdetij9auec.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1067457578719-lrjqa43tidmkhhva6sqbee6m15j719fr</string>
+	<string>com.googleusercontent.apps.442552820721-sb69imh8fdahstmjp2rfibdetij9auec</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>1067457578719-s5fdenrn92kn4eiqs5kroqudplkg1lvu.apps.googleusercontent.com</string>
+	<string>442552820721-8mc9d205kqhr1a57m32h9fnnuq2eosal.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDmskT5OdwPsm3R2yYp5gUK7h3s7CrDy1I</string>
+	<string>AIzaSyDpkQxzKyltKIjykjpLa-PvhnCwHhkOCd0</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1067457578719</string>
+	<string>442552820721</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.mangogames.kingsadventure.dev</string>
 	<key>PROJECT_ID</key>
-	<string>kingsadventure-dev</string>
+	<string>kingsadventure-72926297</string>
 	<key>STORAGE_BUCKET</key>
-	<string>kingsadventure-dev.appspot.com</string>
+	<string>kingsadventure-72926297.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -35,8 +35,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1067457578719:ios:e75b69e96dbcbffe</string>
+	<string>1:442552820721:ios:e75b69e96dbcbffe</string>
 	<key>DATABASE_URL</key>
-	<string>https://kingsadventure-dev.firebaseio.com</string>
+	<string>https://kingsadventure-72926297.firebaseio.com</string>
 </dict>
 </plist>
