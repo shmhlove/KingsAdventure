@@ -136,7 +136,8 @@ public class SHFirebaseAuth
             return;
         }
 
-        Social.localUser.Authenticate((isSucceed) =>
+        //Social.localUser.Authenticate((isSucceed) =>
+        PlayGamesPlatform.Instance.localUser.Authenticate((isSucceed) =>
         {
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
             if (false == isSucceed)
