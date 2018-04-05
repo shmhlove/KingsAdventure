@@ -138,13 +138,16 @@ public class SHFirebaseAuth
 
 #if UNITY_ANDROID
         PlayGamesPlatform.Instance.localUser.Authenticate((isSucceed) =>
-#if UNITY_IOS
+        {
+#elif UNITY_IOS
         Social.localUser.Authenticate((isSucceed) =>
         {
+#endif
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
             if (false == isSucceed)
                 return;
 
+#if UNITY_ANDROID
             m_pAuth.SignInWithCredentialAsync(
                 GoogleAuthProvider.GetCredential(
                     ((PlayGamesLocalUser)Social.localUser).GetIdToken(), null)).ContinueWith(pTask => 
@@ -165,7 +168,7 @@ public class SHFirebaseAuth
                     m_pUser.DisplayName, m_pUser.UserId);
             });
 #endif
-    });
+        });
     }
 
     public void Logout()
