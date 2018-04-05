@@ -152,7 +152,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         // Firebase에서 다운로드
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
         
-        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-72926297.appspot.com/");
+        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-development.appspot.com/");
         StorageReference pSceneRef = pRootRef.Child(string.Format("/AssetBundles/{0}/scene/", strPlatform));
         StorageReference pBundleRef = pSceneRef.Child(string.Format("{0}.scene", eType.ToString().ToLower()));
         
