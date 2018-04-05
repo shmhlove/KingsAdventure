@@ -130,6 +130,11 @@ public class SHFirebaseAuth
     public void GoogleLogin()
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
+        if (true == Social.localUser.authenticated)
+        {
+            Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
+            return;
+        }
 
         Social.localUser.Authenticate((isSucceed) =>
         {
