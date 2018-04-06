@@ -96,7 +96,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     
         string strPlatform = SHHard.GetPlatformStringByEnum(Single.AppInfo.GetRuntimePlatform());
         StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-development.appspot.com/");
-        StorageReference pSceneRef = pRootRef.Child(string.Format("/{0}/AssetBundles/scene/", strPlatform));
+        StorageReference pSceneRef = pRootRef.Child(string.Format("/{0}/AssetBundle/scene/", strPlatform));
         StorageReference pIntroRef = pSceneRef.Child("intro.scene");
         
         Debug.LogFormat("Root Path : {0}", pRootRef.Path);
