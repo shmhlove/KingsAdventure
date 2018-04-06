@@ -47,9 +47,9 @@ public static partial class SHPath
     }
 
     // 경로 : (Root : Build/AssetBundles/[Platform])
-    public static string GetExportAssetBundle(BuildTarget eTarget)
+    public static string GetExportAssetBundle()
     {
-        return string.Format("{0}/{1}/{2}", GetBuild(), "AssetBundles", SHHard.GetPlatformStringByEnum(eTarget));
+        return string.Format("{0}/{1}", GetBuild(), "AssetBundles");
     }
     
     // 경로 : (사용자디렉토리 : /AppData/LocalLow/회사이름/프로덕트이름/플랫폼)

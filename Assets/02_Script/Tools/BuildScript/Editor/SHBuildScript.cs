@@ -98,10 +98,10 @@ class SHBuildScript
     {
         Debug.LogFormat("** [SHBuilder] AssetBundles Packing Start({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
         {
-            string strExportPath = SHPath.GetExportAssetBundle(eTarget);
+            string strExportPath = string.Format("{0}/{1}", SHPath.GetExportAssetBundle(), SHHard.GetPlatformStringByEnum(eTarget));
             SHUtils.CreateDirectory(strExportPath);
 
-            var Manifest = BuildPipeline.BuildAssetBundles(strExportPath, BuildAssetBundleOptions.None, eTarget);
+            BuildPipeline.BuildAssetBundles(strExportPath, BuildAssetBundleOptions.None, eTarget);
         }
         Debug.LogFormat("** [SHBuilder] AssetBundles Packing End({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
     }
