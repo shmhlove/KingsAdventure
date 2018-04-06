@@ -11,22 +11,13 @@ using Firebase.Storage;
 
 public class SHSceneManager : SHSingleton<SHSceneManager>
 {
-    #region Members
     private SHEvent m_pEventOfAddtiveScene = new SHEvent();
-    #endregion
 
-
-    #region Virtual Functions
     public override void OnInitialize()
     {
         SetDontDestroy();
     }
-    
-    public override void OnFinalize() { }
-    #endregion
-    
 
-    #region Interface Functions
     public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<eSceneType> pCallback = null)
     {
         if (true == IsLoadedScene(eType))
@@ -118,10 +109,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
     {
         m_pEventOfAddtiveScene.Remove(pCallback);
     }
-    #endregion
 
-
-    #region Utility Functions
     void GetSceneBundleURL(eSceneType eType, Action<string> pCallback)
     {
         // string strURL = string.Empty;
@@ -197,5 +185,4 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
         SHCoroutine.Instance.NextUpdate(() => Single.UI.Close("Panel_FadeIn"));
     }
-    #endregion
 }

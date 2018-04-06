@@ -9,19 +9,16 @@ using LitJson;
 
 public class SHResourcesInfo
 {
-    #region Members
     public string           m_strName;             // 확장자가 없는 이름
     public string           m_strFileName;         // 확장자가 있는 이름
     public string           m_strExtension;        // 확장자
     public string           m_strSize;             // 파일크기
-    //public string           m_strLastWriteTime;    // 마지막 수정날짜(리스팅 할때마다 변경되어서 그냥 제거시킴)
+    //public string           m_strLastWriteTime;    // 마지막 수정날짜 ( 리스팅 할때마다 변경되어서 그냥 제거시킴 )
     public string           m_strHash;             // 해시
     public string           m_strPath;             // Resources폴더 이하 경로
     public eResourceType    m_eResourceType;       // 리소스 타입
-    #endregion
 
 
-    #region Interface Functions
     public void CopyTo(SHResourcesInfo pData)
     {
         if (null == pData)
@@ -36,25 +33,17 @@ public class SHResourcesInfo
         m_strPath             = pData.m_strPath;
         m_eResourceType       = pData.m_eResourceType;
     }
-    #endregion
 }
 
 public class JsonResources : SHBaseTable
 {
-    #region Members
     Dictionary<string, SHResourcesInfo> m_pData = new Dictionary<string, SHResourcesInfo>();
-    #endregion
 
-
-    #region System Functions
     public JsonResources()
     {
         m_strFileName = "ResourcesInfo";
     }
-    #endregion
 
-
-    #region Virtual Functions
     public override void Initialize()
     {
         m_pData.Clear();
@@ -73,8 +62,8 @@ public class JsonResources : SHBaseTable
         int iMaxTable = pJson["ResourcesInfo"].Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            JsonData pDataNode         = pJson["ResourcesInfo"][iLoop];
-            SHResourcesInfo pData = new SHResourcesInfo();
+            JsonData pDataNode          = pJson["ResourcesInfo"][iLoop];
+            SHResourcesInfo pData       = new SHResourcesInfo();
             pData.m_strName             = GetStrToJson(pDataNode, "s_Name");
             pData.m_strFileName         = GetStrToJson(pDataNode, "s_FileName");
             pData.m_strExtension        = GetStrToJson(pDataNode, "s_Extension");
@@ -89,18 +78,7 @@ public class JsonResources : SHBaseTable
 
         return eErrorCode.Succeed;
     }
-
-    public override ICollection GetData()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        return m_pData;
-    }
-    #endregion
-
-
-    #region Interface Functions
+    
     // 인터페이스 : 파일명으로 리소스 정보얻기
     public SHResourcesInfo GetResouceInfo(string strName)
     {
@@ -145,13 +123,9 @@ public class JsonResources : SHBaseTable
     {
         return (null != GetResouceInfo(strName));
     }
-    #endregion
-
-
-    #region Utility Functions
+    
     void AddResources(string strKey, SHResourcesInfo pData)
     {
         m_pData[strKey.ToLower().Trim()] = pData;
     }
-    #endregion
 }

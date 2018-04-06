@@ -32,11 +32,6 @@ public class SHTimer : SHSingleton<SHTimer>
         m_fFixedTime      = Time.fixedTime;
         m_fFixedDeltaTime = Time.fixedDeltaTime;
     }
-
-    public override void OnFinalize()
-    {
-
-    }
     #endregion
 
 

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public partial class SHLoader
 {
-    #region Utility Functions
     void CoroutineToLoadProcess()
     {
         LoadCall();
@@ -80,10 +79,6 @@ public partial class SHLoader
         EventToDone.Callback<SHLoadingInfo>(this, m_pProgress.GetLoadingInfo());
     }
     
-    #endregion
-
-
-    #region Interface Functions
     // 로드가 완료되었는가?(성공/실패유무가 아님)
     public bool IsLoadDone()
     {
@@ -107,5 +102,4 @@ public partial class SHLoader
     {
         return m_pProgress.IsRemainLoadWaitQueue();
     }
-    #endregion
 }

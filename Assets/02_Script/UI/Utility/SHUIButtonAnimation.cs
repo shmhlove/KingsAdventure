@@ -40,11 +40,7 @@ public class SHUIButtonAnimation : SHMonoWrapper
         GetTarget().transform.localScale = m_vScale;
     }
     #endregion
-
-
-    #region Interface Functions
-    #endregion
-
+    
 
     #region Utility Functions
     GameObject GetTarget()

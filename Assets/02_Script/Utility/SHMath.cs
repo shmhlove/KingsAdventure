@@ -17,18 +17,18 @@ public static class SHMath
     }
 
     // 비율 구하기
-    public static float Percent(float fMin, float fMax, float fCurrent)
+    public static float Ratio(float fMin, float fMax, float fCurrent)
     {
         float fMaxGap       = Mathf.Clamp(fMax - fMin, 0.0f, fMax);
         float fCurrentGap   = Mathf.Clamp(fCurrent - fMin, 0.0f, fMaxGap);
 
-        return Percent(fMaxGap, fCurrentGap);
+        return Ratio(fMaxGap, fCurrentGap);
     }
-    public static int Percent(int iMax, int iCurrent)
+    public static int Ratio(int iMax, int iCurrent)
     {
-        return (int)(Percent((float)iMax, (float)iCurrent) * 100.0f);
+        return (int)(Ratio((float)iMax, (float)iCurrent) * 100.0f);
     }
-    public static float Percent(float fMax, float fCurrent)
+    public static float Ratio(float fMax, float fCurrent)
     {
         return Round(Divide(fCurrent, fMax), 2);
     }
@@ -36,9 +36,9 @@ public static class SHMath
     // Value 스왑
     public static void Swap<T>(ref T pValue1, ref T pValue2)
     {
-        T pTempValue    = pValue1;
-        pValue1         = pValue2;
-        pValue2         = pTempValue;
+        T pTempValue = pValue1;
+        pValue1      = pValue2;
+        pValue2      = pTempValue;
     }
 
     // 벡터 : 각 요소들 곱하기
@@ -64,8 +64,7 @@ public static class SHMath
     {
         if (fMax < fMin)
             Swap(ref fMin, ref fMax);
-
-        //Mathf.Lerp(fMax, fMin, fRatio)
+        
         return fMin + ((fMax - fMin) * fRatio);
     }
     public static Vector3 Lerp(Vector3 vMin, Vector3 vMax, float fRatio)
@@ -132,10 +131,10 @@ public static class SHMath
     }
 
     // LoopingNumber
-    public static int LoopingNumber(int iCur, int iInit, int iMax)
+    public static int LoopingNumber(int iCur, int iStartValue, int iEndValue)
     {
-        if (iCur >= iMax)
-            iCur = iInit;
+        if (iCur >= iEndValue)
+            iCur = iStartValue;
         return iCur;
     }
 

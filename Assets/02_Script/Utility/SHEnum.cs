@@ -26,15 +26,6 @@ public enum eServiceMode
     Dev,            // 개발용
 }
 
-// 서비스 상태
-public enum eServiceState
-{
-    None,
-    Run,            // 서비스 중
-    Check,          // 점검 중
-    ConnectMarket,  // 마켓연결
-}
-
 // 번들 패킹 타입
 public enum eBundlePackType
 {
@@ -50,7 +41,6 @@ public enum eDataType
     LocalTable,
     ServerTable,
     Resources,
-    Scene,
     AssetsBundle,
 }
 
@@ -58,6 +48,7 @@ public enum eDataType
 public enum eTableType
 {
     None,
+    Static,
     Json,
     XML,
     Byte,
@@ -100,29 +91,4 @@ public enum eDirection
     Right,
     Top,
     Bottom,
-}
-
-// 순서
-public enum eOrderNum
-{
-    None,
-    First,
-    Second,
-    Third,
-    Fourth,
-    Fifth,
-    Sixth,
-    Seventh,
-    Eighth,
-    Ninth,
-    Tenth,
-}
-
-// 판정
-public enum eDecision
-{
-    Miss,
-    Bad,
-    Normal,
-    Good,
 }

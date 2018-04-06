@@ -12,7 +12,6 @@ using System.Collections.Generic;
  */
 public class SHLoadProgress
 {
-    #region Members
     // 로드 대기 중인 데이터 정보
     private Queue<SHLoadDataStateInfo> m_qLoadDatumWaitQueue = new Queue<SHLoadDataStateInfo>();
 
@@ -34,10 +33,7 @@ public class SHLoadProgress
 
     // 로드 종료 시간
     public DateTime m_pLoadEndTime;
-    #endregion
-
-
-    #region Virtual Functions
+    
     public void Initialize()
     {
         m_qLoadDatumWaitQueue.Clear();
@@ -46,27 +42,21 @@ public class SHLoadProgress
         m_dicLoadSucceedDatum.Clear();
         m_dicLoadFailedDatum.Clear();
     }
-    #endregion
 
-
-    #region Interface Functions
     public void AddLoadDatum(Dictionary<string, SHLoadData> dicLoadDatum)
     {
         SHUtils.ForToDic(dicLoadDatum, (strName, pData) => 
         {
-            // 무결성체크
             if (null == pData)
                 return;
 
-            // 중복파일체크
             var pLoadData = GetLoadDataInfo(strName);
             if (null != pLoadData)
             {
-                Debug.LogErrorFormat("데이터 로드 중 중복파일 발견!!!(FileName : {0})", strName);
+                Debug.LogErrorFormat("[SHLoadProgress] 데이터 로드 중 중복파일 발견!!!(FileName : {0})", strName);
                 return;
             }
-
-            // 등록
+            
             AddLoadData(pData);
         });
     }
@@ -146,7 +136,6 @@ public class SHLoadProgress
 
     public float GetProgressPercent()
     {
-        // 로드가 완료되었으면 100프로
         if (false == IsDone())
             return 100.0f;
 
@@ -186,7 +175,7 @@ public class SHLoadProgress
         var pDataInfo = GetLoadDataInfo(strName);
         if (null == pDataInfo)
         {
-            Debug.LogError(string.Format("추가되지 않은 파일이 로드 되었다고 합니다~~({0})", strName));
+            Debug.LogError(string.Format("[SHLoadProgress] 추가되지 않은 파일이 로드 되었다고 합니다~~({0})", strName));
             return;
         }
 
@@ -269,10 +258,7 @@ public class SHLoadProgress
     {
         return (0 != m_qLoadDatumWaitQueue.Count);
     }
-    #endregion
-
-
-    #region Utility Functions
+    
     private void AddLoadData(SHLoadData pData)
     {
         if (null == pData)
@@ -285,5 +271,4 @@ public class SHLoadProgress
         m_qLoadDatumWaitQueue.Enqueue(pDataStateInfo);
         m_dicAllLoadDatum[pData.m_eDataType][pData.m_strName.ToLower()] = pDataStateInfo;
     }
-    #endregion
 }

@@ -12,44 +12,37 @@ using LitJson;
 
 public class SHResourcesLister
 {
-    #region Members
     // 멤버 : 리스팅된 리소스 리스트
     public Dictionary<string, SHResourcesInfo>      m_dicResources      = new Dictionary<string, SHResourcesInfo>();
 
     // 멤버 : 리스팅된 번들 리스트
-    public Dictionary<string, AssetBundleInfo>      m_dicAssetBundles   = new Dictionary<string, AssetBundleInfo>();
+    //public Dictionary<string, AssetBundleInfo>      m_dicAssetBundles   = new Dictionary<string, AssetBundleInfo>();
 
     // 멤버 : 중복파일 리스트
     public Dictionary<string, List<string>>         m_dicDuplications   = new Dictionary<string, List<string>>();
-    #endregion
 
-
-    #region Interface Functions
     // 인터페이스 : 초기화
     public void Initialize()
     {
         m_dicResources.Clear();
-        m_dicAssetBundles.Clear();
+        //m_dicAssetBundles.Clear();
         m_dicDuplications.Clear();
     }
 
-    // 인터페이스 : Resources폴더 내에 있는 파일을 SHResourceTableData형식에 맞게 Json으로 리스팅
-    public int SetListing(string strSearchPath)
+    // 인터페이스 : strSearchPath 내에 있는 모든 파일을 ResourceTableData형식에 맞게 Json으로 리스팅
+    public int Listing(string strSearchPath)
     {
-        SHUtils.Search(strSearchPath, 
-        (pFileInfo) => 
+        SHUtils.Search(strSearchPath, (pFileInfo) => 
         {
-            // 파일 정보 생성
-            SHResourcesInfo pInfo = MakeFileInfo(pFileInfo);
-            if (null == pInfo)
+            var pResourceInfo = MakeResourceInfo(pFileInfo);
+            if (null == pResourceInfo)
                 return;
             
-            // 예외체크 : 파일명 중복
-            string strDupPath = CheckToDuplication(m_dicResources, pInfo.m_strFileName);
-            if (false == string.IsNullOrEmpty(strDupPath))
+            var strDuplicationFile = CheckToDuplicationFile(m_dicResources, pResourceInfo.m_strFileName);
+            if (false == string.IsNullOrEmpty(strDuplicationFile))
             {
-                string strFirst  = string.Format("{0}", strDupPath);
-                string strSecond = string.Format("{0}", pInfo.m_strPath);
+                string strFirst  = string.Format("{0}", strDuplicationFile);
+                string strSecond = string.Format("{0}", pResourceInfo.m_strPath);
 
 #if UNITY_EDITOR
                 EditorUtility.DisplayDialog("[SHTools] Resources Listing",
@@ -57,25 +50,25 @@ public class SHResourcesLister
                     strFirst, strSecond), "확인");
 #endif
 
-                if (false == m_dicDuplications.ContainsKey(pInfo.m_strFileName))
+                if (false == m_dicDuplications.ContainsKey(pResourceInfo.m_strFileName))
                 {
-                    m_dicDuplications[pInfo.m_strFileName] = new List<string>();
-                    m_dicDuplications[pInfo.m_strFileName].Add(strFirst);
+                    m_dicDuplications[pResourceInfo.m_strFileName] = new List<string>();
+                    m_dicDuplications[pResourceInfo.m_strFileName].Add(strFirst);
                 }
 
-                m_dicDuplications[pInfo.m_strFileName].Add(strSecond);
+                m_dicDuplications[pResourceInfo.m_strFileName].Add(strSecond);
                 return;
             }
 
-            AddResourceInfo(pInfo);
-            AddAssetBundleInfo(pInfo);
+            AddResourceInfo(pResourceInfo);
+            AddAssetBundleInfo(pResourceInfo);
         });
 
         return m_dicResources.Count;
     }
 
     // 인터페이스 : 리소스 리스트를 Json형태로 쓰기
-    public static void SaveToResources(Dictionary<string, SHResourcesInfo> dicTable, string strSaveFilePath)
+    public static void SaveToResourcesInfo(Dictionary<string, SHResourcesInfo> dicTable, string strSaveFilePath)
     {
         if (0 == dicTable.Count)
             return;
@@ -97,36 +90,36 @@ public class SHResourcesLister
     }
     
     // 인터페이스 : 번들 리스트를 Json형태로 번들정보파일포맷으로 쓰기
-    public static void SaveToAssetBundleInfo(Dictionary<string, AssetBundleInfo> dicTable, string strSaveFilePath)
-    {
-        if (0 == dicTable.Count)
-            return;
+    //public static void SaveToAssetBundleInfo(Dictionary<string, AssetBundleInfo> dicTable, string strSaveFilePath)
+    //{
+    //    if (0 == dicTable.Count)
+    //        return;
 
-        var pBundleListJsonData = new JsonData();
-        SHUtils.ForToDic(dicTable, (pKey, pValue) =>
-        {
-            var pBundleJsonData = new JsonData();
-            pBundleJsonData["s_BundleName"] = pValue.m_strBundleName;
-            pBundleJsonData["s_BundleSize"] = pValue.m_lBundleSize;
-            pBundleJsonData["s_BundleHash"] = pValue.m_pHash128.ToString();
+    //    var pBundleListJsonData = new JsonData();
+    //    SHUtils.ForToDic(dicTable, (pKey, pValue) =>
+    //    {
+    //        var pBundleJsonData = new JsonData();
+    //        pBundleJsonData["s_BundleName"] = pValue.m_strBundleName;
+    //        pBundleJsonData["s_BundleSize"] = pValue.m_lBundleSize;
+    //        pBundleJsonData["s_BundleHash"] = pValue.m_pHash128.ToString();
             
-            SHUtils.ForToDic(pValue.m_dicResources, (pResKey, pResValue) =>
-            {
-                pBundleJsonData["p_Resources"].Add(MakeResourceJsonData(pResValue));
-            });
+    //        SHUtils.ForToDic(pValue.m_dicResources, (pResKey, pResValue) =>
+    //        {
+    //            pBundleJsonData["p_Resources"].Add(MakeResourceJsonData(pResValue));
+    //        });
 
-            pBundleListJsonData.Add(pBundleJsonData);
-        });
+    //        pBundleListJsonData.Add(pBundleJsonData);
+    //    });
 
-        var pJsonData = new JsonData();
-        pJsonData["AssetBundleInfo"] = pBundleListJsonData;
+    //    var pJsonData = new JsonData();
+    //    pJsonData["AssetBundleInfo"] = pBundleListJsonData;
 
-        var pJsonWriter = new JsonWriter();
-        pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
+    //    var pJsonWriter = new JsonWriter();
+    //    pJsonWriter.PrettyPrint = true;
+    //    JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-        SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
-    }
+    //    SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
+    //}
 
     // 인터페이스 : 중복파일 리스트 내보내기
     public static void SaveToDuplicationList(Dictionary<string, List<string>> dicDuplications, string strSaveFilePath)
@@ -170,10 +163,7 @@ public class SHResourcesLister
 
         return pJsonData;
     }
-    #endregion
-
-
-    #region Utility Functions
+    
     // 유틸 : 리소스 리스트 추가
     void AddResourceInfo(SHResourcesInfo pInfo)
     {
@@ -188,37 +178,37 @@ public class SHResourcesLister
     // 2. 프리팹을 제외한 모든 리소스를 번들 리스트로 등록시킴.
     void AddAssetBundleInfo(SHResourcesInfo pInfo)
     {
-        if (null == pInfo)
-            return;
+        //if (null == pInfo)
+        //    return;
 
-        if (true == CheckFilteringToAssetBundleInfo(pInfo))
-            return;
+        //if (true == CheckFilteringToAssetBundleInfo(pInfo))
+        //    return;
 
-        // 번들이름 만들기
-        string strBundleName    = "Root";
-        string[] strSplitPath   = pInfo.m_strPath.Split(new char[] { '/' });
-        if (1 < strSplitPath.Length)
-            strBundleName = strSplitPath[0];
+        //// 번들이름 만들기
+        //string strBundleName    = "Root";
+        //string[] strSplitPath   = pInfo.m_strPath.Split(new char[] { '/' });
+        //if (1 < strSplitPath.Length)
+        //    strBundleName = strSplitPath[0];
 
-        // 번들정보 생성하기
-        if (false == m_dicAssetBundles.ContainsKey(strBundleName))
-        {
-            var pBundleInfo = new AssetBundleInfo();
-            pBundleInfo.m_strBundleName = strBundleName;
-            m_dicAssetBundles.Add(strBundleName, pBundleInfo);
-        }
+        //// 번들정보 생성하기
+        //if (false == m_dicAssetBundles.ContainsKey(strBundleName))
+        //{
+        //    var pBundleInfo = new AssetBundleInfo();
+        //    pBundleInfo.m_strBundleName = strBundleName;
+        //    m_dicAssetBundles.Add(strBundleName, pBundleInfo);
+        //}
 
-        m_dicAssetBundles[strBundleName].AddResourceInfo(pInfo);
+        //m_dicAssetBundles[strBundleName].AddResourceInfo(pInfo);
     }
 
     // 유틸 : 번들로 묶지 않을 파일에 대한 필터링
     bool CheckFilteringToAssetBundleInfo(SHResourcesInfo pInfo)
     {
-        // 프리팹파일 필터링
+        // 프리팹 파일 필터링
         if (".prefab" == pInfo.m_strExtension)
             return true;
 
-        // 테이블파일 필터링
+        // 테이블 파일 필터링
         if (".bytes" == pInfo.m_strExtension)
             return true;
         
@@ -226,17 +216,17 @@ public class SHResourcesLister
     }
 
     // 유틸 : 파일로 부터 정보얻어서 테이블 데이터 객체만들기
-    SHResourcesInfo MakeFileInfo(FileInfo pFile)
-    {
+    SHResourcesInfo MakeResourceInfo(FileInfo pFile)
+    {      
+        // 예외처리 : 리스팅에서 제외할 파일
+        if (true == CheckExceptionFile(pFile))
+            return null;
+     
         // 알리아싱
         string strRoot              = "Resources";
         string strFullName          = pFile.FullName.Substring(pFile.FullName.IndexOf(strRoot) + strRoot.Length + 1).Replace ("\\", "/");
         string strExtension         = Path.GetExtension(strFullName);
-      
-        // 예외처리 : 리스팅에서 제외할 파일
-        if (true == CheckExceptionFile(pFile))
-            return null;
-        
+
         // 기록
         var pInfo                   = new SHResourcesInfo();
         pInfo.m_strName             = Path.GetFileNameWithoutExtension(strFullName);
@@ -266,7 +256,7 @@ public class SHResourcesLister
     }
 
     // 유틸 : 이름중복체크
-    string CheckToDuplication(Dictionary<string, SHResourcesInfo> dicFiles, string strFileName)
+    string CheckToDuplicationFile(Dictionary<string, SHResourcesInfo> dicFiles, string strFileName)
     {
         foreach (var kvp in dicFiles)
         {
@@ -275,5 +265,4 @@ public class SHResourcesLister
         }
         return null;
     }
-    #endregion
 }

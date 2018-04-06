@@ -4,13 +4,9 @@ using System.Collections.Generic;
 
 public class SHUIRoot_Scene : MonoBehaviour
 {
-    #region Members : Singleton
     private static Transform    m_pRoot     = null;
     private static UICamera     m_pCamera   = null;
-    #endregion
-    
 
-    #region System Functions
     void Awake()
     {
         var pPanels = gameObject.GetComponentsInChildren<SHUIBasePanel>(true);
@@ -22,6 +18,7 @@ public class SHUIRoot_Scene : MonoBehaviour
         m_pRoot   = transform;
         m_pCamera = m_pRoot.GetComponentInChildren<UICamera>();
     }
+
     void OnDestroy()
     {
         if (m_pRoot != transform)
@@ -30,10 +27,7 @@ public class SHUIRoot_Scene : MonoBehaviour
         m_pRoot   = null;
         m_pCamera = null;
     }
-    #endregion
 
-    
-    #region Interface Functions
     public static Transform GetRoot()
     {
         return m_pRoot;
@@ -43,5 +37,4 @@ public class SHUIRoot_Scene : MonoBehaviour
     {
         return m_pCamera;
     }
-    #endregion
 }

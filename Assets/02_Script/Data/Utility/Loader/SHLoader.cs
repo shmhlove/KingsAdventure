@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public partial class SHLoader
 {
-    #region Interface Functions
     public void Process(SHLoadData pLoadInfo,
         EventHandler pDone = null, EventHandler pProgress = null)
     {
@@ -16,6 +15,7 @@ public partial class SHLoader
         }, 
         pDone, pProgress);
     }
+
     public void Process(Dictionary<string, SHLoadData> pLoadList,
         EventHandler pDone = null, EventHandler pProgress = null)
     {
@@ -25,6 +25,7 @@ public partial class SHLoader
         }, 
         pDone, pProgress);
     }
+
     public void Process(List<Dictionary<string, SHLoadData>> pLoadList,
         EventHandler pDone = null, EventHandler pProgress = null)
     {
@@ -44,5 +45,4 @@ public partial class SHLoader
         CoroutineToLoadProcess();
         CoroutineToLoadProgressEvent();
     }
-    #endregion
 }

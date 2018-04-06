@@ -24,12 +24,12 @@ public static partial class SHHard
     {
         switch(eType)
         {
-            case eResourceType.Prefab:      return eResourceType.Prefab.ToString();
-            case eResourceType.Animation:   return eResourceType.Animation.ToString();
-            case eResourceType.Texture:     return eResourceType.Texture.ToString();
-            case eResourceType.Sound:       return eResourceType.Sound.ToString();
-            case eResourceType.Material:    return eResourceType.Material.ToString();
-            case eResourceType.Text:        return eResourceType.Text.ToString();
+            case eResourceType.Prefab:    return eResourceType.Prefab.ToString();
+            case eResourceType.Animation: return eResourceType.Animation.ToString();
+            case eResourceType.Texture:   return eResourceType.Texture.ToString();
+            case eResourceType.Sound:     return eResourceType.Sound.ToString();
+            case eResourceType.Material:  return eResourceType.Material.ToString();
+            case eResourceType.Text:      return eResourceType.Text.ToString();
         }
         return string.Empty;
     }
@@ -60,9 +60,9 @@ public static partial class SHHard
     {
         switch(eType)
         {
-            case RuntimePlatform.Android:        return "AOS";
-            case RuntimePlatform.IPhonePlayer:   return "IOS";
-            default:                             return "PC";
+            case RuntimePlatform.Android:      return "AOS";
+            case RuntimePlatform.IPhonePlayer: return "IOS";
+            default:                           return "PC";
         }
     }
 
@@ -71,9 +71,9 @@ public static partial class SHHard
     {
         switch (eType)
         {
-            case BuildTarget.Android:       return "AOS";
-            case BuildTarget.iOS:           return "IOS";
-            default:                        return "PC";
+            case BuildTarget.Android: return "AOS";
+            case BuildTarget.iOS:     return "IOS";
+            default:                  return "PC";
         }
     }
 #endif
@@ -82,10 +82,10 @@ public static partial class SHHard
     {
         switch(strMode.ToLower())
         {
-            case "live":     return eServiceMode.Live;
-            case "review":   return eServiceMode.Review;
-            case "qa":       return eServiceMode.QA;
-            case "dev":      return eServiceMode.Dev;
+            case "live":   return eServiceMode.Live;
+            case "review": return eServiceMode.Review;
+            case "qa":     return eServiceMode.QA;
+            case "dev":    return eServiceMode.Dev;
         }
 
         return eServiceMode.None;

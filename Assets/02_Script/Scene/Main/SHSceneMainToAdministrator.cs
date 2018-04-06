@@ -13,15 +13,12 @@ using Firebase.Storage;
 
 public class SHSceneMainToAdministrator : SHMonoWrapper
 {
-    #region System Functions
     public override void Start() 
     {
         base.Start();
         Single.AppInfo.CreateSingleton();
 	}
-    #endregion
-
-
+    
     public void OnClickOfAddtiveIntro()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");

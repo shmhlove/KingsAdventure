@@ -4,7 +4,6 @@ using System.Collections;
 
 public class SHUIPanel_Fade : SHUIBasePanel
 {
-    #region Virtual Functions
     public override void OnAfterShow(params object[] pArgs)
     {
         if ((null == pArgs) || (1 > pArgs.Length))
@@ -16,5 +15,4 @@ public class SHUIPanel_Fade : SHUIBasePanel
 
         pCallback();
     }
-    #endregion
 }

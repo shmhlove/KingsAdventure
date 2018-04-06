@@ -9,13 +9,9 @@ using System.Collections.Generic;
 
 public class SHEditorResourcesLister : Editor
 {
-    #region Members
     public static string m_strMsg_1 = "리소스 폴더를 뒤질껍니다!!\n\n완료되면 완료 메시지 출력됩니다.\n\n조금만 기다려 주세요!! 싫으면 취소...ㅠ";
     public static string m_strMsg_2 = "{0}개의 리소스 파일이 리스팅 되었습니다.!!\n\n저장경로 : {1}\n\n리스팅 시간 : {2:F2}sec";
-    #endregion
 
-
-    #region Interface Functions
     // 인터페이스 : 리소스 폴더 전체파일 리스팅 : ResourcesInfo.json, AssetBundleInfo.json, DuplicationResourcesList.txt
     [MenuItem("SHTools/Update Resources Info", false, 0)]
     [MenuItem("Assets/SHTools/Update Resources Info", false, 0)]
@@ -28,16 +24,17 @@ public class SHEditorResourcesLister : Editor
             return;
 
         // 알리아싱
-        var pStartTime          = DateTime.Now;
-        var strSaveResourcePath = string.Format("{0}/{1}", SHPath.GetPathToJson(), "ResourcesInfo.json");
-        var strSaveBundlePath   = string.Format("{0}/{1}", SHPath.GetPathToJson(), "AssetBundleInfo.json");
-        var pLister             = new SHResourcesLister();
+        var pStartTime = DateTime.Now;
+        var strSaveResourcePath = string.Format("{0}/{1}", SHPath.GetStreamingAssetsJsonTable(), "ResourcesInfo.json");
+        //var strSaveBundlePath = string.Format("{0}/{1}", SHPath.GetPathToJson(), "AssetBundleInfo.json");
+        var strSaveDuplicationPath = string.Format("{0}/{1}", SHPath.GetStreamingAssetsJsonTable(), "DuplicationResourcesList.txt");
 
         // 리스팅
-        int iFileCount = pLister.SetListing(SHPath.GetPathToResources());
-        SHResourcesLister.SaveToResources(pLister.m_dicResources, strSaveResourcePath);
-        SHResourcesLister.SaveToAssetBundleInfo(pLister.m_dicAssetBundles, strSaveBundlePath);
-        SHResourcesLister.SaveToDuplicationList(pLister.m_dicDuplications, string.Format("{0}/{1}", SHPath.GetPathToJson(), "DuplicationResourcesList.txt"));
+        var pLister = new SHResourcesLister();
+        var iFileCount = pLister.Listing(SHPath.GetResources());
+        SHResourcesLister.SaveToResourcesInfo(pLister.m_dicResources, strSaveResourcePath);
+        //SHResourcesLister.SaveToAssetBundleInfo(pLister.m_dicAssetBundles, strSaveBundlePath);
+        SHResourcesLister.SaveToDuplicationList(pLister.m_dicDuplications, strSaveDuplicationPath);
 
         // 종료팝업
         if (true == ShowDialog("[SHTools] Update Resources Info",
@@ -46,10 +43,7 @@ public class SHEditorResourcesLister : Editor
                     "파일확인", "닫기"))
             System.Diagnostics.Process.Start(strSaveResourcePath);
     }
-    #endregion
 
-
-    #region Utility Functions
     // 유틸 : 팝업
     static bool ShowDialog(string strTitle, string strMessage, string strOkBtn, string strCancleBtn = "")
     {
@@ -58,6 +52,5 @@ public class SHEditorResourcesLister : Editor
         else
             return EditorUtility.DisplayDialog(strTitle, strMessage, strOkBtn);
     }
-    #endregion
 }
 #endif

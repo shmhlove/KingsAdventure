@@ -6,29 +6,17 @@ using System.Collections.Generic;
 
 public class SHCoroutine : SHSingleton<SHCoroutine>
 {
-    #region Virtual Functions
     public override void OnInitialize()
     {
         SetDontDestroy();
         Single.Scene.AddEventOfAddtiveScene(OnEventOfAddtiveScene);
     }
-    public override void OnFinalize() { }
-    public override void Awake() { }
-    public override void Start() { }
-    public override void OnDisable() { }
-    public override void OnDestroy() { }
-    #endregion
 
-
-    #region Event Handler
     public void OnEventOfAddtiveScene(object pSender, EventArgs vArgs)
     {
         StopAllCoroutines();
     }
-    #endregion
-
-
-    #region Interface Functions
+    
     // yield return null : 다음 Update까지 대기
     //-----------------------------------------------
     public void NextUpdate(Action pAction)
@@ -162,9 +150,7 @@ public class SHCoroutine : SHSingleton<SHCoroutine>
         yield return StartCoroutine(pRoutine);
         pAction.Invoke();
     }
-    #endregion
-
-
+    
     // StartCoroutine(pRoutine) : 코루틴 함수를 실행시켜준다.
     // Stop 기능이 필요해서 Routine을 저장해두고 Stop처리할 수 있도록
     //-----------------------------------------------

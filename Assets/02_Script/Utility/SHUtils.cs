@@ -184,35 +184,6 @@ public static partial class SHUtils
     #endregion
 
 
-    #region 디바이스 정보관련
-    // UUID
-    public static string GetDeviceID()
-    {
-        return SystemInfo.deviceUniqueIdentifier;
-    }
-    public static string GetDeviceName()
-    {
-        return SystemInfo.deviceName;
-    }
-    public static string GetDeviceModel()
-    {
-        return SystemInfo.deviceModel;
-    }
-    public static int GetSystemMemorySize()
-    {
-        return SystemInfo.systemMemorySize;
-    }
-    public static int GetGraphiceMemorySize()
-    {
-        return SystemInfo.graphicsMemorySize;
-    }
-    public static int GetMaxTextureSize()
-    {
-        return SystemInfo.maxTextureSize;
-    }
-    #endregion
-
-
     #region 유니티 에디터 관련
     // Component Missing 체크
     public static void CheckMissingComponent()
@@ -477,27 +448,4 @@ public static partial class SHUtils
         return strCallStack;
     }
     #endregion
-}
-
-public class SHPair<T1, T2>
-{
-    public T1 Value1;
-    public T2 Value2;
-
-    public SHPair()
-    {
-        Initialize();
-    }
-
-    public SHPair(T1 _Value1, T2 _Value2)
-    {
-        Value1 = _Value1;
-        Value2 = _Value2;
-    }
-
-    public void Initialize()
-    {
-        Value1 = default(T1);
-        Value2 = default(T2);
-    }
 }

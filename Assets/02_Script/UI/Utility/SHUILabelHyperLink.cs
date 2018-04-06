@@ -12,7 +12,8 @@
 ///    
 /// - 주의사항
 ///    1. URL연결시 URL이 올바른지 체크하지 않습니다.
-///    2. 이벤트로 등록한 함수가 해제되지 않고, 객체가 제거 되었을때 크래시가 발생할 수 있습니다.
+///    2. 이벤트로 등록한 함수가 자동 해제되지 않습니다.
+///    3. 등록한 함수의 부모 객체가 제거 되었을때 이벤트 해제를 하지 않으면 이벤트 발생시 크래시가 발생할 수 있습니다.
 /// 
 /// </summary>
 
@@ -36,14 +37,12 @@ public class SHUILabelHyperLink : MonoBehaviour
 
 
     #region System Functions
-    // 시스템 : 시작
     public void Start()
     {
         CreateCollider();
         CreateLabel();
     }
-
-    // 시스템 : 업데이트
+    
     public void Update()
     {
         SetSizeToCollider();
@@ -53,7 +52,6 @@ public class SHUILabelHyperLink : MonoBehaviour
 
 
     #region Interface Functions
-    // 인터페이스 : 이벤트 등록
     public void AddEvent(Action<string> pEvent)
     {
         if (true == m_pEvent.Contains(pEvent))
@@ -61,8 +59,7 @@ public class SHUILabelHyperLink : MonoBehaviour
 
         m_pEvent.Add(pEvent);
     }
-
-    // 인터페이스 : 이벤트 해제
+    
     public void DelEvent(Action<string> pEvent)
     {
         if (true == m_pEvent.Contains(pEvent))
@@ -74,8 +71,7 @@ public class SHUILabelHyperLink : MonoBehaviour
 
 
     #region Event Handler
-    // 이벤트 : 클릭 이벤트
-    void OnCliSH()
+    void OnClick()
     {
         if (null == m_pLabel)
             return;
@@ -104,7 +100,9 @@ public class SHUILabelHyperLink : MonoBehaviour
         
         m_pCollider = gameObject.GetComponent<BoxCollider>();
         if (null == m_pCollider)
+        {
             m_pCollider = gameObject.AddComponent<BoxCollider>();
+        }
     }
 
     // 유틸 : Label 생성
@@ -115,7 +113,9 @@ public class SHUILabelHyperLink : MonoBehaviour
 
         m_pLabel = gameObject.GetComponent<UILabel>();
         if (null == m_pLabel)
+        {
             m_pLabel = gameObject.AddComponent<UILabel>();
+        }
     }
 
     // 유틸 : 콜리더 크기변경

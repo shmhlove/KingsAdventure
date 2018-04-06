@@ -21,33 +21,23 @@ public enum eSoundEffectChannel
 
 public class SHSound : SHSingleton<SHSound>
 {
-    #region Members : Channels
     private DicBGMChannels    m_dicBGMChannel    = new DicBGMChannels();
     private DicEffectChannels m_dicEffectChannel = new DicEffectChannels();
-    
-    #endregion
 
-
-    #region Members : Table
     private DicTables      m_dicSoundTable = new DicTables();
-    #endregion
 
-
-    #region Virtual Functions
     public override void OnInitialize()
     {
         CreateTable();
         CreateBGMChannel();
         CreateEffectChannel();
     }
+
     public override void OnFinalize()
     {
         StopAllCoroutines();
     }
-    #endregion
 
-
-    #region Interface Functions
     public void PlayBGM(string strName)
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
@@ -65,6 +55,7 @@ public class SHSound : SHSingleton<SHSound>
         m_dicBGMChannel[pInfo.m_eBGMChannel].Play();
         StartCoroutine(CoroutineVolumeUP(m_dicBGMChannel[pInfo.m_eBGMChannel]));
     }
+
     public void StopBGM(string strName)
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
@@ -77,6 +68,7 @@ public class SHSound : SHSingleton<SHSound>
         StartCoroutine(CoroutineVolumeDown(
             m_dicBGMChannel[pInfo.m_eBGMChannel], m_dicBGMChannel[pInfo.m_eBGMChannel].Stop));
     }
+
     public void PlayEffect(string strName)
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
@@ -93,6 +85,7 @@ public class SHSound : SHSingleton<SHSound>
         m_dicEffectChannel[pInfo.m_eEffectChannel].Pause();
         m_dicEffectChannel[pInfo.m_eEffectChannel].Play();
     }
+
     public void StopEffect(string strName)
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
@@ -104,10 +97,7 @@ public class SHSound : SHSingleton<SHSound>
         var pInfo = m_dicSoundTable[strName];
         m_dicEffectChannel[pInfo.m_eEffectChannel].Stop();
     }
-    #endregion
 
-
-    #region Utility Functions
     void ClearChannel<T1, T2>(Dictionary<T1, T2> dicChannel) where T2 : UnityEngine.Object
     {
         SHUtils.ForToDic(dicChannel, (pKey, pValue) =>
@@ -116,6 +106,7 @@ public class SHSound : SHSingleton<SHSound>
         });
         dicChannel.Clear();
     }
+
     void CreateTable()
     {
         m_dicSoundTable.Clear();
@@ -123,6 +114,7 @@ public class SHSound : SHSingleton<SHSound>
         m_dicSoundTable.Add("Audio_BGM_GameOver",  new SHSound_BGM_GameOver());
         m_dicSoundTable.Add("Audio_Effect_Crash",  new SHSound_Effect_Crash());
     }
+
     void CreateBGMChannel()
     {
         ClearChannel(m_dicBGMChannel);
@@ -134,6 +126,7 @@ public class SHSound : SHSingleton<SHSound>
             m_dicBGMChannel.Add(eBGMChannel, SHGameObject.GetComponent<AudioSource>(pObject));
         });
     }
+
     void CreateEffectChannel()
     {
         ClearChannel(m_dicEffectChannel);
@@ -145,10 +138,7 @@ public class SHSound : SHSingleton<SHSound>
             m_dicEffectChannel.Add(eEffectChannel, SHGameObject.GetComponent<AudioSource>(pObject));
         });
     }
-    #endregion
 
-
-    #region Coroutine Functions
     private IEnumerator CoroutineVolumeUP(AudioSource pAudio)
     {
         if (null == pAudio)
@@ -175,5 +165,4 @@ public class SHSound : SHSingleton<SHSound>
 
         pEndCallback();
     }
-    #endregion
 }

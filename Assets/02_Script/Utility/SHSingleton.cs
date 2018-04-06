@@ -39,23 +39,16 @@ public static class Single
 
 public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
 {
-    #region Members
     private static T        m_pInstance     = null;
     public static T         Instance        { get { return GetInstance(); } }
     public static bool      IsExists        { get { return (null != m_pInstance); } }
-    #endregion
 
-
-    #region Virtual Functions
     // 다양화 : 초기화( 게임오브젝트에 붙은경우 Awake시, 직접 생성인 경우 Instance에 접근하는 순간 호출 됨 )
     public virtual void OnInitialize() { }
 
     // 다양화 : 종료( DontDestory가 설정된경우 어플이 종료될때, 아닌 경우에는 씬이 변경될때, 혹은 DoDestory로 명시적으로 제거할때 호출 됨 )
     public virtual void OnFinalize() { }
-    #endregion
 
-
-    #region System Functions
     // 시스템 : 생성(하이어라키에 올라간 싱글턴)
     public override void Awake()
     {
@@ -105,10 +98,7 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
     {
         this.Clear();
     }
-    #endregion
 
-
-    #region Interface Functions
     // 인터페이스 : 객체얻기
     private static object m_pLocker = new object();
     public static T GetInstance()
@@ -147,10 +137,7 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
     {
         SHGameObject.DestoryObject(gameObject);
     }
-    #endregion
 
-
-    #region Utility Functions
     // 유틸 : 객체 초기화
     static void Initialize(T pInstance)
     {
@@ -190,5 +177,4 @@ public abstract class SHSingleton<T> : SHMonoWrapper where T : SHSingleton<T>
     {
         return SHGameObject.SetParent(gameObject, strRootName);
     }
-    #endregion
 }

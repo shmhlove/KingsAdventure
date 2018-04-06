@@ -9,30 +9,23 @@ using System.Collections.Generic;
 
 public partial class SHResourceData : SHBaseData
 {
-    #region Members
-    // 리소스 리스트
     private Dictionary<string, Object> m_dicResources = new Dictionary<string, Object>();
-    #endregion
-
-
-    #region Virtual Functions
-    // 다양화 : 초기화
+    
     public override void OnInitialize()
     {
         m_dicResources.Clear();
     }
-
-    // 다양화 : 마무리
+    
     public override void OnFinalize()
     {
         m_dicResources.Clear();
     }
     
-    // 다양화 : 로드할 데이터 리스트 알려주기
     public override Dictionary<string, SHLoadData> GetLoadList(eSceneType eType)
     {
         var dicLoadList  = new Dictionary<string, SHLoadData>();
-        SHUtils.ForToList(Single.Table.GetPreLoadResourcesList(eType), (pValue) =>
+        var PreloadTable = Single.Table.GetTable<JsonPreloadResources>();
+        SHUtils.ForToList(PreloadTable.GetData(eType), (pValue) =>
         {
             if (true == IsLoadResource(pValue))
                 return;
@@ -43,7 +36,6 @@ public partial class SHResourceData : SHBaseData
         return dicLoadList;
     }
     
-    // 다양화 : 로더로 부터 호출될 로드함수
     public override IEnumerator Load(SHLoadData pInfo, Action<string, SHLoadStartInfo> pStart, 
                                                        Action<string, SHLoadEndInfo> pDone)
     {
@@ -55,24 +47,27 @@ public partial class SHResourceData : SHBaseData
             yield break;
         }
 
-        SHResourcesInfo pResourceInfo = Single.Table.GetResourcesInfo(pInfo.m_strName);
+        var pTable = Single.Table.GetTable<JsonResources>();
+        var pResourceInfo = pTable.GetResouceInfo(pInfo.m_strName);
         if (null == pResourceInfo)
         {
-            Debug.LogFormat("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
+            Debug.LogFormat("[SHResourceData] 리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Not_ExsitTable));
             yield break;
         }
 
-        Single.Coroutine.Routine(() => 
-        {
-            var pResource = GetResources(pInfo.m_strName);
-            if (null == pResource)
-                pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Load_Fail));
-            else
-                pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
+        // Async Load
+        //Single.Coroutine.Routine(() => 
+        //{
+        //    var pResource = GetResources(pInfo.m_strName);
+        //    if (null == pResource)
+        //        pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Load_Fail));
+        //    else
+        //        pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
 
-        }, LoadAsync<Object>(pResourceInfo));
-        
+        //}, LoadAsync<Object>(pResourceInfo));
+
+        // Sync Load
         var pObject = LoadSync<Object>(pResourceInfo);
         if (null == pObject)
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Load_Fail));
@@ -81,20 +76,17 @@ public partial class SHResourceData : SHBaseData
 
         yield return null;
     }
-    #endregion
-
-
-    #region Interface Functions
-    // 인터페이스 : 리소스 로드 확인
+    
     public bool IsLoadResource(string strName)
     {
         return m_dicResources.ContainsKey(strName.ToLower());
     }
-    // 인터페이스 : 리소스 얻기
+    
     public Object GetResources(string strFileName)
     {
         return GetResources<Object>(strFileName);
     }
+
     public T GetResources<T>(string strFileName) where T : Object
     {
         if (true == string.IsNullOrEmpty(strFileName))
@@ -103,7 +95,8 @@ public partial class SHResourceData : SHBaseData
         strFileName = Path.GetFileNameWithoutExtension(strFileName);
         if (false == IsLoadResource(strFileName.ToLower()))
         {
-            SHResourcesInfo pInfo = Single.Table.GetResourcesInfo(strFileName);
+            var Table = Single.Table.GetTable<JsonResources>();
+            var pInfo = Table.GetResouceInfo(strFileName);
             if (null == pInfo)
             {
                 Debug.Log(string.Format("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", strFileName));
@@ -115,27 +108,27 @@ public partial class SHResourceData : SHBaseData
 
         return m_dicResources[strFileName.ToLower()] as T;
     }
-    // 인터페이스 : 프리팹 원본 얻기
+    
     public GameObject GetPrefab(string strName)
     {
         return GetResources<GameObject>(strName);
     }
-    // 인터페이스 : 프리팹에서 게임오브젝트로 복사해서 얻기
+    
     public GameObject GetGameObject(string strName)
     {
         return Instantiate<GameObject>(GetPrefab(strName));
     }
-    // 인터페이스 : 텍스쳐 얻기
+    
     public Texture GetTexture(string strName)
     {
         return GetResources<Texture>(strName);
     }
-    // 인터페이스 : 텍스쳐2D 얻기
+    
     public Texture2D GetTexture2D(string strName)
     {
         return GetResources<Texture2D>(strName);
     }
-    // 인터페이스 : Sprite 데이터 얻기
+    
     public Sprite GetSprite(string strName)
     {
         Texture2D pTexture = GetTexture2D(strName);
@@ -144,7 +137,7 @@ public partial class SHResourceData : SHBaseData
 
         return Sprite.Create(pTexture, new Rect(0.0f, 0.0f, pTexture.width, pTexture.height), new Vector2(0.5f, 0.5f));
     }
-    // 인터페이스 : Texture 다운로드
+    
     public Texture2D GetDownloadTexture(string strURL)
     {
         WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strURL));
@@ -166,28 +159,28 @@ public partial class SHResourceData : SHBaseData
                 pCallback(pWWW.texture);
         }, new WWW(strURL));
     }
-    // 인터페이스 : 애니메이션 클립얻기
+    
     public AnimationClip GetAniamiton(string strName)
     {
         return GetResources<AnimationClip>(strName);
     }
-    // 인터페이스 : 메테리얼 얻기
+    
     public Material GetMaterial(string strName)
     {
         return GetResources<Material>(strName);
     }
-    // 인터페이스 : 사운드 클립 얻기
+    
     public AudioClip GetSound(string strName)
     {
         return GetResources<AudioClip>(strName);
     }
-    // 인터페이스 : Text 데이터 얻기
+    
     public TextAsset GetTextAsset(string strName)
     {
         return GetResources<TextAsset>(strName);
     }
-    // 인터페이스 : 게임 오브젝트를 생성해서 컴포넌트로 데이터 얻기
-    public T GetObjectComponent<T>(string strName)
+    
+    public T GetComponentByObject<T>(string strName)
     {
         GameObject pObject = GetGameObject(strName);
         if (null == pObject)
@@ -195,20 +188,15 @@ public partial class SHResourceData : SHBaseData
 
         return pObject.GetComponent<T>();
     }
-    // 인터페이스 : 빈 게임오브젝트를 생성하고 컴퍼넌트를 추가한뒤 얻어낸다.
-    public T GetCreateComponent<T>(string strName) where T : Component
-    {
-        return SHGameObject.GetComponent<T>(SHGameObject.CreateEmptyObject(strName));
-    }
-    // 인터페이스 : 오브젝트 복사
-    public T Instantiate<T>(T pObject) where T : Object
+    
+    public T Instantiate<T>(T pPrefab) where T : Object
     {
         if (true == Single.AppInfo.m_bIsAppQuit)
             return null;
 
-        if (null == pObject)
+        if (null == pPrefab)
         {
-            Debug.LogErrorFormat("오브젝트 복사중 Null 프리팹이 전달되었습니다!!(Type : {0})", typeof(T));
+            Debug.LogErrorFormat("[SHResourceData] 오브젝트 복사중 Null 프리팹이 전달되었습니다!!(Type : {0})", typeof(T));
             return default(T);
         }
 
@@ -216,20 +204,17 @@ public partial class SHResourceData : SHBaseData
         DateTime pStartTime = DateTime.Now;
 #endif
 
-        T pGameObject    = Object.Instantiate<T>(pObject);
+        T pGameObject    = Object.Instantiate<T>(pPrefab);
         var strName      = pGameObject.name;
         pGameObject.name = strName.Substring(0, strName.IndexOf("(Clone)"));
         
 #if UNITY_EDITOR
-        Single.AppInfo.SetLoadResource(string.Format("Instantiate : {0}({1}sec)", pObject.name, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
+        Single.AppInfo.SetLoadResource(string.Format("Instantiate : {0}({1}sec)", pPrefab.name, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
 #endif
 
         return pGameObject;
     }
-    #endregion
-
-
-    #region Utility Functions
+    
     // 유틸 : 로드정보 만들기
     SHLoadData CreateLoadInfo(string strName)
     {
@@ -323,5 +308,4 @@ public partial class SHResourceData : SHBaseData
 
         return pObject;
     }
-    #endregion
 }

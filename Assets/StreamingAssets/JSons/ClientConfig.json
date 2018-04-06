@@ -1,11 +1,20 @@
 
 {
     "ClientConfig" : {
-        "ServerConfigURL" : "",
-        "ServiceMode"     : "Dev",
-        "Version"         : "",
-        "VSyncCount"      : false,
-        "FrameRate"       : 60,
-        "CacheSize(MB)"   : 200
+	
+        "ServerConfigURL": "",
+        "ServiceMode": "Dev",
+        "Version": "1.0.1",
+		
+		"AOS_KeyStoreName": "GoogleKeyStore/kingsadventure.keystore",
+		"AOS_KeyStorePass": "lee35235",
+		"AOS_KeyAliasName": "KingsAdventure",
+		"AOS_KeyAliasPass": "lee35235",
+		
+		"IOS_TeamID": "T8263VR796",
+	
+        "VSyncCount": false,
+        "FrameRate": 60,
+        "CacheSize": 200
     }
 }

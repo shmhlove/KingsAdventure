@@ -9,38 +9,31 @@ using LitJson;
 
 public class JsonClientConfig : SHBaseTable
 {
-    #region Members
-    public string        m_strServerConfigURL = string.Empty;
-    public string        m_strServiceMode     = string.Empty;
-    public string        m_strVersion         = string.Empty;
-    public bool          m_bVSyncCount        = false;
-    public int           m_iFrameRate         = 60;
-    public int           m_iCacheSize         = 200;
-    #endregion
+    public string ServerConfigURL  = string.Empty;
+    public string ServiceMode      = string.Empty;
+    public string Version          = string.Empty;
+	
+    public string AOS_KeyStoreName = string.Empty;
+    public string AOS_KeyStorePass = string.Empty;
+    public string AOS_KeyAliasName = string.Empty;
+    public string AOS_KeyAliasPass = string.Empty;
 
+    public string IOS_TeamID       = string.Empty;
+                  
+    public bool   VSyncCount       = false;
+    public int    FrameRate        = 60;
+    public int    CacheSize        = 200;
 
-    #region System Functions
     public JsonClientConfig()
     {
         m_strFileName = "ClientConfig";
     }
-    #endregion
 
-
-    #region Virtual Functions
-    public override void Initialize()
-    {
-        m_strServerConfigURL = string.Empty;
-        m_strServiceMode     = string.Empty;
-        m_strVersion         = string.Empty;
-        m_bVSyncCount        = false;
-        m_iFrameRate         = 60;
-        m_iCacheSize         = 200;
-    }
     public override bool IsLoadTable()
     {
-        return (false == string.IsNullOrEmpty(m_strVersion));
+        return (false == string.IsNullOrEmpty(Version));
     }
+
     public override eErrorCode LoadJsonTable(JsonData pJson, string strFileName)
     {
         if (null == pJson)
@@ -48,108 +41,54 @@ public class JsonClientConfig : SHBaseTable
 
         JsonData pDataNode = pJson["ClientConfig"];
 
-        m_strServerConfigURL = GetStrToJson(pDataNode, "ServerConfigURL");
-        m_strServiceMode     = GetStrToJson(pDataNode, "ServiceMode");
-        m_strVersion         = GetStrToJson(pDataNode, "Version");
-        m_bVSyncCount        = GetBoolToJson(pDataNode, "VSyncCount");
-        m_iFrameRate         = GetIntToJson(pDataNode, "FrameRate");
-        m_iCacheSize         = GetIntToJson(pDataNode, "CacheSize(MB)");
+        ServerConfigURL = GetStrToJson(pDataNode, "ServerConfigURL");
+        ServiceMode = GetStrToJson(pDataNode, "ServiceMode");
+        Version = GetStrToJson(pDataNode, "Version");
+        
+        AOS_KeyStoreName = GetStrToJson(pDataNode, "AOS_KeyStoreName");
+        AOS_KeyStorePass = GetStrToJson(pDataNode, "AOS_KeyStorePass");
+        AOS_KeyAliasName = GetStrToJson(pDataNode, "AOS_KeyAliasName");
+        AOS_KeyAliasPass = GetStrToJson(pDataNode, "AOS_KeyAliasPass");
+        
+        IOS_TeamID = GetStrToJson(pDataNode, "IOS_TeamID");
+
+        VSyncCount = GetBoolToJson(pDataNode, "VSyncCount");
+        FrameRate = GetIntToJson(pDataNode, "FrameRate");
+        CacheSize = GetIntToJson(pDataNode, "CacheSize");
         
         return eErrorCode.Succeed;
     }
-    #endregion
 
+    //public void SaveJsonFile()
+    //{
+    //    SaveJsonFile(SHPath.GetPathToJson());
+    //}
+    //public void SaveJsonFile(string strSavePath)
+    //{
+    //    var pClientConfigJsonData = new JsonData();
 
-    #region Interface Functions
-    public void SaveJsonFile()
-    {
-        SaveJsonFile(SHPath.GetPathToJson());
-    }
-    public void SaveJsonFile(string strSavePath)
-    {
-        var pClientConfigJsonData = new JsonData();
-        pClientConfigJsonData["ServerConfigURL"] = m_strServerConfigURL;
-        pClientConfigJsonData["ServiceMode"]     = m_strServiceMode;
-        pClientConfigJsonData["Version"]         = m_strVersion;
-        pClientConfigJsonData["VSyncCount"]      = m_bVSyncCount;
-        pClientConfigJsonData["FrameRate"]       = m_iFrameRate;
-        pClientConfigJsonData["CacheSize(MB)"]   = m_iCacheSize;
+    //    pClientConfigJsonData["ServerConfigURL"] = ServerConfigURL;
+    //    pClientConfigJsonData["ServiceMode"] = ServiceMode;
+    //    pClientConfigJsonData["Version"] = Version;
 
-        var pJsonData = new JsonData();
-        pJsonData["ClientConfig"] = pClientConfigJsonData;
+    //    pClientConfigJsonData["AOS_KeyStoreName"] = AOS_KeyStoreName;
+    //    pClientConfigJsonData["AOS_KeyStorePass"] = AOS_KeyStorePass;
+    //    pClientConfigJsonData["AOS_KeyAliasName"] = AOS_KeyAliasName;
+    //    pClientConfigJsonData["AOS_KeyAliasPass"] = AOS_KeyAliasPass;
 
-        var pJsonWriter = new JsonWriter();
-        pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
+    //    pClientConfigJsonData["IOS_TeamID"] = IOS_TeamID;
 
-        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
-    }
-    public void SetServerConfigPath(string strPath)
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
+    //    pClientConfigJsonData["VSyncCount"] = VSyncCount;
+    //    pClientConfigJsonData["FrameRate"] = FrameRate;
+    //    pClientConfigJsonData["CacheSize"] = CacheSize;
 
-        m_strServerConfigURL = strPath;
-    }
-    public void SetServiceMode(string strServiceMode)
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
+    //    var pJsonData = new JsonData();
+    //    pJsonData["ClientConfig"] = pClientConfigJsonData;
 
-        m_strServiceMode = strServiceMode;
-    }
-    public string GetServerConfigPath()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
+    //    var pJsonWriter = new JsonWriter();
+    //    pJsonWriter.PrettyPrint = true;
+    //    JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-        return m_strServerConfigURL;
-    }
-    public string GetServiceMode()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        return m_strServiceMode;
-    }
-    public string GetVersion()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-        
-        return m_strVersion;
-    }
-    public int GetVersionToOrder(eOrderNum eOrder)
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        string [] strSplit = m_strFileName.Split(new char[]{'.'});
-        if ((int)eOrder > strSplit.Length)
-            return 0;
-
-        return int.Parse(strSplit[((int)eOrder) - 1]);
-    }
-    public int GetVSyncCount()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        return (true == m_bVSyncCount) ? 1 : 0;
-    }
-    public int GetFrameRate()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        return m_iFrameRate;
-    }
-    public int GetCacheSize()
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        return m_iCacheSize;
-    }
-    #endregion
+    //    SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
+    //}
 }

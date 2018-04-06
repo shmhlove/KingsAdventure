@@ -12,7 +12,7 @@ public class SHConvertToByte
     {
         var pTableData = new SHTableData();
         pTableData.OnInitialize();
-        ConvertByteFiles(pTableData, string.Format("{0}{1}", SHPath.GetPathToResources(), "/Table/Bytes"));
+        ConvertByteFiles(pTableData, string.Format("{0}{1}", SHPath.GetResources(), "/Table/Bytes"));
         pTableData.OnFinalize();
     }
 
@@ -42,7 +42,7 @@ public class SHConvertToByte
         
         SHUtils.SaveByte(pBytes, string.Format("{0}/{1}{2}", strSavePath, pTable.m_strByteFileName, ".bytes"));
 
-        Debug.Log(string.Format("{0} To Convert Byte Files : {1}",
+        Debug.Log(string.Format("[SHConvertToByte] {0} To Convert Byte Files : {1}",
                     (true == pTable.IsLoadTable() ? "<color=yellow>Success</color>" : "<color=red>Fail!!</color>"),
                     pTable.m_strFileName));
     }

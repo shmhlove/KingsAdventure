@@ -20,10 +20,6 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         Single.Scene.AddEventOfAddtiveScene(OnEventOfAddtiveScene);
         SHGameObject.SetParent(Single.Resource.GetGameObject("UIRoot_Global"), gameObject);
     }
-    public override void OnFinalize()
-    {
-        
-    }
     #endregion
     
 

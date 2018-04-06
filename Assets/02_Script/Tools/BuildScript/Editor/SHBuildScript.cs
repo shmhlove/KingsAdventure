@@ -8,11 +8,8 @@ using System.Collections.Generic;
 
 class SHBuildScript
 {
-    #region Members
     static string[] SCENES    = FindEnabledEditorScenes();
-    #endregion
-
-
+    
     #region Android Build
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [MenuItem("SHTools/CI/Android AppBuild For Korea")]
@@ -38,37 +35,30 @@ class SHBuildScript
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #endregion
     
-
-    #region Utility Functions
     static void AppBuild(eNationType eNation, BuildTarget eTarget, eServiceMode eMode, BuildOptions eOption)
     {
-        SetNationInfo(eNation, eMode);
-        SetBuildTargetInfo(eTarget);
+        PreProcessor(eTarget);
 		BuildApplication(SCENES, eTarget, eOption);
         PostProcessor(eTarget);
     }
     
     static void AssetBundlesPacking(BuildTarget eTarget, eBundlePackType ePackType)
     {
-        PackingAssetBundles(eTarget, ePackType, true);
+        PackingAssetBundles(eTarget, ePackType);
         PostProcessor(eTarget);
     }
     
-    static void SetNationInfo(eNationType eNation, eServiceMode eMode)
+    static void PreProcessor(BuildTarget eTarget)
     {
-        UpdateClientConfig(GetServerConfigPath(eNation), eMode);
-    }
-    
-    static void SetBuildTargetInfo(BuildTarget eTarget)
-    {
-        switch(eTarget)
+        var pConfigFile = Single.Table.GetTable<JsonClientConfig>();
+            
+        switch (eTarget)
         {
             case BuildTarget.Android:
-                PlayerSettings.Android.keystoreName = Path.GetFullPath(Path.Combine(Application.dataPath, "../GoogleKeyStore/kingsadventure.keystore"));
-                PlayerSettings.Android.keystorePass = "lee35235";
-                PlayerSettings.Android.keyaliasName = "KingsAdventure";
-                PlayerSettings.Android.keyaliasPass = "lee35235";
-                PlayerSettings.Android.bundleVersionCode = 1;
+                PlayerSettings.Android.keystoreName = string.Format("{0}/{1}", SHPath.GetRoot(), pConfigFile.AOS_KeyStoreName);
+                PlayerSettings.Android.keystorePass = pConfigFile.AOS_KeyStorePass;
+                PlayerSettings.Android.keyaliasName = pConfigFile.AOS_KeyAliasName;
+                PlayerSettings.Android.keyaliasPass = pConfigFile.AOS_KeyAliasPass;
                 EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ETC;
                 break;
             case BuildTarget.iOS:
@@ -76,64 +66,54 @@ class SHBuildScript
                 break;
         }
 
-        PlayerSettings.bundleIdentifier = "com.mangogames.kingsadventure.dev";
+        PlayerSettings.bundleVersion = pConfigFile.Version;
     }
-    
-	static void BuildApplication(string[] strScenes, BuildTarget eTarget, BuildOptions eOptions)
+
+    static void PostProcessor(BuildTarget eTarget)
     {
-        string strBuildName = GetBuildName(eTarget, Single.AppInfo.GetAppName(), Single.Table.GetClientVersion());
-        Debug.LogFormat("** Build Start({0}) -> {1}", strBuildName, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
+        SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));
+        SHGameObject.DestoryObject(GameObject.Find("SHSingletons(DontDestroy)"));
+    }
+
+    static void BuildApplication(string[] strScenes, BuildTarget eTarget, BuildOptions eOptions)
+    {
+        string strBuildName = GetBuildName(eTarget, Single.AppInfo.GetProductName());
+        Debug.LogFormat("** [SHBuilder] Build Start({0}) -> {1}", strBuildName, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
         {
             EditorUserBuildSettings.SwitchActiveBuildTarget(eTarget);
 
-            string strFileName = string.Format("{0}/{1}", SHPath.GetPathToBuild(), strBuildName);
+            string strExportPath = string.Format("{0}/{1}", SHPath.GetBuild(), strBuildName);
+            SHUtils.CreateDirectory(strExportPath);
 
-			if (false == SHUtils.IsExistsDirectory(strFileName))
-				eOptions = BuildOptions.None;
-
-            SHUtils.CreateDirectory(strFileName);
-
-			string strResult = BuildPipeline.BuildPlayer(strScenes, strFileName, eTarget, eOptions);
+			string strResult = BuildPipeline.BuildPlayer(strScenes, strExportPath, eTarget, eOptions);
             if (0 < strResult.Length)
-                throw new Exception("BuildPlayer failure: " + strResult);
+            {
+                throw new Exception("[SHBuilder] BuildPlayer failure: " + strResult);
+            }
         }
-        Debug.LogFormat("** Build End({0}) -> {1}", strBuildName, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
+        Debug.LogFormat("** [SHBuilder] Build End({0}) -> {1}", strBuildName, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
     }
     
-    static void PackingAssetBundles(BuildTarget eTarget, eBundlePackType eType, bool bIsDelOriginal)
+    static void PackingAssetBundles(BuildTarget eTarget, eBundlePackType eType)
     {
-        Debug.LogFormat("** AssetBundles Packing Start({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
+        Debug.LogFormat("** [SHBuilder] AssetBundles Packing Start({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
         {
-            SHUtils.CreateDirectory(SHPath.GetPathToExportAssetBundle());
-            BuildPipeline.BuildAssetBundles(SHPath.GetPathToExportAssetBundle(), BuildAssetBundleOptions.None, eTarget);
+            string strExportPath = SHPath.GetExportAssetBundle(eTarget);
+            SHUtils.CreateDirectory(strExportPath);
+
+            var Manifest = BuildPipeline.BuildAssetBundles(strExportPath, BuildAssetBundleOptions.None, eTarget);
         }
-        Debug.LogFormat("** AssetBundles Packing End({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
+        Debug.LogFormat("** [SHBuilder] AssetBundles Packing End({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
     }
-
-    static void UpdateClientConfig(string strServerConfigPath, eServiceMode eMode)
-    {
-        var pConfigFile = Single.Table.GetTable<JsonClientConfig>();
-        
-        pConfigFile.SetServiceMode(eMode.ToString());
-        pConfigFile.SetServerConfigPath(strServerConfigPath);
-        pConfigFile.SaveJsonFile();
-    }
-
-    static string GetBuildName(BuildTarget eTarget, string strAppName, string strVersion)
+    
+    static string GetBuildName(BuildTarget eTarget, string strAppName)
     {
         if (BuildTarget.Android == eTarget)
             return string.Format("{0}.apk", strAppName);
         else
             return "xcode";
     }
-
-    static string GetServerConfigPath(eNationType eNation)
-    {
-        return string.Empty;
-        //return string.Format("{0}/{1}/{2}/ServerConfig.json", 
-        //    "http://blueasa.synology.me/home/shmhlove", SHHard.GetNationByEnum(eNation), Application.productName);
-    }
-
+    
     static string[] FindEnabledEditorScenes()
     {
         var pScenes   = new List<string>();
@@ -149,11 +129,4 @@ class SHBuildScript
         
         return pScenes.ToArray();
     }
-
-    static void PostProcessor(BuildTarget eTarget)
-    {
-        SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));
-        SHGameObject.DestoryObject(GameObject.Find("SHSingletons(DontDestroy)"));
-    }
-    #endregion
 }

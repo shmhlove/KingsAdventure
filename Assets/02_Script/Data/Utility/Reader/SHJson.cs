@@ -12,13 +12,9 @@ using LitJson;
 
 public class SHJson
 {
-    #region Members
     private JsonData m_pJsonData = null;
     public JsonData Node { get { return m_pJsonData; } }
-    #endregion
 
-
-    #region System Functions
     public SHJson() { }
     public SHJson(string strFileName)
     {
@@ -40,20 +36,17 @@ public class SHJson
     {
         SetJsonData(null);
     }
-    #endregion
 
-
-    #region Interface Functions
     // 인터페이스 : JsonData설정
     public JsonData SetJsonData(JsonData pNode)
     {
         return (m_pJsonData = pNode);
     }
 
-    // 인터페이스 : Persistent에서 로드
+    // 인터페이스 : PersistentData 에서 로드
     public JsonData LoadToPersistent(string strFileName)
     {
-        string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPathToPersistentJson(), Path.GetFileNameWithoutExtension(strFileName));
+        string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPersistentDataJson(), Path.GetFileNameWithoutExtension(strFileName));
         if (false == File.Exists(strSavePath))
             return null;
 
@@ -63,7 +56,7 @@ public class SHJson
     // 인터페이스 : Streaming에서 LoaclLoad로 로드
     public JsonData LoadToStreamingForLocal(string strFileName)
     {
-        string strSavePath = string.Format("{0}/{1}.json", SHPath.GetPathToJson(), Path.GetFileNameWithoutExtension(strFileName));
+        string strSavePath = string.Format("{0}/{1}.json", SHPath.GetStreamingAssetsJsonTable(), Path.GetFileNameWithoutExtension(strFileName));
         if (false == File.Exists(strSavePath))
             return null;
 
@@ -92,8 +85,7 @@ public class SHJson
     // 인터페이스 : Byte로 Json파싱
     public JsonData GetJsonParseToByte(byte[] pByte)
     {
-        System.Text.UTF8Encoding pEncoder = new System.Text.UTF8Encoding();
-        return JsonMapper.ToObject(pEncoder.GetString(pByte));
+        return JsonMapper.ToObject((new System.Text.UTF8Encoding()).GetString(pByte));
     }
 
     // 인터페이스 : string으로 Json파싱
@@ -153,13 +145,10 @@ public class SHJson
         pJsonWriter.PrettyPrint = true;
         JsonMapper.ToJson(pJsonData, pJsonWriter);
 
-        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", SHPath.GetPathToJson(), Path.GetFileNameWithoutExtension(strFileName)));
+        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", SHPath.GetStreamingAssetsJsonTable(), Path.GetFileNameWithoutExtension(strFileName)));
         #endif
     }
-    #endregion
 
-
-    #region Utility Functions
     // 유틸 : Json파일 로드
     public JsonData LoadLocal(string strFilePath)
     {
@@ -182,14 +171,13 @@ public class SHJson
         string strPath = string.Empty;
 
 #if UNITY_EDITOR || UNITY_STANDALONE
-        strPath = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
+        strPath = string.Format("{0}{1}", "file://", SHPath.GetStreamingAssets());
 #elif UNITY_ANDROID
-        strPath = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
+        strPath = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetAssets(), "!/assets");
 #elif UNITY_IOS
-        strPath = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
+        strPath = string.Format("{0}{1}{2}", "file://", SHPath.GetAssets(), "/Raw");
 #endif
 
         return string.Format("{0}/JSons/{1}.json", strPath, Path.GetFileNameWithoutExtension(strFileName));
     }
-    #endregion
 }

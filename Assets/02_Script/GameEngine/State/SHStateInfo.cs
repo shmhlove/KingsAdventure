@@ -4,17 +4,13 @@ using System.Collections;
 
 public class SHStateInfo
 {
-    #region Members
     public int              m_iStateID      = -1;
     public int              m_iFixedTick    = -1;
 
     public Action<int, int> m_OnEnterState  = null; // <iBeforeState,  iCurrentState>
     public Action<int, int> m_OnExitState   = null; // <iBeforeState,  iCurrentState>
     public Action<int, int> m_OnFixedUpdate = null; // <iCurrentState, iFixedTick>
-    #endregion
 
-
-    #region Interface Functions
     public void OnEnterState(int iBeforeState)
     {
         if (null == m_OnEnterState)
@@ -38,5 +34,4 @@ public class SHStateInfo
 
         m_OnFixedUpdate(m_iStateID, m_iFixedTick);
     }
-    #endregion
 }

@@ -17,51 +17,26 @@ public class SHMonoWrapper : MonoBehaviour
 
 
     #region System Functions
-    public virtual void Awake()
-    {
-    }
-    public virtual void Start()
-    {
-    }
-    public virtual void OnEnable()
-    {
-    }
-    public virtual void OnDisable()
-    {
-    }
-    public virtual void OnDestroy()
-    {
-    }
-    public virtual void Update()
-    {
-    }
-    public virtual void FixedUpdate()
-    {
-    }
-    public virtual void LateUpdate()
-    {
-    }
+    public virtual void Awake() { }
+    public virtual void Start() { }
+    public virtual void OnEnable() { }
+    public virtual void OnDisable() { }
+    public virtual void OnDestroy() { }
+    public virtual void Update() { }
+    public virtual void FixedUpdate() { }
+    public virtual void LateUpdate() { }
     #endregion
-
-
-    #region Interface : Init Physics
-    public void InitPhysics()
-    {
-        m_vSpeed     = Vector3.zero;
-        m_vDirection = Vector3.zero;
-    }
-    #endregion
-
+    
 
     #region Interface : Active
-    public void SetActive(bool bIsActive)
+    protected void SetActive(bool bIsActive)
     {
         if (IsActive() == bIsActive)
             return;
         
         gameObject.SetActive(bIsActive);
     }
-    public bool IsActive()
+    protected bool IsActive()
     {
         return gameObject.activeInHierarchy;
     }
@@ -69,59 +44,77 @@ public class SHMonoWrapper : MonoBehaviour
 
 
     #region Interface : Position
-    public void SetPosition(Vector3 vPos)
+    protected void SetPosition(Vector3 vPos)
     {
         gameObject.transform.position = vPos;
     }
-    public void SetPositionX(float fX)
+    protected void SetPositionX(float fX)
     {
         Vector3 vPos = GetPosition();
         vPos.x = fX;
         SetPosition(vPos);
     }
-    public void SetPositionY(float fY)
+    protected void SetPositionY(float fY)
     {
         Vector3 vPos = GetPosition();
         vPos.y = fY;
         SetPosition(vPos);
     }
-    public void SetLocalPosition(Vector3 vPos)
+    protected void SetPositionZ(float fZ)
+    {
+        Vector3 vPos = GetPosition();
+        vPos.z = fZ;
+        SetPosition(vPos);
+    }
+    protected void SetLocalPosition(Vector3 vPos)
     {
         gameObject.transform.localPosition = vPos;
     }
-    public void SetLocalPositionX(float fX)
+    protected void SetLocalPositionX(float fX)
     {
         Vector3 vPos = GetLocalPosition();
         vPos.x = fX;
         SetLocalPosition(vPos);
     }
-    public void SetLocalPositionY(float fY)
+    protected void SetLocalPositionY(float fY)
     {
         Vector3 vPos = GetLocalPosition();
         vPos.y = fY;
         SetLocalPosition(vPos);
     }
-    public void AddLocalPosition(Vector3 vPos)
+    protected void SetLocalPositionZ(float fZ)
+    {
+        Vector3 vPos = GetLocalPosition();
+        vPos.z = fZ;
+        SetLocalPosition(vPos);
+    }
+    protected void AddLocalPosition(Vector3 vPos)
     {
         gameObject.transform.localPosition = (GetLocalPosition() + vPos);
     }
-    public void AddLocalPositionX(float fX)
+    protected void AddLocalPositionX(float fX)
     {
         Vector3 vPos = GetLocalPosition();
         vPos.x += fX;
         SetLocalPosition(vPos);
     }
-    public void AddLocalPositionY(float fY)
+    protected void AddLocalPositionY(float fY)
     {
         Vector3 vPos = GetLocalPosition();
         vPos.y += fY;
         SetLocalPosition(vPos);
     }
-    public Vector3 GetPosition()
+    protected void AddLocalPositionZ(float fZ)
+    {
+        Vector3 vPos = GetLocalPosition();
+        vPos.z += fZ;
+        SetLocalPosition(vPos);
+    }
+    protected Vector3 GetPosition()
     {
         return gameObject.transform.position;
     }
-    public Vector3 GetLocalPosition()
+    protected Vector3 GetLocalPosition()
     {
         return gameObject.transform.localPosition;
     }
@@ -133,20 +126,9 @@ public class SHMonoWrapper : MonoBehaviour
     {
         gameObject.transform.localScale = vScale;
     }
-    public void SetLocalScaleZ(float fScale)
-    {
-        Vector3 vScale = GetLocalScale();
-        vScale.z = fScale;
-        SetLocalScale(vScale);
-    }
     public Vector3 GetLocalScale()
     {
         return gameObject.transform.localScale;
-    }
-    public bool IsZero2Scale()
-    {
-        Vector3 vScale = GetLocalScale();
-        return ((0.0f == vScale.x) && (0.0f == vScale.y));
     }
     #endregion
 
@@ -172,50 +154,50 @@ public class SHMonoWrapper : MonoBehaviour
     {
         gameObject.transform.localRotation = qRotate;
     }
-    public void SetRotateZ(float fValue)
-    {
-        Quaternion  qRot = GetLocalRotate();
-        Vector3     vRet = qRot.eulerAngles;
-        vRet.z = fValue;
-        SetLocalRotate(vRet);
-    }
-    public void AddRotateZ(float fValue)
-    {
-        SetRotateZ(GetRotateZ() + fValue);
-    }
-    public float GetRotateZ()
-    {
-        return GetLocalRotate().eulerAngles.z;
-    }
-    public void SetRotateX(float fValue)
+    public void SetLocalRotateX(float fValue)
     {
         Quaternion  qRot = GetLocalRotate();
         Vector3     vRet = qRot.eulerAngles;
         vRet.x = fValue;
         SetLocalRotate(vRet);
     }
-    public void AddRotateX(float fValue)
+    public void AddLocalRotateX(float fValue)
     {
-        SetRotateX(GetRotateX() + fValue);
+        SetLocalRotateX(GetLocalRotateX() + fValue);
     }
-    public float GetRotateX()
+    public float GetLocalRotateX()
     {
         return GetLocalRotate().eulerAngles.x;
     }
-    public void SetRotateY(float fValue)
+    public void SetLocalRotateY(float fValue)
     {
         Quaternion  qRot = GetLocalRotate();
         Vector3     vRet = qRot.eulerAngles;
         vRet.y = fValue;
         SetLocalRotate(vRet);
     }
-    public void AddRotateY(float fValue)
+    public void AddLocalRotateY(float fValue)
     {
-        SetRotateY(GetRotateY() + fValue);
+        SetLocalRotateY(GetLocalRotateY() + fValue);
     }
-    public float GetRotateY()
+    public float GetLocalRotateY()
     {
         return GetLocalRotate().eulerAngles.y;
+    }
+    public void SetLocalRotateZ(float fValue)
+    {
+        Quaternion qRot = GetLocalRotate();
+        Vector3 vRet = qRot.eulerAngles;
+        vRet.z = fValue;
+        SetLocalRotate(vRet);
+    }
+    public void AddLocalRotateZ(float fValue)
+    {
+        SetLocalRotateZ(GetLocalRotateZ() + fValue);
+    }
+    public float GetLocalRotateZ()
+    {
+        return GetLocalRotate().eulerAngles.z;
     }
     public Quaternion GetRotate()
     {
@@ -229,10 +211,10 @@ public class SHMonoWrapper : MonoBehaviour
 
 
     #region Interface : Animation
-    public void PlayAnim(eDirection ePlayDir, GameObject pObject, AnimationClip pClip, Action pEndCallback)
+    public void PlayAnim(eDirection ePlayDir, GameObject pTargetObject, AnimationClip pClip, Action pEndCallback)
     {
-        if (null == pObject)
-            pObject = gameObject;
+        if (null == pTargetObject)
+            pTargetObject = gameObject;
 
         if (null == pClip)
         {
@@ -241,14 +223,14 @@ public class SHMonoWrapper : MonoBehaviour
             return;
         }
 
-        if (false == pObject.activeInHierarchy)
+        if (false == pTargetObject.activeInHierarchy)
         {
             if (null != pEndCallback)
                 pEndCallback();
             return;
         }
 
-        var pAnim = GetAnimation(pObject);
+        var pAnim = GetAnimation(pTargetObject);
         if (null == pAnim.GetClip(pClip.name))
             pAnim.AddClip(pClip, pClip.name);
 
@@ -262,17 +244,19 @@ public class SHMonoWrapper : MonoBehaviour
             pAnim.Play(pClip.name);
 
             if (WrapMode.Loop != pState.wrapMode)
+            {
                 StartCoroutine(CoroutinePlayAnim_WaitTime(pState.length, pEndCallback));
+            }
         }
         else
         {
             switch (ePlayDir)
             {
                 case eDirection.Front:
-                    StartCoroutine(CoroutinePlayAnim_UnScaledForward(pObject, pAnim[pClip.name], pEndCallback));
+                    StartCoroutine(CoroutinePlayAnim_UnScaledForward(pTargetObject, pAnim[pClip.name], pEndCallback));
                     break;
                 case eDirection.Back:
-                    StartCoroutine(CoroutinePlayAnim_UnScaledBackward(pObject, pAnim[pClip.name], pEndCallback));
+                    StartCoroutine(CoroutinePlayAnim_UnScaledBackward(pTargetObject, pAnim[pClip.name], pEndCallback));
                     break;
             }
         }

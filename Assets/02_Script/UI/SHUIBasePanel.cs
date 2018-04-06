@@ -14,10 +14,6 @@ public class SHUIBasePanel : SHMonoWrapper
     #endregion
 
 
-    #region System Functions
-    #endregion
-
-
     #region Virtual Functions
     public virtual void OnBeforeShow(params object[] pArgs) { }
     public virtual void OnAfterShow(params object[] pArgs) { }

@@ -53,6 +53,7 @@ public class SHObjectInfo
         m_pObject.transform.SetParent(pParent);
         m_pObject.layer = pLayer;
     }
+
     public void SetActive(bool bIsActive)
     {
         if (null == m_pObject)
@@ -63,12 +64,14 @@ public class SHObjectInfo
 
         m_pObject.SetActive(bIsActive);
     }
+
     public void SetStartTransform()
     {
         m_pObject.transform.localPosition = m_vStartPosition;
         m_pObject.transform.localRotation = m_qStartRotate;
         m_pObject.transform.localScale    = m_vStartScale;
     }
+
     public bool IsActive()
     {
         if (null == m_pObject)
@@ -76,6 +79,7 @@ public class SHObjectInfo
 
         return m_pObject.activeInHierarchy;
     }
+
     public string GetName()
     {
         if (null == m_pObject)
@@ -83,6 +87,7 @@ public class SHObjectInfo
 
         return m_pObject.name;
     }
+
     public bool IsSameObject(GameObject pObject)
     {
         if (null == pObject)
@@ -92,6 +97,7 @@ public class SHObjectInfo
 
         return (pObject == m_pObject);
     }
+
     public void DestroyObject()
     {
         m_eReturnType  = ePoolReturnType.None;
@@ -105,18 +111,12 @@ public class SHObjectInfo
 
 public class SHObjectPool : SHSingleton<SHObjectPool>
 {
-    #region Members : ObjectPool
+    #region Members
     DicRoots m_dicRoots      = new DicRoots();
-    #endregion
 
-
-    #region Members : ObjectPool
     DicObject m_dicActives   = new DicObject();
     DicObject m_dicInactives = new DicObject();
-    #endregion
 
-
-    #region Members : Constants
     private readonly int CHECK_DELAY_FOR_ACTIVE = 5;
     #endregion
 
@@ -235,7 +235,9 @@ public class SHObjectPool : SHSingleton<SHObjectPool>
         if (0 == pObjects.Count)
         {
             return new SHObjectInfo(
-                eReturnType, eDestroyType, Single.Resource.GetGameObject(strName));
+                eReturnType,
+                eDestroyType, 
+                Single.Resource.GetGameObject(strName));
         }
         else
         {
@@ -249,7 +251,7 @@ public class SHObjectPool : SHSingleton<SHObjectPool>
         if (null == pObject)
             return null;
         
-        var strName     = pObject.name;
+        var strName = pObject.name;
         if (true == m_dicActives.ContainsKey(strName))
         {
             var pObjectInfo = m_dicActives[strName].Find((pItem) =>

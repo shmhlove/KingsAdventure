@@ -10,77 +10,50 @@ using System.Collections;
 public static partial class SHPath
 {
     // 경로 : 서버 URL
-    public static string GetURLToServer()
+    public static string GetServerURL()
     {
         return string.Empty;
         //return Single.Table.GetServerURL();
     }
-
-    // 경로 : Configuration CDN 주소
-    public static string GetURLToServerConfig()
-    {
-        return Single.Table.GetServerConfigURL();
-    }
     
-    // 경로 : 번들 CDN 주소
-    public static string GetURLToBundleCDN()
-    {
-        return Single.Table.GetBundleCDN();
-    }
-
-    // 경로 : 번들 CDN/플랫폼식별자 주소
-    public static string GetURLToBundleCDNWithPlatform()
-    {
-        return string.Empty;
-        //return string.Format("{0}/{1}", GetURLToBundleCDN(), Single.AppInfo.GetStrToRuntimePlatform());
-    }
-    
-    // 경로 : (Root)
-    public static string GetPathToRoot()
+    // 경로 : (Project Root)
+    public static string GetRoot()
     {
         return Application.dataPath.Substring(0, Application.dataPath.IndexOf("Assets") - 1);
     }
 
     // 경로 : (Root : Assets)
-    public static string GetPathToAssets()
+    public static string GetAssets()
     {
         return Application.dataPath;
     }
 
     // 경로 : (Root : Assets/Resources)
-    public static string GetPathToResources()
+    public static string GetResources()
     {
-        return string.Format("{0}{1}", GetPathToAssets(), "/Resources");
+        return string.Format("{0}/{1}", GetAssets(), "Resources");
     }
 
     // 경로 : (Root : Assets/StreamingAssets)
-    public static string GetPathToStreamingAssets()
+    public static string GetStreamingAssets()
     {
         return Application.streamingAssetsPath;
     }
 
     // 경로 : (Root : Build)
-    public static string GetPathToBuild()
+    public static string GetBuild()
     {
-        return string.Format("{0}{1}", GetPathToRoot(), "/Build");
+        return string.Format("{0}/{1}", GetRoot(), "Build");
     }
 
-    // 경로 : (Root : Build/AssetBundles)
-    public static string GetPathToExportAssetBundle()
+    // 경로 : (Root : Build/AssetBundles/[Platform])
+    public static string GetExportAssetBundle(BuildTarget eTarget)
     {
-        return string.Format("{0}{1}", GetPathToBuild(), "/AssetBundles");
+        return string.Format("{0}/{1}/{2}", GetBuild(), "AssetBundles", SHHard.GetPlatformStringByEnum(eTarget));
     }
-
-#if UNITY_EDITOR
-    // 경로 : (Root : Root/GetPathToAssetBundlesMakeInfo/플랫폼/)
-    public static string GetPathToAssetBundlesMakeInfo(BuildTarget eTarget)
-    {
-        return string.Format("{0}/{1}/{2}", GetPathToRoot(), "AssetBundlesInfo", SHHard.GetPlatformStringByEnum(eTarget));
-    }
-#endif
-
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/플랫폼)
-    public static string GetPathToPersistentData()
+    
+    // 경로 : (사용자디렉토리 : /AppData/LocalLow/회사이름/프로덕트이름/플랫폼)
+    public static string GetPersistentData()
     {
 #if UNITY_EDITOR
         return string.Format("{0}/{1}", Application.persistentDataPath, SHHard.GetPlatformStringByEnum(EditorUserBuildSettings.activeBuildTarget));
@@ -89,57 +62,39 @@ public static partial class SHPath
 #endif
     }
 
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/AssetBundle)
-    public static string GetPathToPersistentAssetBundle()
+    // 경로 : (사용자디렉토리 : /AppData/LocalLow/회사이름/프로덕트이름/플랫폼/Bytes)
+    public static string GetPersistentDataBytes()
     {
-        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "AssetBundle");
+        return string.Format("{0}/{1}", SHPath.GetPersistentData(), "Bytes");
     }
 
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/Byte)
-    public static string GetPathToPersistentByte()
+    // 경로 : (사용자디렉토리 : /AppData/LocalLow/회사이름/프로덕트이름/플랫폼/Json)
+    public static string GetPersistentDataJson()
     {
-        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "Byte");
+        return string.Format("{0}/{1}", SHPath.GetPersistentData(), "JSons");
     }
 
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/Json)
-    public static string GetPathToPersistentJson()
+    // 경로 : (사용자디렉토리 : /AppData/LocalLow/회사이름/프로덕트이름/플랫폼/Json)
+    public static string GetPersistentDataXML()
     {
-        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "Json");
+        return string.Format("{0}/{1}", SHPath.GetPersistentData(), "XML");
     }
-
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/XML)
-    public static string GetPathToPersistentXML()
-    {
-        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "XML");
-    }
-
-    // 경로 : (Root : 사용자디렉토리/AppData/LocalLow/회사이름/프로덕트이름/SQLite)
-    public static string GetPathToPersistentSQLite()
-    {
-        return string.Format("{0}/{1}", SHPath.GetPathToPersistentData(), "SQLite");
-    }
-
+    
     // 경로 : (Root : Assets/Resources/Table/XML)
-    public static string GetPathToXML()
+    public static string GetResourceXMLTable()
     {
-        return string.Format("{0}/{1}/{2}", SHPath.GetPathToResources(), "Table", "XML");
+        return string.Format("{0}/{1}/{2}", SHPath.GetResources(), "Table", "XML");
     }
 
     // 경로 : (Root : Assets/Resources/Table/Bytes)
-    public static string GetPathToBytes()
+    public static string GetResourceBytesTable()
     {
-        return string.Format("{0}/{1}/{2}", SHPath.GetPathToResources(), "Table", "Bytes");
+        return string.Format("{0}/{1}/{2}", SHPath.GetResources(), "Table", "Bytes");
     }
-
-    // 경로 : (Root : Assets/StreamingAssets/SQLite)
-    public static string GetPathToSQLite()
-    {
-        return string.Format("{0}/{1}", SHPath.GetPathToStreamingAssets(), "SQLite");
-    }
-
+    
     // 경로 : (Root : Assets/StreamingAssets/JSons)
-    public static string GetPathToJson()
+    public static string GetStreamingAssetsJsonTable()
     {
-        return string.Format("{0}/{1}", SHPath.GetPathToStreamingAssets(), "JSons");
+        return string.Format("{0}/{1}", SHPath.GetStreamingAssets(), "JSons");
     }
 }
