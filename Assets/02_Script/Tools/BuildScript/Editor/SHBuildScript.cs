@@ -82,7 +82,7 @@ class SHBuildScript
         {
             EditorUserBuildSettings.SwitchActiveBuildTarget(eTarget);
 
-            string strExportPath = string.Format("{0}/{1}", SHPath.GetBuild(), strBuildName);
+            string strExportPath = string.Format("{0}/{1}/{2}", SHPath.GetBuild(), SHHard.GetPlatformStringByEnum(eTarget), strBuildName);
             SHUtils.CreateDirectory(strExportPath);
 
 			string strResult = BuildPipeline.BuildPlayer(strScenes, strExportPath, eTarget, eOptions);
@@ -98,7 +98,7 @@ class SHBuildScript
     {
         Debug.LogFormat("** [SHBuilder] AssetBundles Packing Start({0}) -> {1}", eTarget, DateTime.Now.ToString("yyyy-MM-dd [ HH:mm:ss ]"));
         {
-            string strExportPath = string.Format("{0}/{1}", SHPath.GetExportAssetBundle(), SHHard.GetPlatformStringByEnum(eTarget));
+            string strExportPath = string.Format("{0}/{1}/{2}", SHPath.GetBuild(), SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
             SHUtils.CreateDirectory(strExportPath);
 
             BuildPipeline.BuildAssetBundles(strExportPath, BuildAssetBundleOptions.None, eTarget);
