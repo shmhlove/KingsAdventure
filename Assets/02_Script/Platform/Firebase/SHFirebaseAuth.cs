@@ -8,35 +8,35 @@ using System.Collections.Generic;
 //using Firebase;
 //using Firebase.Auth;
 
-//using GooglePlayGames;
-//using GooglePlayGames.BasicApi;
-//using GooglePlayGames.BasicApi.SavedGame;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using GooglePlayGames.BasicApi.SavedGame;
 
 public class SHFirebaseAuth
 {
-//    private FirebaseAuth m_pAuth;
-//    private FirebaseUser m_pUser;
+    //private FirebaseAuth m_pAuth;
+    //private FirebaseUser m_pUser;
 
-//#if UNITY_ANDROID
-//    private PlayGamesClientConfiguration m_pGPGConfig;
-//#endif
+#if UNITY_ANDROID
+    private PlayGamesClientConfiguration m_pGPGConfig;
+#endif
 
     public void OnInitialize()
     {
-//        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnInitialize");
+        //        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnInitialize");
 
-//        if (null != m_pAuth)
-//            return;
+        //        if (null != m_pAuth)
+        //            return;
 
-//        m_pAuth = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
-//        m_pAuth.StateChanged += OnEventByAuthStateChanged;
+        //        m_pAuth = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
+        //        m_pAuth.StateChanged += OnEventByAuthStateChanged;
 
-//#if UNITY_ANDROID
-//       m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
-//       PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
-//       PlayGamesPlatform.DebugLogEnabled = true;
-//       PlayGamesPlatform.Activate();
-//#endif
+#if UNITY_ANDROID
+        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+#endif
     }
 
     public void OnFinalize()
@@ -129,45 +129,45 @@ public class SHFirebaseAuth
 
     public void GoogleLogin()
     {
-//        Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
-//        if (true == Social.localUser.authenticated)
-//        {
-//            Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
-//            return;
-//        }
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
+        if (true == Social.localUser.authenticated)
+        {
+            Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
+            return;
+        }
 
-//#if UNITY_ANDROID
-//        PlayGamesPlatform.Instance.localUser.Authenticate((isSucceed) =>
-//        {
-////#elif UNITY_IOS
-////        Social.localUser.Authenticate((isSucceed) =>
-////        {
-////#endif
-//            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
-//            if (false == isSucceed)
-//                return;
-            
-//            m_pAuth.SignInWithCredentialAsync(
-//                GoogleAuthProvider.GetCredential(
-//                    ((PlayGamesLocalUser)Social.localUser).GetIdToken(), null)).ContinueWith(pTask => 
-//            {
-//                if (pTask.IsCanceled)
-//                {
-//                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
-//                    return;
-//                }
-//                if (pTask.IsFaulted)
-//                {
-//                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-//                    return;
-//                }
+#if UNITY_ANDROID
+        PlayGamesPlatform.Instance.localUser.Authenticate((isSucceed) =>
+        {
+            //#elif UNITY_IOS
+            //        Social.localUser.Authenticate((isSucceed) =>
+            //        {
+            //#endif
+            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
+            if (false == isSucceed)
+                return;
 
-//                m_pUser = pTask.Result;
-//                Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-//                    m_pUser.DisplayName, m_pUser.UserId);
-//            });
-//        });
-//#endif
+            //m_pAuth.SignInWithCredentialAsync(
+            //    GoogleAuthProvider.GetCredential(
+            //        ((PlayGamesLocalUser)Social.localUser).GetIdToken(), null)).ContinueWith(pTask =>
+            //{
+            //    if (pTask.IsCanceled)
+            //    {
+            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
+            //        return;
+            //    }
+            //    if (pTask.IsFaulted)
+            //    {
+            //        Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+            //        return;
+            //    }
+
+            //    m_pUser = pTask.Result;
+            //    Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+            //        m_pUser.DisplayName, m_pUser.UserId);
+            //});
+        });
+#endif
     }
 
     public void Logout()
