@@ -5,9 +5,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
-using Firebase.Storage;
+//using Firebase.Storage;
 
 public class SHSceneManager : SHSingleton<SHSceneManager>
 {
@@ -121,37 +121,37 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
             if (RuntimePlatform.OSXEditor == ePlatform)
                 ePlatform = RuntimePlatform.IPhonePlayer;
         }
-        string strPlatform = SHHard.GetPlatformStringByEnum(ePlatform);
+        //string strPlatform = SHHard.GetPlatformStringByEnum(ePlatform);
 
-        // StreamingAssets 로컬 다운로드
-        //#if UNITY_EDITOR || UNITY_STANDALONE
-        //        strURL = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
-        //#elif UNITY_ANDROID
-        //        strURL = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
-        //#elif UNITY_IOS
-        //        strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
-        //#endif
-        //        strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
+        //// StreamingAssets 로컬 다운로드
+        ////#if UNITY_EDITOR || UNITY_STANDALONE
+        ////        strURL = string.Format("{0}{1}", "file://", SHPath.GetPathToStreamingAssets());
+        ////#elif UNITY_ANDROID
+        ////        strURL = string.Format("{0}{1}{2}", "jar:file://", SHPath.GetPathToAssets(), "!/assets");
+        ////#elif UNITY_IOS
+        ////        strURL = string.Format("{0}{1}{2}", "file://", SHPath.GetPathToAssets(), "/Raw");
+        ////#endif
+        ////        strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
 
-        // NAS CDN 다운로드
-        //strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure";
-        //strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
+        //// NAS CDN 다운로드
+        ////strURL = "http://blueasa.synology.me/home/shmhlove/KOR/KingsAdventure";
+        ////strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
 
-        // Firebase에서 다운로드
-        FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
+        //// Firebase에서 다운로드
+        //FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
         
-        StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-development.appspot.com/");
-        StorageReference pSceneRef = pRootRef.Child(string.Format("/{0}/AssetBundle/scene/", strPlatform));
-        StorageReference pBundleRef = pSceneRef.Child(string.Format("{0}.scene", eType.ToString().ToLower()));
+        //StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kingsadventure-development.appspot.com/");
+        //StorageReference pSceneRef = pRootRef.Child(string.Format("/{0}/AssetBundle/scene/", strPlatform));
+        //StorageReference pBundleRef = pSceneRef.Child(string.Format("{0}.scene", eType.ToString().ToLower()));
         
-        // URL 다운로드
-        pBundleRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
-        {
-            if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
-                pCallback(pTask.Result.OriginalString);
-            else
-                pCallback(string.Empty);
-        });
+        //// URL 다운로드
+        //pBundleRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
+        //{
+        //    if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
+        //        pCallback(pTask.Result.OriginalString);
+        //    else
+        //        pCallback(string.Empty);
+        //});
     }
 
     void LoadProcess(AsyncOperation pAsyncInfo, Action<AsyncOperation> pDone)

@@ -19,45 +19,41 @@ namespace GooglePlayGames.Editor
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-#if UNITY_2017
-     using UnityEditor.Build;
-#endif
+    #if UNITY_2017
+    using UnityEditor.Build;
+    #endif
     using UnityEditor;
 
     [InitializeOnLoad]
-    public class ForceNoGpgsForIOS
-#if UNITY_2017
-         : IActiveBuildTargetChanged
-#endif
+    public class ForceNoGpgsForIOS 
+    #if UNITY_2017
+        : IActiveBuildTargetChanged
+    #endif
     {
-        static ForceNoGpgsForIOS()
+        static ForceNoGpgsForIOS ()
         {
-            setNoGPGS();
+            setNoGPGS ();
         }
 
-        public void OnActiveBuildTargetChanged(BuildTarget previousTarget, BuildTarget newTarget)
+        public void OnActiveBuildTargetChanged (BuildTarget previousTarget, BuildTarget newTarget)
         {
-            if (newTarget == BuildTarget.iOS)
-            {
-                setNoGPGS();
+            if (newTarget == BuildTarget.iOS) {
+                setNoGPGS ();
             }
         }
 
         public int callbackOrder { get { return 0; } }
 
-        private static void setNoGPGS()
+        private static void setNoGPGS ()
         {
-            Debug.Log("Forcing NO_GPGS to be defined for iOS builds.");
-            string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
-            if (string.IsNullOrEmpty(symbols))
-            {
+            Debug.Log ("Forcing NO_GPGS to be defined for iOS builds.");
+            string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup (BuildTargetGroup.iOS);
+            if (string.IsNullOrEmpty (symbols)) {
                 symbols = "NO_GPGS";
-            }
-            else if (!symbols.Contains("NO_GPGS"))
-            {
+            } else if (!symbols.Contains ("NO_GPGS")) {
                 symbols += ";NO_GPGS";
             }
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbols);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup (BuildTargetGroup.iOS, symbols);
         }
     }
 }
