@@ -1,63 +1,37 @@
 {
-  "project_info": {
-    "project_number": "878418327631",
-    "firebase_url": "https://kings-adventure-22251209.firebaseio.com",
-    "project_id": "kings-adventure-22251209",
-    "storage_bucket": "kings-adventure-22251209.appspot.com"
-  },
   "client": [
     {
+      "services": {
+        "appinvite_service": {
+          "status": 1
+        }, 
+        "analytics_service": {
+          "status": 0
+        }
+      }, 
+      "oauth_client": [
+        {
+          "client_id": "878418327631-ecs8c2bl87a9hnfq0667kdoevkqj116f.apps.googleusercontent.com"
+        }
+      ], 
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt7vMAT3Nf_d-RAbp4fh9OeX2jYI7QPwg"
+        }
+      ], 
       "client_info": {
-        "mobilesdk_app_id": "1:878418327631:android:e75b69e96dbcbffe",
+        "mobilesdk_app_id": "1:878418327631:ios:e75b69e96dbcbffe", 
         "android_client_info": {
           "package_name": "com.mangogames.kingsadventure.dev"
         }
-      },
-      "oauth_client": [
-        {
-          "client_id": "878418327631-3r41d426kofemf1n1kq81k2p3dqnjrtm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mangogames.kingsadventure.dev",
-            "certificate_hash": "216fec0d4c65c27355bda35ae3a21c986a0232a7"
-          }
-        },
-        {
-          "client_id": "878418327631-uqn77seess5ntlan18e7tdiuulqv6e0q.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD7oCRxCgkNZ1PKD_JsgvCnvrQDVEuFpQk"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "878418327631-uqn77seess5ntlan18e7tdiuulqv6e0q.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "878418327631-ecs8c2bl87a9hnfq0667kdoevkqj116f.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.mangogames.kingsadventure.dev",
-                "app_store_id": "1364966712"
-              }
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
       }
     }
-  ],
-  "configuration_version": "1"
+  ], 
+  "configuration_version": "1", 
+  "project_info": {
+    "storage_bucket": "kings-adventure-22251209.appspot.com", 
+    "project_id": "kings-adventure-22251209", 
+    "firebase_url": "https://kings-adventure-22251209.firebaseio.com", 
+    "project_number": "878418327631"
+  }
 }
