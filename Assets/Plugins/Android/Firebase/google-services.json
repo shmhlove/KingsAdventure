@@ -25,6 +25,14 @@
         {
           "client_id": "878418327631-uqn77seess5ntlan18e7tdiuulqv6e0q.apps.googleusercontent.com",
           "client_type": 3
+        },
+        {
+          "client_id": "878418327631-n3acgjgqkpaselb3irep1r9mflt1h0gi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mangogames.kingsadventure.dev",
+            "certificate_hash": "fb6caf66f9e7ffad0e706e13194a61abb747179d"
+          }
         }
       ],
       "api_key": [
