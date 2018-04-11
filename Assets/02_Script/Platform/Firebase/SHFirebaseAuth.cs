@@ -135,8 +135,7 @@ public class SHFirebaseAuth
             Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
             return;
         }
-
-#if UNITY_ANDROID
+        
         Social.localUser.Authenticate((isSucceed) =>
         {
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
@@ -157,7 +156,7 @@ public class SHFirebaseAuth
 
             //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin AuthToken {0}", strToken);
             //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin E-mail {0}", strEmail);
-            
+#if UNITY_ANDROID
             m_pAuth.SignInWithCredentialAsync(
                 GoogleAuthProvider.GetCredential(strToken, null)).ContinueWith(pTask =>
             {
@@ -176,14 +175,17 @@ public class SHFirebaseAuth
                 Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                     m_pUser.DisplayName, m_pUser.UserId);
             });
-        });
 #endif
+        });
     }
 
     public void Logout()
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
 
+#if UNITY_ANDROID
+        ((GooglePlayGames.PlayGamesPlatform)Social.Active).SignOut();
+#endif
         m_pAuth.SignOut();
     }
 
