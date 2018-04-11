@@ -145,10 +145,13 @@ public class SHFirebaseAuth
 
             //#elif UNITY_IOS
             //#endif
-
+            var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
+            var strEmail = ((PlayGamesLocalUser)Social.localUser).Email;
+            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin AuthToken {0}", strToken);
+            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin E-mail {0}", strEmail);
+            
             m_pAuth.SignInWithCredentialAsync(
-                GoogleAuthProvider.GetCredential(
-                    ((PlayGamesLocalUser)Social.localUser).GetIdToken(), null)).ContinueWith(pTask =>
+                GoogleAuthProvider.GetCredential(strToken, null)).ContinueWith(pTask =>
             {
                 if (pTask.IsCanceled)
                 {
