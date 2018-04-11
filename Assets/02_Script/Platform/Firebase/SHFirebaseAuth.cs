@@ -137,15 +137,14 @@ public class SHFirebaseAuth
         }
 
 #if UNITY_ANDROID
-        PlayGamesPlatform.Instance.localUser.Authenticate((isSucceed) =>
+        Social.localUser.Authenticate((isSucceed) =>
         {
-            //#elif UNITY_IOS
-            //        Social.localUser.Authenticate((isSucceed) =>
-            //        {
-            //#endif
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
             if (false == isSucceed)
                 return;
+
+            //#elif UNITY_IOS
+            //#endif
 
             m_pAuth.SignInWithCredentialAsync(
                 GoogleAuthProvider.GetCredential(
