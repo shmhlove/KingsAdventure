@@ -145,10 +145,18 @@ public class SHFirebaseAuth
 
             //#elif UNITY_IOS
             //#endif
-            var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-            var strEmail = ((PlayGamesLocalUser)Social.localUser).Email;
-            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin AuthToken {0}", strToken);
-            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin E-mail {0}", strEmail);
+            //var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
+            //var strEmail = ((PlayGamesLocalUser)Social.localUser).Email;
+
+            var strToken = Social.localUser.id;
+            
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.id {0}", Social.localUser.id);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.state {0}", Social.localUser.state);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.userName {0}", Social.localUser.userName);
+
+            //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin AuthToken {0}", strToken);
+            //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin E-mail {0}", strEmail);
             
             m_pAuth.SignInWithCredentialAsync(
                 GoogleAuthProvider.GetCredential(strToken, null)).ContinueWith(pTask =>
