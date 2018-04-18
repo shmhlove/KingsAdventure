@@ -16,11 +16,7 @@ public class SHFirebaseAuth
 {
     private FirebaseAuth m_pAuth;
     private FirebaseUser m_pUser;
-
-#if UNITY_ANDROID
-    private PlayGamesClientConfiguration m_pGPGConfig;
-#endif
-
+    
     public void OnInitialize()
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnInitialize");
@@ -32,8 +28,12 @@ public class SHFirebaseAuth
         m_pAuth.StateChanged += OnEventByAuthStateChanged;
 
 #if UNITY_ANDROID
-        m_pGPGConfig = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
-        PlayGamesPlatform.InitializeInstance(m_pGPGConfig);
+        var pGPGConfig = new PlayGamesClientConfiguration.Builder()
+            .RequestIdToken()
+            .RequestEmail()
+            .EnableSavedGames()
+            .Build();
+        PlayGamesPlatform.InitializeInstance(pGPGConfig);
         PlayGamesPlatform.DebugLogEnabled = true;
         PlayGamesPlatform.Activate();
 #endif
@@ -135,8 +135,9 @@ public class SHFirebaseAuth
             Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
             return;
         }
-        
-        Social.localUser.Authenticate((isSucceed) =>
+
+#if UNITY_ANDROID
+        PlayGamesPlatform.Instance.Authenticate((isSucceed) =>
         {
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
             if (false == isSucceed)
@@ -144,19 +145,18 @@ public class SHFirebaseAuth
 
             //#elif UNITY_IOS
             //#endif
-            //var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-            //var strEmail = ((PlayGamesLocalUser)Social.localUser).Email;
-
-            var strToken = Social.localUser.id;
+            
+            var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
             
             Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.id {0}", Social.localUser.id);
             Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
             Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.state {0}", Social.localUser.state);
             Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.userName {0}", Social.localUser.userName);
-
-            //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin AuthToken {0}", strToken);
-            //Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin E-mail {0}", strEmail);
-#if UNITY_ANDROID
+            Debug.LogErrorFormat("[SHFirebaseAuth] ((PlayGamesLocalUser)Social.localUser).GetIdToken() {0}", ((PlayGamesLocalUser)Social.localUser).GetIdToken());
+            Debug.LogErrorFormat("[SHFirebaseAuth] ((PlayGamesLocalUser)Social.localUser).Email {0}", ((PlayGamesLocalUser)Social.localUser).Email);
+            Debug.LogErrorFormat("[SHFirebaseAuth] PlayGamesPlatform.Instance.GetIdToken() {0}", PlayGamesPlatform.Instance.GetIdToken());
+            Debug.LogErrorFormat("[SHFirebaseAuth] PlayGamesPlatform.Instance.GetUserEmail() {0}", PlayGamesPlatform.Instance.GetUserEmail());
+            
             m_pAuth.SignInWithCredentialAsync(
                 GoogleAuthProvider.GetCredential(strToken, null)).ContinueWith(pTask =>
             {
@@ -175,8 +175,8 @@ public class SHFirebaseAuth
                 Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                     m_pUser.DisplayName, m_pUser.UserId);
             });
-#endif
         });
+#endif
     }
 
     public void Logout()
