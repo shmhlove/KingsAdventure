@@ -126,27 +126,25 @@ public class SHFirebaseAuth
         }
 
 #if UNITY_ANDROID
-        m_pAuth.SignInWithCredentialAsync(
-                GoogleAuthProvider.GetCredential(strGoogleIdToken, null)).ContinueWith(pTask =>
+        m_pAuth.SignInWithCredentialAsync(GoogleAuthProvider.GetCredential(strGoogleIdToken, null)).ContinueWith((pTask) =>
+        {
+            if (pTask.IsCanceled)
             {
-                if (pTask.IsCanceled)
-                {
-                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
-                    pCallback(false);
-                    return;
-                }
-                if (pTask.IsFaulted)
-                {
-                    Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-                    pCallback(false);
-                    return;
-                }
-
-                Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})", m_pUser.DisplayName, m_pUser.UserId);
-                
-                m_pUser = pTask.Result;
+                Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
                 pCallback(false);
-            });
+                return;
+            }
+            if (pTask.IsFaulted)
+            {
+                Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+                pCallback(false);
+                return;
+            }
+            
+            Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})", m_pUser.DisplayName, m_pUser.UserId);
+            
+            m_pUser = pTask.Result;
+            pCallback(false);
         });
 #else
         Debug.LogErrorFormat("[SHFirebaseAuth] Not Supported this platform");
