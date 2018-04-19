@@ -142,9 +142,6 @@ public class SHFirebaseAuth
             Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
             if (false == isSucceed)
                 return;
-
-            //#elif UNITY_IOS
-            //#endif
             
             var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
             
@@ -176,6 +173,18 @@ public class SHFirebaseAuth
                     m_pUser.DisplayName, m_pUser.UserId);
             });
         });
+#elif UNITY_IOS
+        Social.localUser.Authenticate((isSucceed) =>
+        {
+            Debug.LogErrorFormat("[SHFirebaseAuth] AppleLogin is {0}", isSucceed);
+            if (false == isSucceed)
+                return;
+
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.id {0}", Social.localUser.id);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.state {0}", Social.localUser.state);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.userName {0}", Social.localUser.userName);
+        }); 
 #endif
     }
 
