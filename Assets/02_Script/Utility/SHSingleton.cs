@@ -27,7 +27,9 @@ public static class Single
     public static SHRenderTextureManager    RenderTexture       { get { return SHRenderTextureManager.Instance; } }
 
     // 플랫폼
-    public static SHFirebase                Firebase            { get { return SHFirebase.Instance; } }
+    public static SHFirebaseManager         Firebase            { get { return SHFirebaseManager.Instance; } }
+    public static SHGoogleManager           Google              { get { return SHGoogleManager.Instance; } }
+    public static SHAppleManager            Apple               { get { return SHAppleManager.Instance; } }
 
     // 유틸리티
     public static SHApplicationInfo         AppInfo             { get { return SHApplicationInfo.Instance; } }

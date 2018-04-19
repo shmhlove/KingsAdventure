@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Firebase;
 using Firebase.Auth;
-
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
-using GooglePlayGames.BasicApi.SavedGame;
 
 public class SHFirebaseAuth
 {
@@ -19,7 +16,7 @@ public class SHFirebaseAuth
     
     public void OnInitialize()
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnInitialize");
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnInitialize");
 
         if (null != m_pAuth)
             return;
@@ -27,21 +24,11 @@ public class SHFirebaseAuth
         m_pAuth = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
         m_pAuth.StateChanged += OnEventByAuthStateChanged;
 
-#if UNITY_ANDROID
-        var pGPGConfig = new PlayGamesClientConfiguration.Builder()
-            .RequestIdToken()
-            .RequestEmail()
-            .EnableSavedGames()
-            .Build();
-        PlayGamesPlatform.InitializeInstance(pGPGConfig);
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-#endif
     }
 
     public void OnFinalize()
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnFinalize");
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnFinalize");
 
         if (null == m_pAuth)
             return;
@@ -51,7 +38,7 @@ public class SHFirebaseAuth
 
     public void CreateAccount(string strUserEmail, string strUserPassword)
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
 
         m_pAuth.CreateUserWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
@@ -68,14 +55,14 @@ public class SHFirebaseAuth
 
             m_pUser = pTask.Result;
 
-            Debug.LogWarningFormat("[SHFirebaseAuth] Firebase user created successfully: {0} ({1})",
+            Debug.LogErrorFormat("[SHFirebaseAuth] Firebase user created successfully: {0} ({1})",
                 m_pUser.DisplayName, m_pUser.UserId);
         });
     }
 
     public void Login(string strUserEmail, string strUserPassword)
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is Login (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is Login (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
 
         m_pAuth.SignInWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
@@ -92,14 +79,14 @@ public class SHFirebaseAuth
 
             m_pUser = pTask.Result;
 
-            Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
+            Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
                 m_pUser.DisplayName, m_pUser.UserId);
         });
     }
 
     public void GuestLogin()
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is GuestLogin");
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is GuestLogin");
 
         // 계전전환
         // 1. 사용자가 가입하면 해당 사용자가 선택한 인증 제공업체의 로그인 흐름을 진행하되 메소드 호출 전까지만 진행합니다. 
@@ -127,122 +114,69 @@ public class SHFirebaseAuth
         });
     }
 
-    public void GoogleLogin()
+    public void GoogleSignIn(string strGoogleIdToken, Action<bool> pCallback)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
-        if (true == Social.localUser.authenticated)
+
+        if (string.IsNullOrEmpty(strGoogleIdToken))
         {
-            Debug.LogErrorFormat("[SHFirebaseAuth] Already Login!!({0})", Social.localUser.userName);
+            Debug.LogErrorFormat("[SHFirebaseAuth] Google IdToken is Empty!!");
+            pCallback(false);
             return;
         }
 
 #if UNITY_ANDROID
-        PlayGamesPlatform.Instance.Authenticate((isSucceed) =>
-        {
-            Debug.LogErrorFormat("[SHFirebaseAuth] GoogleLogin is {0}", isSucceed);
-            if (false == isSucceed)
-                return;
-            
-            var strToken = ((PlayGamesLocalUser)Social.localUser).GetIdToken();
-            
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.id {0}", Social.localUser.id);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.state {0}", Social.localUser.state);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.userName {0}", Social.localUser.userName);
-            Debug.LogErrorFormat("[SHFirebaseAuth] ((PlayGamesLocalUser)Social.localUser).GetIdToken() {0}", ((PlayGamesLocalUser)Social.localUser).GetIdToken());
-            Debug.LogErrorFormat("[SHFirebaseAuth] ((PlayGamesLocalUser)Social.localUser).Email {0}", ((PlayGamesLocalUser)Social.localUser).Email);
-            Debug.LogErrorFormat("[SHFirebaseAuth] PlayGamesPlatform.Instance.GetIdToken() {0}", PlayGamesPlatform.Instance.GetIdToken());
-            Debug.LogErrorFormat("[SHFirebaseAuth] PlayGamesPlatform.Instance.GetUserEmail() {0}", PlayGamesPlatform.Instance.GetUserEmail());
-            
-            m_pAuth.SignInWithCredentialAsync(
-                GoogleAuthProvider.GetCredential(strToken, null)).ContinueWith(pTask =>
+        m_pAuth.SignInWithCredentialAsync(
+                GoogleAuthProvider.GetCredential(strGoogleIdToken, null)).ContinueWith(pTask =>
             {
                 if (pTask.IsCanceled)
                 {
                     Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
+                    pCallback(false);
                     return;
                 }
                 if (pTask.IsFaulted)
                 {
                     Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
+                    pCallback(false);
                     return;
                 }
 
+                Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})", m_pUser.DisplayName, m_pUser.UserId);
+                
                 m_pUser = pTask.Result;
-                Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-                    m_pUser.DisplayName, m_pUser.UserId);
+                pCallback(false);
             });
         });
-#elif UNITY_IOS
-        Social.localUser.Authenticate((isSucceed) =>
-        {
-            Debug.LogErrorFormat("[SHFirebaseAuth] AppleLogin is {0}", isSucceed);
-            if (false == isSucceed)
-                return;
-
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.id {0}", Social.localUser.id);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.state {0}", Social.localUser.state);
-            Debug.LogErrorFormat("[SHFirebaseAuth] Social.localUser.userName {0}", Social.localUser.userName);
-        }); 
+#else
+        Debug.LogErrorFormat("[SHFirebaseAuth] Not Supported this platform");
+        pCallback(false);
 #endif
     }
 
-    public void Logout()
+    public void Signout()
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
-
-#if UNITY_ANDROID
-        ((GooglePlayGames.PlayGamesPlatform)Social.Active).SignOut();
-#endif
+        
         m_pAuth.SignOut();
     }
-
-    public bool IsLogin()
+    
+    void OnEventByAuthStateChanged(object sender, EventArgs eventArgs)
     {
-        return Social.localUser.authenticated;
-    }
-
-    public string GetUserID()
-    {
-        if (false == IsLogin())
-            return string.Empty;
-
-        return Social.localUser.id;
-    }
-
-    public string GetUserName()
-    {
-        if (false == IsLogin())
-            return string.Empty;
-
-        return Social.localUser.userName;
-    }
-
-    public Texture2D GetProfileImage()
-    {
-        if (false == IsLogin())
-            return null;
-
-        return Social.localUser.image;
-    }
-
-    void OnEventByAuthStateChanged(object sender, System.EventArgs eventArgs)
-    {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is OnEventByAuthStateChanged");
+        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnEventByAuthStateChanged");
 
         if (m_pAuth.CurrentUser != m_pUser)
         {
             bool bIsSignedIn = (m_pUser != m_pAuth.CurrentUser) && (null != m_pAuth.CurrentUser);
             if ((false == bIsSignedIn) && (null != m_pUser))
             {
-                Debug.LogWarningFormat("[SHFirebaseAuth] Signed out " + m_pUser.UserId);
+                Debug.LogErrorFormat("[SHFirebaseAuth] Signed out " + m_pUser.UserId);
             }
 
             m_pUser = m_pAuth.CurrentUser;
             if (true == bIsSignedIn)
             {
-                Debug.LogWarningFormat("[SHFirebaseAuth] Signed in {0}, DisplayName({1}), Email({2}), PhotoURL({3})",
+                Debug.LogErrorFormat("[SHFirebaseAuth] Signed in {0}, DisplayName({1}), Email({2}), PhotoURL({3})",
                     m_pUser.UserId, m_pUser.DisplayName, m_pUser.Email, m_pUser.PhotoUrl);
             }
         }

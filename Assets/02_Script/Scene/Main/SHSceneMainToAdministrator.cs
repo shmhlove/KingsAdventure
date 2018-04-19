@@ -193,18 +193,39 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword);
     }
 
-    public void OnClickOfFBAuth_Logout()
-    {
-        Single.Firebase.Auth.Logout();
-    }
-
-    public void OnclickOfFBAuth_GuestLogin()
+    public void OnClickOfFBAuth_GuestLogin()
     {
         Single.Firebase.Auth.GuestLogin();
     }
 
-    public void OnclickOfFBAuth_GoogleLogin()
+    public void OnClickOfFBAuth_GoogleSignIn()
     {
-        Single.Firebase.Auth.GoogleLogin();
+        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (isFirebaseSignInSucceed) =>
+        {
+        
+        });
+    }
+
+    public void OnClickOfGoogle_Login()
+    {
+        Single.Google.Auth.Login((isSucceed) =>
+        {
+            
+        });
+    }
+
+    public void OnclickOfApple_Login()
+    {
+        Single.Apple.Auth.Login((isSucceed) =>
+        {
+
+        });
+    }
+
+    public void OnClickOfProvider_LogoutAll()
+    {
+        Single.Firebase.Auth.Signout();
+        Single.Google.Auth.Logout();
+        Single.Apple.Auth.Logout();
     }
 }

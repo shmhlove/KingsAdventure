@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SHFirebaseManager : SHSingleton<SHFirebaseManager>
+public class SHGoogleManager : SHSingleton<SHGoogleManager>
 {
-    private SHFirebaseAuth m_pAuth = new SHFirebaseAuth();
-    public SHFirebaseAuth Auth { get { return m_pAuth; } }
+    private SHGoogleAuth m_pAuth = new SHGoogleAuth();
+    public SHGoogleAuth Auth { get { return m_pAuth; } }
 
     public override void OnInitialize()
     {
