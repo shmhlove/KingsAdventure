@@ -9,9 +9,16 @@ using System.Collections.Generic;
 class SHBuildScript
 {
     static string[] SCENES    = FindEnabledEditorScenes();
-    
+
     #region Android Build
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [MenuItem("SHTools/CI/Android All Build For Korea")]
+    static void KOR_AndroidBuild()
+    { 
+        AppBuild(eNationType.Korea, BuildTarget.Android, eServiceMode.QA, BuildOptions.None);
+        AssetBundlesPacking(BuildTarget.Android, eBundlePackType.All);
+    }
+
     [MenuItem("SHTools/CI/Android AppBuild For Korea")]
 	static void KOR_AndroidAppBuild()
     { AppBuild(eNationType.Korea, BuildTarget.Android, eServiceMode.QA, BuildOptions.None);   }
@@ -25,6 +32,13 @@ class SHBuildScript
 
     #region iOS Build
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [MenuItem("SHTools/CI/iOS All Build For Korea")]
+    static void KOR_iOSBuild()
+    { 
+        AppBuild(eNationType.Korea, BuildTarget.iOS, eServiceMode.QA, BuildOptions.AcceptExternalModificationsToPlayer);
+        AssetBundlesPacking(BuildTarget.iOS, eBundlePackType.All);
+    }
+
     [MenuItem("SHTools/CI/iOS AppBuild For Korea")]
 	static void KOR_iOSAppBuild()
     { AppBuild(eNationType.Korea, BuildTarget.iOS, eServiceMode.QA, BuildOptions.AcceptExternalModificationsToPlayer);   }
