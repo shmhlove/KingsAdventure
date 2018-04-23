@@ -18,7 +18,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfAddtiveIntro()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
-        Single.Scene.Addtive(eSceneType.Intro, false, (eType) =>
+        Single.Scene.Addtive(eSceneType.Intro, false, (strError) =>
         {
             Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
@@ -32,7 +32,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfAddtivePatch()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
-        Single.Scene.Addtive(eSceneType.Patch, false, (eType) =>
+        Single.Scene.Addtive(eSceneType.Patch, false, (strError) =>
         {
             Debug.LogErrorFormat("undle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
@@ -46,7 +46,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfAddtiveLogin()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
-        Single.Scene.Addtive(eSceneType.Login, false, (eType) => 
+        Single.Scene.Addtive(eSceneType.Login, false, (strError) => 
         {
             Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
@@ -60,7 +60,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfAddtiveLoading()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
-        Single.Scene.Addtive(eSceneType.Loading, false, (eType) =>
+        Single.Scene.Addtive(eSceneType.Loading, false, (strError) =>
         {
             Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
@@ -74,7 +74,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfAddtiveInGame()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
-        Single.Scene.Addtive(eSceneType.InGame, false, (eType) =>
+        Single.Scene.Addtive(eSceneType.InGame, false, (strError) =>
         {
             Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
@@ -126,7 +126,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_GoogleSignIn()
     {
-        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (isFirebaseSignInSucceed) =>
+        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (isSucceed) =>
         {
         
         });

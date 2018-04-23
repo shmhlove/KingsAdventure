@@ -18,13 +18,13 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         SetDontDestroy();
     }
 
-    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<eSceneType> pCallback = null)
+    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<string> pCallback = null)
     {
         if (true == IsLoadedScene(eType))
             return;
 
         if (null == pCallback)
-            pCallback = (eSceneType e) => { };
+            pCallback = (string strError) => { };
 
         Action LoadScene = () =>
         {
@@ -38,7 +38,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                         if (null == pWWW.assetBundle)
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle download error is {0}", pWWW.error);
-                            pCallback(eType);
+                            pCallback(pWWW.error);
                             return;
                         }
 
@@ -56,7 +56,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                         if (true == string.IsNullOrEmpty(strLoadScenePath))
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle Not matching of name");
-                            pCallback(eType);
+                            pCallback("Scene bundle Not matching of name");
                             return;
                         }
 
@@ -65,9 +65,9 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                             pWWW.assetBundle.Unload(false);
 
                             if (true == bIsUseFade)
-                                PlayFadeOut(() => pCallback(eType));
+                                PlayFadeOut(() => pCallback(string.Empty));
                             else
-                                pCallback(eType);
+                                pCallback(string.Empty);
 
                             CallEventOfAddtiveScene(eType);
                         });
