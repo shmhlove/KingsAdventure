@@ -84,12 +84,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Scene.Remove(eSceneType.InGame);
     }
-
-    public void OnClickOfFBStorage_Download()
-    {
-        Single.Firebase.Storage.Test();
-    }
-
+    
     string m_strUserEmail;
     public void OnSubmitOfFBAuth_Email(string strEmail)
     {
