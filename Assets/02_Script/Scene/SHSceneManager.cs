@@ -138,6 +138,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         //strURL = string.Format("{0}/AssetBundles/{1}/scene/{2}.scene", strURL, strPlatform, eType.ToString().ToLower());
 
         // Firebase에서 다운로드
+        //Single.Firebase.Storage.GetFileURL(string strFilePath, Action<string> pCallback)
         FirebaseStorage pStorage = FirebaseStorage.DefaultInstance;
 
         StorageReference pRootRef = pStorage.GetReferenceFromUrl("gs://kings-adventure-22251209.appspot.com/");

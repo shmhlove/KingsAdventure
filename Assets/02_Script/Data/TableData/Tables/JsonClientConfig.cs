@@ -19,7 +19,9 @@ public class JsonClientConfig : SHBaseTable
     public string AOS_KeyAliasPass = string.Empty;
 
     public string IOS_TeamID       = string.Empty;
-                  
+
+    public string FB_StorageBaseURL = string.Empty;
+
     public bool   VSyncCount       = false;
     public int    FrameRate        = 60;
     public int    CacheSize        = 200;
@@ -51,6 +53,8 @@ public class JsonClientConfig : SHBaseTable
         AOS_KeyAliasPass = GetStrToJson(pDataNode, "AOS_KeyAliasPass");
         
         IOS_TeamID = GetStrToJson(pDataNode, "IOS_TeamID");
+
+        FB_StorageBaseURL = GetStrToJson(pDataNode, "FB_StorageBaseURL");
 
         VSyncCount = GetBoolToJson(pDataNode, "VSyncCount");
         FrameRate = GetIntToJson(pDataNode, "FrameRate");
