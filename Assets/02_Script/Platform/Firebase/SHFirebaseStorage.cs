@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Storage;
 
+using SH.Platform;
+
 public class SHFirebaseStorage
 {
     public void OnInitialize()
@@ -21,7 +23,7 @@ public class SHFirebaseStorage
         Debug.LogErrorFormat("[SHFirebaseStorage] Call is OnFinalize");
     }
 
-    public void GetFileURL(string strFilePath, Action<string> pCallback)
+    public void GetFileURL(string strFilePath, Action<SHReply> pCallback)
     {
         var ePlatform = Single.AppInfo.GetRuntimePlatform();
         {
@@ -41,9 +43,9 @@ public class SHFirebaseStorage
         pFileRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
         {
             if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
-                pCallback(pTask.Result.OriginalString);
+                pCallback(new Firebase.SHReplyGetFileURL(pTask.Result.OriginalString));
             else
-                pCallback(string.Empty);
+                pCallback(new SHReply(new SHError(eErrorCode.Failed, "")));
         });
     }
 }

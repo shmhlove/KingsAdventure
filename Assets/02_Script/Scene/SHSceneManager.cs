@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Firebase.Storage;
+using SH.Platform;
 
 public class SHSceneManager : SHSingleton<SHSceneManager>
 {
@@ -18,27 +18,35 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         SetDontDestroy();
     }
 
-    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<SHError> pCallback = null)
+    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<SHReply> pCallback = null)
     {
         if (true == IsLoadedScene(eType))
             return;
 
         if (null == pCallback)
-            pCallback = (SHError pError) => { };
+            pCallback = (SHReply pReply) => { };
 
         Action LoadScene = () =>
         {
             Single.Coroutine.CachingWait(()=> 
             {
-                Single.Firebase.Storage.GetFileURL(string.Format("AssetBundle/scene/{0}.scene", eType.ToString().ToLower()), (strURL) =>
+                Single.Firebase.Storage.GetFileURL(string.Format("AssetBundle/scene/{0}.scene", eType.ToString().ToLower()), (pReply) =>
                 {
-                    Debug.LogErrorFormat("[SHSceneManager] BundleURL : {0}", strURL);
+                    var pAsReply = pReply.GetAs<Firebase.SHReplyGetFileURL>();
+
+                    Debug.LogErrorFormat("[SHSceneManager] BundleURL : {0}", pAsReply.m_strURL);
+                    if (false == pAsReply.IsSucceed)
+                    {
+
+                    }
+
+                    
                     Single.Coroutine.WWW((pWWW) =>
                     {
                         if (null == pWWW.assetBundle)
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle download error is {0}", pWWW.error);
-                            pCallback(new SHError(eErrorCode.Failed, pWWW.error));
+                            pCallback(new SHReply(new SHError(eErrorCode.Failed, pWWW.error)));
                             return;
                         }
 
@@ -56,18 +64,18 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                         if (true == string.IsNullOrEmpty(strLoadScenePath))
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle Not matching of name");
-                            pCallback(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name"));
+                            pCallback(new SHReply(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name")));
                             return;
                         }
 
                         LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
                         {
                             pWWW.assetBundle.Unload(false);
-                            pCallback(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name"));
+                            pCallback(new SHReply(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name")));
                             if (true == bIsUseFade)
-                                PlayFadeOut(() => pCallback(new SHError(eErrorCode.Succeed, string.Empty)));
+                                PlayFadeOut(() => pCallback(new SHReply()));
                             else
-                                pCallback(new SHError(eErrorCode.Succeed, string.Empty));
+                                pCallback(new SHReply());
 
                             CallEventOfAddtiveScene(eType);
                         });
