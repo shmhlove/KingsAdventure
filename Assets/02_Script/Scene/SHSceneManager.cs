@@ -18,13 +18,13 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
         SetDontDestroy();
     }
 
-    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<string> pCallback = null)
+    public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<SHError> pCallback = null)
     {
         if (true == IsLoadedScene(eType))
             return;
 
         if (null == pCallback)
-            pCallback = (string strError) => { };
+            pCallback = (SHError pError) => { };
 
         Action LoadScene = () =>
         {
@@ -38,7 +38,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                         if (null == pWWW.assetBundle)
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle download error is {0}", pWWW.error);
-                            pCallback(pWWW.error);
+                            pCallback(new SHError(eErrorCode.Failed, pWWW.error));
                             return;
                         }
 
@@ -56,18 +56,18 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                         if (true == string.IsNullOrEmpty(strLoadScenePath))
                         {
                             Debug.LogErrorFormat("[SHSceneManager] Scene bundle Not matching of name");
-                            pCallback("Scene bundle Not matching of name");
+                            pCallback(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name"));
                             return;
                         }
 
                         LoadProcess(SceneManager.LoadSceneAsync(strLoadScenePath, LoadSceneMode.Additive), (pAsyncOperation) =>
                         {
                             pWWW.assetBundle.Unload(false);
-
+                            pCallback(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name"));
                             if (true == bIsUseFade)
-                                PlayFadeOut(() => pCallback(string.Empty));
+                                PlayFadeOut(() => pCallback(new SHError(eErrorCode.Succeed, string.Empty)));
                             else
-                                pCallback(string.Empty);
+                                pCallback(new SHError(eErrorCode.Succeed, string.Empty));
 
                             CallEventOfAddtiveScene(eType);
                         });

@@ -1,4 +1,10 @@
-﻿public enum eErrorCode
+﻿using UnityEngine;
+
+using System.Collections;
+using System.Collections.Generic;
+
+
+public enum eErrorCode
 {
     // 공통
     Succeed,
@@ -21,4 +27,16 @@
     // 업데이트 관련
     Patch_Table,
     Patch_Bundle_Download_Fail,
+}
+
+public class SHError
+{
+    public eErrorCode   m_eCode;
+    public string       m_strMessage;
+
+    public SHError(eErrorCode eCode, string strMessage)
+    {
+        m_eCode      = eCode;
+        m_strMessage = strMessage;
+    }
 }
