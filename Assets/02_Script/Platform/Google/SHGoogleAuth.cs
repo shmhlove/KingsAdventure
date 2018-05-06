@@ -32,41 +32,48 @@ public class SHGoogleAuth
         Debug.LogErrorFormat("[SHGoogleAuth] Call is OnFinalize");
     }
     
-    public void Login(Action<bool> pCallback)
+    public void Login(Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHGoogleAuth] Call is Login");
 
         if (true == IsLogin())
         {
-            Debug.LogErrorFormat("[SHGoogleAuth] Already Login!!({0})", GetUserEmail());
-            pCallback(true);
+            pCallback(new SHReply(new SHError(eErrorCode.Google_Login_Fail, "Already Logined")));
             return;
         }
 
 #if UNITY_ANDROID
-        PlayGamesPlatform.Instance.Authenticate((isSucceed) =>
+        PlayGamesPlatform.Instance.Authenticate((isSucceed, strErrorMessage) =>
         {
-            Debug.LogErrorFormat("[SHGoogleAuth] GoogleLogin is {0}", isSucceed);
-            Debug.LogErrorFormat("[SHGoogleAuth] Id {0}", GetUserID());
-            Debug.LogErrorFormat("[SHGoogleAuth] Name {0}", GetUserName());
-            Debug.LogErrorFormat("[SHGoogleAuth] State {0}", GetUserState());
-            Debug.LogErrorFormat("[SHGoogleAuth] Email {0}", GetUserEmail());
-            Debug.LogErrorFormat("[SHGoogleAuth] IdToken {0}", GetIdToken());
-            
-            pCallback(isSucceed);
+            if (isSucceed)
+            {
+                Debug.LogErrorFormat("[SHGoogleAuth] Id {0}", GetUserID());
+                Debug.LogErrorFormat("[SHGoogleAuth] Name {0}", GetUserName());
+                Debug.LogErrorFormat("[SHGoogleAuth] State {0}", GetUserState());
+                Debug.LogErrorFormat("[SHGoogleAuth] Email {0}", GetUserEmail());
+                Debug.LogErrorFormat("[SHGoogleAuth] IdToken {0}", GetIdToken());
+
+                pCallback(new Google.Auth.SHReplyLogin(
+                    GetUserID(), GetUserName(), GetUserState(), GetUserEmail(), GetIdToken()));
+            }
+            else
+            {
+                pCallback(new SHReply(new SHError(eErrorCode.Google_Login_Fail, strErrorMessage)));
+            }
         });
 #else
-        pCallback(false);
+        pCallback(new SHReply(new SHError(eErrorCode.Google_Login_Fail, "Not Supported this platform")));
 #endif
     }
 
-    public void Logout()
+    public void Logout(Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHGoogleAuth] Call is Logout");
 
 #if UNITY_ANDROID
         ((GooglePlayGames.PlayGamesPlatform)Social.Active).SignOut();
 #endif
+        pCallback(new Google.Auth.SHReplyLogout());
     }
 
     public bool IsLogin()

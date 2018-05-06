@@ -34,6 +34,9 @@ public enum eErrorCode
     FB_Guest_Login_Fail,
     FB_Google_Login_Fail,
     FB_Logout_Fail,
+
+    // Google
+    Google_Login_Fail,
 }
 
 public class SHError

@@ -174,7 +174,17 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Google.Auth.Login((pReply) =>
         {
-            
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Google.Auth.SHReplyLogin>();
+
+                Debug.LogErrorFormat("Google login successfully: {0}",
+                    pAsReply.ToString());
+            }
+            else
+            {
+                Debug.LogErrorFormat("Google login Failed: {0}", pReply.Error.ToString());
+            }
         });
     }
 
@@ -188,8 +198,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfProvider_LogoutAll()
     {
-        Single.Firebase.Auth.Logout((pReply)=> { });
-        Single.Google.Auth.Logout();
+        Single.Firebase.Auth.Logout((pReply) => { });
+        Single.Google.Auth.Logout((pReply) => { });
         Single.Apple.Auth.Logout();
     }
 }
