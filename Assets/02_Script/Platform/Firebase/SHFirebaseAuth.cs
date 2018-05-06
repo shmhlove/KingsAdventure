@@ -11,6 +11,8 @@ using Firebase.Auth;
 
 public class SHFirebaseAuth
 {
+    public Action<SHReply> m_pEventChangeAuth;
+
     private FirebaseAuth m_pAuth;
     private FirebaseUser m_pUser;
     
@@ -36,55 +38,65 @@ public class SHFirebaseAuth
         m_pAuth.StateChanged -= OnEventByAuthStateChanged;
     }
 
-    public void CreateAccount(string strUserEmail, string strUserPassword)
+    public void CreateAccount(string strUserEmail, string strUserPassword, Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+
+        if (string.IsNullOrEmpty(strUserEmail) || string.IsNullOrEmpty(strUserPassword))
+        {
+            pCallback(new SHReply(new SHError(eErrorCode.FB_CreateAccount_Fail, "Need E-mail and Password")));
+            return;
+        }
 
         m_pAuth.CreateUserWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("[SHFirebaseAuth] CreateUserWithEmailAndPasswordAsync was canceled.");
+                pCallback(new SHReply(new SHError(eErrorCode.FB_CreateAccount_Fail, "User Canceled")));
                 return;
             }
+
             if (pTask.IsFaulted)
             {
-                Debug.LogError("[SHFirebaseAuth] CreateUserWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
+                pCallback(new SHReply(new SHError(eErrorCode.FB_CreateAccount_Fail, pTask.Exception.Message)));
                 return;
             }
 
             m_pUser = pTask.Result;
-
-            Debug.LogErrorFormat("[SHFirebaseAuth] Firebase user created successfully: {0} ({1})",
-                m_pUser.DisplayName, m_pUser.UserId);
+            pCallback(new Firebase.Auth.SHReplyCreateAccount(m_pUser));
         });
     }
 
-    public void Login(string strUserEmail, string strUserPassword)
+    public void Login(string strUserEmail, string strUserPassword, Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is Login (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
+
+        if (string.IsNullOrEmpty(strUserEmail) || string.IsNullOrEmpty(strUserPassword))
+        {
+            pCallback(new SHReply(new SHError(eErrorCode.FB_Login_Fail, "Need E-mail and Password")));
+            return;
+        }
 
         m_pAuth.SignInWithEmailAndPasswordAsync(strUserEmail, strUserPassword).ContinueWith((pTask) =>
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInWithEmailAndPasswordAsync was canceled.");
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Login_Fail, "User Canceled")));
                 return;
             }
+
             if (pTask.IsFaulted)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInWithEmailAndPasswordAsync encountered an error: " + pTask.Exception);
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Login_Fail, pTask.Exception.Message)));
                 return;
             }
 
             m_pUser = pTask.Result;
-
-            Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-                m_pUser.DisplayName, m_pUser.UserId);
+            pCallback(new Firebase.Auth.SHReplyLogin(m_pUser));
         });
     }
 
-    public void GuestLogin()
+    public void GuestLogin(Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GuestLogin");
 
@@ -99,29 +111,28 @@ public class SHFirebaseAuth
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInAnonymouslyAsync was canceled.");
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Guest_Login_Fail, "User Canceled")));
                 return;
             }
+
             if (pTask.IsFaulted)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInAnonymouslyAsync encountered an error: " + pTask.Exception);
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Guest_Login_Fail, pTask.Exception.Message)));
                 return;
             }
 
             m_pUser = pTask.Result;
-            Debug.LogWarningFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})",
-                m_pUser.DisplayName, m_pUser.UserId);
+            pCallback(new Firebase.Auth.SHReplyGuestLogin(m_pUser));
         });
     }
 
-    public void GoogleSignIn(string strGoogleIdToken, Action<bool> pCallback)
+    public void GoogleSignIn(string strGoogleIdToken, Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
 
         if (string.IsNullOrEmpty(strGoogleIdToken))
         {
-            Debug.LogErrorFormat("[SHFirebaseAuth] Google IdToken is Empty!!");
-            pCallback(false);
+            pCallback(new SHReply(new SHError(eErrorCode.FB_Google_Login_Fail, "Google IdToken is Empty")));
             return;
         }
 
@@ -130,53 +141,39 @@ public class SHFirebaseAuth
         {
             if (pTask.IsCanceled)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync was canceled.");
-                pCallback(false);
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Google_Login_Fail, "User Canceled")));
                 return;
             }
+
             if (pTask.IsFaulted)
             {
-                Debug.LogError("[SHFirebaseAuth] SignInWithCredentialAsync encountered an error: " + pTask.Exception);
-                pCallback(false);
+                pCallback(new SHReply(new SHError(eErrorCode.FB_Google_Login_Fail, pTask.Exception.Message)));
                 return;
             }
             
-            Debug.LogErrorFormat("[SHFirebaseAuth] User signed in successfully: {0} ({1})", m_pUser.DisplayName, m_pUser.UserId);
-            
             m_pUser = pTask.Result;
-            pCallback(false);
+            pCallback(new Firebase.Auth.SHReplyGoogleLogin(m_pUser));
         });
 #else
-        Debug.LogErrorFormat("[SHFirebaseAuth] Not Supported this platform");
-        pCallback(false);
+        pCallback(new SHError(eErrorCode.FB_Google_Login_Fail, "Not Supported this platform"));
 #endif
     }
 
-    public void Signout()
+    public void Logout(Action<SHReply> pCallback)
     {
         Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
         
         m_pAuth.SignOut();
+        pCallback(new Firebase.Auth.SHReplyLogout());
     }
     
     void OnEventByAuthStateChanged(object sender, EventArgs eventArgs)
     {
         Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnEventByAuthStateChanged");
 
-        if (m_pAuth.CurrentUser != m_pUser)
-        {
-            bool bIsSignedIn = (m_pUser != m_pAuth.CurrentUser) && (null != m_pAuth.CurrentUser);
-            if ((false == bIsSignedIn) && (null != m_pUser))
-            {
-                Debug.LogErrorFormat("[SHFirebaseAuth] Signed out " + m_pUser.UserId);
-            }
+        if (null == m_pEventChangeAuth)
+            return;
 
-            m_pUser = m_pAuth.CurrentUser;
-            if (true == bIsSignedIn)
-            {
-                Debug.LogErrorFormat("[SHFirebaseAuth] Signed in {0}, DisplayName({1}), Email({2}), PhotoURL({3})",
-                    m_pUser.UserId, m_pUser.DisplayName, m_pUser.Email, m_pUser.PhotoUrl);
-            }
-        }
+        m_pEventChangeAuth(new Firebase.Auth.SHReplyAuthChanged(m_pAuth.CurrentUser));
     }
 }

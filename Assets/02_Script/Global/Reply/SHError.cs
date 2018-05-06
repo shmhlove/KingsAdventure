@@ -27,6 +27,13 @@ public enum eErrorCode
     // 업데이트 관련
     Patch_Table,
     Patch_Bundle_Download_Fail,
+
+    // Firebase
+    FB_CreateAccount_Fail,
+    FB_Login_Fail,
+    FB_Guest_Login_Fail,
+    FB_Google_Login_Fail,
+    FB_Logout_Fail,
 }
 
 public class SHError
@@ -38,5 +45,10 @@ public class SHError
     {
         m_eCode      = eCode;
         m_strMessage = strMessage;
+    }
+
+    public override string ToString()
+    {
+        return string.Format("ErrorCode: {0}, Message: {1}", m_eCode, m_strMessage);
     }
 }

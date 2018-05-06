@@ -34,7 +34,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Patch, false, (pReply) =>
         {
-            Debug.LogErrorFormat("undle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -99,42 +99,80 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_CreateAccount()
     {
-        if (string.IsNullOrEmpty(m_strUserEmail) || string.IsNullOrEmpty(m_strUserPassword))
+        Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword, (pReply) => 
         {
-            Debug.LogError("Need E-mail and Password!!!");
-            return;
-        }
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyCreateAccount>();
 
-        Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword);
+                Debug.LogErrorFormat("Firebase user created successfully: {0} ({1})",
+                    pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Firebase user created Failed: {0}",
+                    pReply.Error.ToString());
+            }
+        });
     }
 
     public void OnClickOfFBAuth_Login()
     {
-        if (string.IsNullOrEmpty(m_strUserEmail) || string.IsNullOrEmpty(m_strUserPassword))
+        Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword, (pReply) =>
         {
-            Debug.LogError("Need E-mail and Password!!!");
-            return;
-        }
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyLogin>();
 
-        Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword);
+                Debug.LogErrorFormat("Firebase user login successfully: {0} ({1})",
+                    pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Firebase user login Failed: {0}", pReply.Error.ToString());
+            }
+        });
     }
 
     public void OnClickOfFBAuth_GuestLogin()
     {
-        Single.Firebase.Auth.GuestLogin();
+        Single.Firebase.Auth.GuestLogin((pReply) =>
+        {
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGuestLogin>();
+
+                Debug.LogErrorFormat("Firebase user guest login successfully: {0} ({1})",
+                    pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
+            }
+        });
     }
 
     public void OnClickOfFBAuth_GoogleSignIn()
     {
-        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (isSucceed) =>
+        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (pReply) =>
         {
-        
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
+
+                Debug.LogErrorFormat("Firebase user google login successfully: {0} ({1})",
+                    pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
+            }
         });
     }
 
     public void OnClickOfGoogle_Login()
     {
-        Single.Google.Auth.Login((isSucceed) =>
+        Single.Google.Auth.Login((pReply) =>
         {
             
         });
@@ -142,7 +180,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnclickOfApple_Login()
     {
-        Single.Apple.Auth.Login((isSucceed) =>
+        Single.Apple.Auth.Login((pReply) =>
         {
 
         });
@@ -150,7 +188,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfProvider_LogoutAll()
     {
-        Single.Firebase.Auth.Signout();
+        Single.Firebase.Auth.Logout((pReply)=> { });
         Single.Google.Auth.Logout();
         Single.Apple.Auth.Logout();
     }
