@@ -147,7 +147,7 @@ public class SHFirebaseAuth
             pCallback(new Firebase.Auth.SHReplyGoogleLogin(m_pUser));
         });
 #else
-        pCallback(new SHError(eErrorCode.FB_Google_Login_Fail, "Not Supported this platform"));
+        pCallback(new SHReply(new SHError(eErrorCode.FB_Google_Login_Fail, "Not Supported this platform")));
 #endif
     }
 
