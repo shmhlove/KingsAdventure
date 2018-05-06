@@ -5,8 +5,12 @@ using System.Collections.Generic;
 
 public class SHReply
 {
-    public SHError m_pError;
-
+    public SHError Error;
+    public bool IsSucceed
+    {
+        get { return (null == Error); }
+    }
+    
     public SHReply()
     {
     }
@@ -17,7 +21,7 @@ public class SHReply
 
     public SHReply(SHError pError)
     {
-        m_pError = pError;
+        Error = pError;
     }
 
     public T GetAs<T>() where T : SHReply

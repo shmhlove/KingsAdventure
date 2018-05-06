@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Storage;
 
-using SH.Platform;
-
 public class SHFirebaseStorage
 {
+    public const string BUNDLE_SCENE = "AssetBundle/scene/{0}.scene";
+
     public void OnInitialize()
     {
         Debug.LogErrorFormat("[SHFirebaseStorage] Call is OnInitialize");
@@ -22,7 +22,7 @@ public class SHFirebaseStorage
     {
         Debug.LogErrorFormat("[SHFirebaseStorage] Call is OnFinalize");
     }
-
+    
     public void GetFileURL(string strFilePath, Action<SHReply> pCallback)
     {
         var ePlatform = Single.AppInfo.GetRuntimePlatform();
@@ -36,16 +36,45 @@ public class SHFirebaseStorage
 
         var pClientConfig = Single.Table.GetTable<JsonClientConfig>();
         var pStorage = FirebaseStorage.DefaultInstance;
-        
+
         var pRootRef = pStorage.GetReferenceFromUrl(pClientConfig.FB_StorageBaseURL);
         var pFileRef = pRootRef.Child(string.Format("{0}/{1}", strPlatform, strFilePath));
-        
+
         pFileRef.GetDownloadUrlAsync().ContinueWith((Task<Uri> pTask) =>
         {
             if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
-                pCallback(new Firebase.SHReplyGetFileURL(pTask.Result.OriginalString));
+                pCallback(new Firebase.Storage.SHReplyGetFileURL(pTask.Result.OriginalString));
             else
                 pCallback(new SHReply(new SHError(eErrorCode.Failed, "")));
+        });
+    }
+
+    public void DownloadForBundle(eSceneType eType, Action<SHReply> pCallback)
+    {
+        DownloadForBundle(string.Format(SHFirebaseStorage.BUNDLE_SCENE, eType.ToString().ToLower()), pCallback);
+    }
+    public void DownloadForBundle(string strFilePath, Action<SHReply> pCallback)
+    {
+        GetFileURL(strFilePath, (pReply) =>
+        {
+            var pAsReply = pReply.GetAs<Firebase.Storage.SHReplyGetFileURL>();
+            if (false == pAsReply.IsSucceed)
+            {
+                pCallback(new SHReply(pAsReply.Error));
+                return;
+            }
+
+            Single.Coroutine.WWW((pWWW) =>
+            {
+                if (null == pWWW.assetBundle)
+                {
+                    pCallback(new SHReply(new SHError(eErrorCode.Failed, pWWW.error)));
+                }
+                else
+                {
+                    pCallback(new SHReplyDownloadForBundle(pWWW));
+                }
+            }, WWW.LoadFromCacheOrDownload(pAsReply.m_strURL, 0));
         });
     }
 }

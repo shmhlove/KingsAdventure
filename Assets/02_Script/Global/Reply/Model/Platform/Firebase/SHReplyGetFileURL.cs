@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SH.Platform.Firebase
+namespace Firebase.Storage
 {
     public class SHReplyGetFileURL : SHReply
     {
