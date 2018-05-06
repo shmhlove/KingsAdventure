@@ -192,7 +192,17 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Apple.Auth.Login((pReply) =>
         {
+            if (pReply.IsSucceed)
+            {
+                var pAsReply = pReply.GetAs<Apple.Auth.SHReplyLogin>();
 
+                Debug.LogErrorFormat("Apple login successfully: {0}",
+                    pAsReply.ToString());
+            }
+            else
+            {
+                Debug.LogErrorFormat("Apple login Failed: {0}", pReply.Error.ToString());
+            }
         });
     }
 
@@ -200,6 +210,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         Single.Firebase.Auth.Logout((pReply) => { });
         Single.Google.Auth.Logout((pReply) => { });
-        Single.Apple.Auth.Logout();
+        Single.Apple.Auth.Logout((pReply) => { });
     }
 }

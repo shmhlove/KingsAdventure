@@ -17,40 +17,46 @@ public class SHAppleAuth
         Debug.LogErrorFormat("[SHAppleAuth] Call is OnFinalize");
     }
     
-    public void Login(Action<bool> pCallback)
+    public void Login(Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHAppleAuth] Call is Login");
 
         if (true == IsLogin())
         {
-            Debug.LogErrorFormat("[SHAppleAuth] Already Login!!({0})", GetUserName());
-            pCallback(true);
+            pCallback(new SHReply(new SHError(eErrorCode.Apple_Login_Fail, "Already Logined")));
             return;
         }
 
 #if UNITY_IOS
-        Social.localUser.Authenticate((isSucceed) =>
+        Social.localUser.Authenticate((isSucceed, strErrorMessage) =>
         {
-            Debug.LogErrorFormat("[SHAppleAuth] Try Login is {0}", isSucceed);
-            Debug.LogErrorFormat("[SHAppleAuth] Social.localUser.id {0}", Social.localUser.id);
-            Debug.LogErrorFormat("[SHAppleAuth] Social.localUser.isFriend {0}", Social.localUser.isFriend);
-            Debug.LogErrorFormat("[SHAppleAuth] Social.localUser.state {0}", Social.localUser.state);
-            Debug.LogErrorFormat("[SHAppleAuth] Social.localUser.userName {0}", Social.localUser.userName);
+            if (isSucceed)
+            {
+                Debug.LogErrorFormat("[SHAppleAuth] Id {0}", GetUserID());
+                Debug.LogErrorFormat("[SHAppleAuth] Name {0}", GetUserName());
+                Debug.LogErrorFormat("[SHAppleAuth] State {0}", GetUserState());
 
-            pCallback(isSucceed);
+                pCallback(new Apple.Auth.SHReplyLogin(
+                    GetUserID(), GetUserName(), GetUserState()));
+            }
+            else
+            {
+                pCallback(new SHReply(new SHError(eErrorCode.Apple_Login_Fail, strErrorMessage)));
+            }
         }); 
 #else
-        pCallback(false);
+        pCallback(new SHReply(new SHError(eErrorCode.Apple_Login_Fail, "Not Supported this platform")));
 #endif
     }
 
-    public void Logout()
+    public void Logout(Action<SHReply> pCallback)
     {
         Debug.LogErrorFormat("[SHAppleAuth] Call is Logout");
-        
+
 #if UNITY_IOS
         
 #endif
+        pCallback(new Apple.Auth.SHReplyLogout());
     }
 
     public bool IsLogin()
@@ -62,10 +68,15 @@ public class SHAppleAuth
     {
         return Social.localUser.id;
     }
-
+    
     public string GetUserName()
     {
         return Social.localUser.userName;
+    }
+
+    public UserState GetUserState()
+    {
+        return Social.localUser.state;
     }
 
     public Texture2D GetProfileImage()

@@ -37,6 +37,11 @@ public enum eErrorCode
 
     // Google
     Google_Login_Fail,
+    Google_Logout_Fail,
+
+    // Apple
+    Apple_Login_Fail,
+    Apple_Logout_Fail,
 }
 
 public class SHError
