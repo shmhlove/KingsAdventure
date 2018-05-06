@@ -34,8 +34,6 @@ public class SHGoogleAuth
     
     public void Login(Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHGoogleAuth] Call is Login");
-
         if (true == IsLogin())
         {
             pCallback(new SHReply(new SHError(eErrorCode.Google_Login_Fail, "Already Logined")));
@@ -68,8 +66,6 @@ public class SHGoogleAuth
 
     public void Logout(Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHGoogleAuth] Call is Logout");
-
 #if UNITY_ANDROID
         ((GooglePlayGames.PlayGamesPlatform)Social.Active).SignOut();
 #endif

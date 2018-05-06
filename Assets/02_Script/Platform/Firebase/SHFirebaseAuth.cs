@@ -40,8 +40,6 @@ public class SHFirebaseAuth
 
     public void CreateAccount(string strUserEmail, string strUserPassword, Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is CreateAccount (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
-
         if (string.IsNullOrEmpty(strUserEmail) || string.IsNullOrEmpty(strUserPassword))
         {
             pCallback(new SHReply(new SHError(eErrorCode.FB_CreateAccount_Fail, "Need E-mail and Password")));
@@ -69,8 +67,6 @@ public class SHFirebaseAuth
 
     public void Login(string strUserEmail, string strUserPassword, Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is Login (Email : {0}, Password : {1})", strUserEmail, strUserPassword);
-
         if (string.IsNullOrEmpty(strUserEmail) || string.IsNullOrEmpty(strUserPassword))
         {
             pCallback(new SHReply(new SHError(eErrorCode.FB_Login_Fail, "Need E-mail and Password")));
@@ -98,8 +94,6 @@ public class SHFirebaseAuth
 
     public void GuestLogin(Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is GuestLogin");
-
         // 계전전환
         // 1. 사용자가 가입하면 해당 사용자가 선택한 인증 제공업체의 로그인 흐름을 진행하되 메소드 호출 전까지만 진행합니다. 
         //    예를 들어 사용자의 Google ID 토큰, Facebook 액세스 토큰 또는 이메일 주소와 비밀번호를 가져옵니다.
@@ -128,8 +122,6 @@ public class SHFirebaseAuth
 
     public void GoogleSignIn(string strGoogleIdToken, Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is GoogleLogin");
-
         if (string.IsNullOrEmpty(strGoogleIdToken))
         {
             pCallback(new SHReply(new SHError(eErrorCode.FB_Google_Login_Fail, "Google IdToken is Empty")));
@@ -161,16 +153,12 @@ public class SHFirebaseAuth
 
     public void Logout(Action<SHReply> pCallback)
     {
-        Debug.LogWarningFormat("[SHFirebaseAuth] Call is Logout");
-        
         m_pAuth.SignOut();
         pCallback(new Firebase.Auth.SHReplyLogout());
     }
     
     void OnEventByAuthStateChanged(object sender, EventArgs eventArgs)
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnEventByAuthStateChanged");
-
         if (null == m_pEventChangeAuth)
             return;
 

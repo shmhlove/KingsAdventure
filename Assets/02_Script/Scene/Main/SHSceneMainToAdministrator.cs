@@ -99,6 +99,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_CreateAccount()
     {
+        OnClickOfProvider_LogoutAll();
+
         Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword, (pReply) => 
         {
             if (pReply.IsSucceed)
@@ -118,6 +120,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_Login()
     {
+        OnClickOfProvider_LogoutAll();
+
         Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword, (pReply) =>
         {
             if (pReply.IsSucceed)
@@ -136,6 +140,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_GuestLogin()
     {
+        OnClickOfProvider_LogoutAll();
+
         Single.Firebase.Auth.GuestLogin((pReply) =>
         {
             if (pReply.IsSucceed)
@@ -154,24 +160,33 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_GoogleSignIn()
     {
-        Single.Firebase.Auth.GoogleSignIn(Single.Google.Auth.GetIdToken(), (pReply) =>
-        {
-            if (pReply.IsSucceed)
-            {
-                var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
+        OnClickOfProvider_LogoutAll();
 
-                Debug.LogErrorFormat("Firebase user google login successfully: {0} ({1})",
-                    pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
-            }
-            else
+        Single.Google.Auth.Login((pGoogleReply) =>
+        {
+            var pAsGoogleReply = pGoogleReply.GetAs<Google.Auth.SHReplyLogin>();
+            
+            Single.Firebase.Auth.GoogleSignIn(pAsGoogleReply.m_strIdToken, (pReply) =>
             {
-                Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
-            }
+                if (pReply.IsSucceed)
+                {
+                    var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
+
+                    Debug.LogErrorFormat("Firebase user google login successfully: {0} ({1})",
+                        pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+                }
+                else
+                {
+                    Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
+                }
+            });
         });
     }
 
     public void OnClickOfGoogle_Login()
     {
+        OnClickOfProvider_LogoutAll();
+
         Single.Google.Auth.Login((pReply) =>
         {
             if (pReply.IsSucceed)
@@ -190,6 +205,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnclickOfApple_Login()
     {
+        OnClickOfProvider_LogoutAll();
+
         Single.Apple.Auth.Login((pReply) =>
         {
             if (pReply.IsSucceed)

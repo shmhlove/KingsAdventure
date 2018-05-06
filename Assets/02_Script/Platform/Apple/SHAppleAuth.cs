@@ -19,8 +19,6 @@ public class SHAppleAuth
     
     public void Login(Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHAppleAuth] Call is Login");
-
         if (true == IsLogin())
         {
             pCallback(new SHReply(new SHError(eErrorCode.Apple_Login_Fail, "Already Logined")));
@@ -51,8 +49,6 @@ public class SHAppleAuth
 
     public void Logout(Action<SHReply> pCallback)
     {
-        Debug.LogErrorFormat("[SHAppleAuth] Call is Logout");
-
 #if UNITY_IOS
         
 #endif
