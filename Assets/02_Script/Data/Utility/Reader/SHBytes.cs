@@ -44,7 +44,7 @@ public class SHBytes
         WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strFilePath));
         if (true != string.IsNullOrEmpty(pWWW.error))
         {
-            Debug.LogError(string.Format("[SHBytes] Byte(*.bytes)파일을 읽는 중 오류발생!!(Path:{0}, Error:{1})", strFilePath, pWWW.error));
+            Debug.LogError(string.Format("[LSH] Byte(*.bytes)파일을 읽는 중 오류발생!!(Path:{0}, Error:{1})", strFilePath, pWWW.error));
             return null;
         }
         
@@ -56,7 +56,7 @@ public class SHBytes
         var pBuff = File.ReadAllBytes(strFilePath);
         if (null == pBuff)
         {
-            Debug.LogError(string.Format("[SHBytes] Byte(*.bytes)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath));
+            Debug.LogError(string.Format("[LSH] Byte(*.bytes)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath));
             return null;
         }
 

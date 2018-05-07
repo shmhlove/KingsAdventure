@@ -56,7 +56,7 @@ public class SHUIMassiveScrollView : MonoBehaviour
             if ((UIScrollView.Movement.Vertical != m_pScrView.movement) &&
                 (UIScrollView.Movement.Horizontal != m_pScrView.movement))
             {
-                Debug.LogWarning("[SHUIMassiveScrollView] not supported type of UIScrollView.");
+                Debug.LogWarning("[LSH] not supported type of UIScrollView.");
             }
         }
 

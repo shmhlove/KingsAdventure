@@ -274,7 +274,7 @@ public class SHSerializer
             }
 
             Debug.LogError(
-                string.Format("Deserialize ArgumentOutOfRangeException!!(Length : {0}, Index : {1}, Right10 : {2})", 
+                string.Format("[LSH] Deserialize ArgumentOutOfRangeException!!(Length : {0}, Index : {1}, Right10 : {2})", 
                 ByteArray.Length, m_iIndex, strRightByte));
         }
 

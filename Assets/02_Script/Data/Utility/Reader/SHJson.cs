@@ -75,7 +75,7 @@ public class SHJson
         WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strFilePath));
         if (true != string.IsNullOrEmpty(pWWW.error))
         {
-            Debug.LogWarningFormat("Json(*.json)파일을 읽는 중 오류발생!!(Path:{0}, Error:{1})", strFilePath, pWWW.error);
+            Debug.LogErrorFormat("[LSH] Json(*.json)파일을 읽는 중 오류발생!!(Path:{0}, Error:{1})", strFilePath, pWWW.error);
             return null;
         }
 
@@ -120,7 +120,7 @@ public class SHJson
         #if UNITY_EDITOR
         if (null == dicData)
         {
-            Debug.LogError(string.Format("Json으로 저장할 데이터가 없습니다!!"));
+            Debug.LogError(string.Format("[LSH] Json으로 저장할 데이터가 없습니다!!"));
             return;
         }
 
@@ -158,7 +158,7 @@ public class SHJson
         string strBuff = File.ReadAllText(strFilePath);
         if (true == string.IsNullOrEmpty(strBuff))
         {
-            Debug.LogWarningFormat("Json(*.json)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath);
+            Debug.LogErrorFormat("[LSH] Json(*.json)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath);
             return null;
         }
 

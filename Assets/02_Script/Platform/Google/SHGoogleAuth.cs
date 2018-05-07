@@ -13,7 +13,7 @@ public class SHGoogleAuth
 {
     public void OnInitialize()
     {
-        Debug.LogErrorFormat("[SHGoogleAuth] Call is OnInitialize");
+        Debug.LogFormat("[LSH] Call is OnInitialize");
         
 #if UNITY_ANDROID
         var pGPGConfig = new PlayGamesClientConfiguration.Builder()
@@ -29,7 +29,7 @@ public class SHGoogleAuth
 
     public void OnFinalize()
     {
-        Debug.LogErrorFormat("[SHGoogleAuth] Call is OnFinalize");
+        Debug.LogFormat("[LSH] Call is OnFinalize");
     }
     
     public void Login(Action<SHReply> pCallback)
@@ -40,17 +40,11 @@ public class SHGoogleAuth
             return;
         }
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         PlayGamesPlatform.Instance.Authenticate((isSucceed, strErrorMessage) =>
         {
             if (isSucceed)
             {
-                Debug.LogErrorFormat("[SHGoogleAuth] Id {0}", GetUserID());
-                Debug.LogErrorFormat("[SHGoogleAuth] Name {0}", GetUserName());
-                Debug.LogErrorFormat("[SHGoogleAuth] State {0}", GetUserState());
-                Debug.LogErrorFormat("[SHGoogleAuth] Email {0}", GetUserEmail());
-                Debug.LogErrorFormat("[SHGoogleAuth] IdToken {0}", GetIdToken());
-
                 pCallback(new Google.Auth.SHReplyLogin(
                     GetUserID(), GetUserName(), GetUserState(), GetUserEmail(), GetIdToken()));
             }
@@ -66,7 +60,7 @@ public class SHGoogleAuth
 
     public void Logout(Action<SHReply> pCallback)
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         ((GooglePlayGames.PlayGamesPlatform)Social.Active).SignOut();
 #endif
         pCallback(new Google.Auth.SHReplyLogout());

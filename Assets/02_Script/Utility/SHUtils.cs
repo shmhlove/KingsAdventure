@@ -19,7 +19,7 @@ public static partial class SHUtils
         if ((true == string.IsNullOrEmpty(strEnum)) || 
             (false == Enum.IsDefined(typeof(T), strEnum)))
         {
-            UnityEngine.Debug.LogError(string.Format("{0} ( Enum:{1} )", strErrorLog, strEnum));
+            UnityEngine.Debug.LogError("[LSH] " + string.Format("{0} ( Enum:{1} )", strErrorLog, strEnum));
             return default(T);
         }
 
@@ -198,7 +198,7 @@ public static partial class SHUtils
             SHUtils.ForToArray((pObject as GameObject).GetComponents<Component>(), (pComponent) => 
             {
                 if (null == pComponent)
-                    UnityEngine.Debug.Log(string.Format("<color=red>MissingComponent!!(GameObject{0})</color>", pObject.name));
+                    UnityEngine.Debug.Log(string.Format("<color=red>[LSH] MissingComponent!!(GameObject{0})</color>", pObject.name));
             });
         });
 #endif
@@ -313,7 +313,7 @@ public static partial class SHUtils
         UnityEngine.iOS.Device.SetNoBackupFlag(strSavePath);
 #endif
 
-        UnityEngine.Debug.Log(string.Format("{0} File 저장", strSavePath));
+        UnityEngine.Debug.Log(string.Format("[LSH] {0} File 저장", strSavePath));
     }
     public static string ReadFile(string strReadPath)
     {
@@ -340,7 +340,7 @@ public static partial class SHUtils
         UnityEngine.iOS.Device.SetNoBackupFlag(strSavePath);
 #endif
 
-        UnityEngine.Debug.Log(string.Format("{0} Byte 저장", strSavePath));
+        UnityEngine.Debug.Log(string.Format("[LSH] {0} Byte 저장", strSavePath));
     }
     public static byte[] ReadByte(string strReadPath)
     {

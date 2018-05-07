@@ -53,7 +53,7 @@ public class SHLoadProgress
             var pLoadData = GetLoadDataInfo(strName);
             if (null != pLoadData)
             {
-                Debug.LogErrorFormat("[SHLoadProgress] 데이터 로드 중 중복파일 발견!!!(FileName : {0})", strName);
+                Debug.LogErrorFormat("[LSH] 데이터 로드 중 중복파일 발견!!!(FileName : {0})", strName);
                 return;
             }
             
@@ -175,7 +175,7 @@ public class SHLoadProgress
         var pDataInfo = GetLoadDataInfo(strName);
         if (null == pDataInfo)
         {
-            Debug.LogError(string.Format("[SHLoadProgress] 추가되지 않은 파일이 로드 되었다고 합니다~~({0})", strName));
+            Debug.LogError(string.Format("[LSH] 추가되지 않은 파일이 로드 되었다고 합니다~~({0})", strName));
             return;
         }
 

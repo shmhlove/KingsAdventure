@@ -18,7 +18,7 @@ public class SHFirebaseAuth
     
     public void OnInitialize()
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnInitialize");
+        Debug.LogFormat("[LSH] Call is OnInitialize");
 
         if (null != m_pAuth)
             return;
@@ -30,7 +30,7 @@ public class SHFirebaseAuth
 
     public void OnFinalize()
     {
-        Debug.LogErrorFormat("[SHFirebaseAuth] Call is OnFinalize");
+        Debug.LogFormat("[LSH] Call is OnFinalize");
 
         if (null == m_pAuth)
             return;

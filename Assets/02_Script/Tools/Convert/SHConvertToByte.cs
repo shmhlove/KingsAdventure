@@ -27,7 +27,7 @@ public class SHConvertToByte
             ConvertByteFile(pValue, strSavePath);
         });
 
-        Debug.Log("<color=yellow>ConvertByteFiles Finish!!!</color>");
+        Debug.Log("<color=yellow>[LSH] ConvertByteFiles Finish!!!</color>");
     }
 
     // 인터페이스 : 바이트파일 컨버터 ( 파일 하나 )
@@ -42,7 +42,7 @@ public class SHConvertToByte
         
         SHUtils.SaveByte(pBytes, string.Format("{0}/{1}{2}", strSavePath, pTable.m_strByteFileName, ".bytes"));
 
-        Debug.Log(string.Format("[SHConvertToByte] {0} To Convert Byte Files : {1}",
+        Debug.Log(string.Format("[LSH] {0} To Convert Byte Files : {1}",
                     (true == pTable.IsLoadTable() ? "<color=yellow>Success</color>" : "<color=red>Fail!!</color>"),
                     pTable.m_strFileName));
     }

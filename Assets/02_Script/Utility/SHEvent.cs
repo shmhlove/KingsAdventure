@@ -31,7 +31,7 @@
 ///          }
 ///          void OnEventCallback(object pSender, EventArgs vArgs)
 ///          {   
-///              Debug.Log( "Param : " + Single.Event.GetArgs<Vector3>(vArgs) );
+///              Debug.Log( "[LSH] " + "Param : " + Single.Event.GetArgs<Vector3>(vArgs) );
 ///          }
 ///     }
 /// 

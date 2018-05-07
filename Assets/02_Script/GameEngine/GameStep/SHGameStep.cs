@@ -78,7 +78,7 @@ public class SHGameStep : SHBaseEngine
     {
         if (false == IsExistStep(eStep))
         {
-            Debug.LogWarningFormat("SHGameStep:MoveStep() - Not Register Step : {0}", eStep);
+            Debug.LogWarningFormat("[LSH] SHGameStep:MoveStep() - Not Register Step : {0}", eStep);
             return;
         }
 

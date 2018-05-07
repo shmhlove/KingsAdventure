@@ -94,7 +94,7 @@ using LitJson;
 //    {
 //        if (null == pJson)
 //            return eErrorCode.Table_Load_Fail;
-        
+
 //        int iMaxTable = pJson["AssetBundleInfo"].Count;
 //        for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
 //        {
@@ -103,7 +103,7 @@ using LitJson;
 //            pData.m_strBundleName        = GetStrToJson(pDataNode, "s_BundleName");
 //            pData.m_lBundleSize          = (long)GetIntToJson(pDataNode, "s_BundleSize");
 //            pData.m_pHash128             = SHHash.GetHash128(GetStrToJson(pDataNode, "s_BundleHash"));
-            
+
 //            int iMaxUnit = pDataNode["p_Resources"].Count;
 //            for(int iLoopUnit = 0; iLoopUnit < iMaxUnit; ++iLoopUnit)
 //            {
@@ -147,12 +147,12 @@ using LitJson;
 //            }
 //            else
 //            {
-//                Debug.LogErrorFormat("Error!!! Download AssetBundleInfo.json : (Error : {0}, URL : {1}", pWWW.error, pWWW.url);
+//                Debug.LogErrorFormat("[LSH] Error!!! Download AssetBundleInfo.json : (Error : {0}, URL : {1}", pWWW.error, pWWW.url);
 //            }
 
 //        }, new WWW(string.Format("{0}/{1}.json", SHPath.GetURLToBundleCDNWithPlatform(), m_strFileName)));
 //    }
-    
+
 //    // 인터페이스 : 컨테이너 얻기
 //    public Dictionary<string, AssetBundleInfo> GetContainer()
 //    {
@@ -193,7 +193,7 @@ using LitJson;
 
 //        return m_pData[strBundleName].GetResourceInfo(strResourceName);
 //    }
-    
+
 //    // 인터페이스 : 번들 리스트 얻기( 리소스 테이블과 비교 : 번들파일크기, 리소스 파일크기/해시코드 )
 //    public Dictionary<string, AssetBundleInfo> GetBundleListToCompare(JsonResources pResourceInfo)
 //    {
@@ -210,7 +210,7 @@ using LitJson;
 //                pResult.Add(pBundleKey, pBundleValue);
 //                return;
 //            }
-            
+
 //            // 체크 : 추가/제거/변경된 리소스(존재확인/파일크기/해시코드)
 //            SHUtils.ForToDic(pBundleValue.m_dicResources, (pResKey, pResValue) => 
 //            {
@@ -244,11 +244,11 @@ using LitJson;
 //    {
 //        // Download 경로
 //        var strAssetBundleInfoURL = string.Format("{0}/{1}/{2}.json", strCDN, SHHard.GetPlatformStringByEnum(eTarget), m_strFileName);
-        
+
 //        // CDN에 있는 AssetBundleInfo.Json 다운로드
 //        var pCDNInfo = new JsonAssetBundleInfo();
 //        pCDNInfo.LoadJsonTable((new SHJson()).LoadWWW(strAssetBundleInfoURL), m_strFileName);
-        
+
 //        // 로컬 Streaming에 저장된 AssetBundleInfo 로드
 //        var pStreamingInfo = new JsonAssetBundleInfo();
 //        pStreamingInfo.LoadJsonTable((new SHJson()).LoadToStreamingForLocal(m_strFileName), m_strFileName);

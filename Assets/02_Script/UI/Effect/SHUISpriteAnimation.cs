@@ -32,7 +32,7 @@ public class SHUISpriteAnimation : MonoBehaviour
     {
         if (null == m_pUITexture)
         {
-            Debug.LogError("UISpriteAnimation은 UITexture 컴포넌트로 동작합니다. UITexture를 컴포넌트로 추가하세요!!");
+            Debug.LogError("[LSH] UISpriteAnimation은 UITexture 컴포넌트로 동작합니다. UITexture를 컴포넌트로 추가하세요!!");
             return;
         }
 

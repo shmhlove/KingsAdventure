@@ -9,12 +9,12 @@ public class SHAppleAuth
 {
     public void OnInitialize()
     {
-        Debug.LogErrorFormat("[SHAppleAuth] Call is OnInitialize");
+        Debug.LogFormat("[LSH] Call is OnInitialize");
     }
 
     public void OnFinalize()
     {
-        Debug.LogErrorFormat("[SHAppleAuth] Call is OnFinalize");
+        Debug.LogFormat("[LSH] Call is OnFinalize");
     }
     
     public void Login(Action<SHReply> pCallback)
@@ -25,15 +25,11 @@ public class SHAppleAuth
             return;
         }
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         Social.localUser.Authenticate((isSucceed, strErrorMessage) =>
         {
             if (isSucceed)
             {
-                Debug.LogErrorFormat("[SHAppleAuth] Id {0}", GetUserID());
-                Debug.LogErrorFormat("[SHAppleAuth] Name {0}", GetUserName());
-                Debug.LogErrorFormat("[SHAppleAuth] State {0}", GetUserState());
-
                 pCallback(new Apple.Auth.SHReplyLogin(
                     GetUserID(), GetUserName(), GetUserState()));
             }
@@ -49,7 +45,7 @@ public class SHAppleAuth
 
     public void Logout(Action<SHReply> pCallback)
     {
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         
 #endif
         pCallback(new Apple.Auth.SHReplyLogout());

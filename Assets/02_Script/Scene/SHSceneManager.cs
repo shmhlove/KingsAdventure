@@ -50,7 +50,7 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
                     
                     if (true == string.IsNullOrEmpty(strLoadScenePath))
                     {
-                        Debug.LogErrorFormat("[SHSceneManager] Scene bundle Not matching of name");
+                        Debug.LogErrorFormat("[LSH] Scene bundle Not matching of name");
                         pCallback(new SHReply(new SHError(eErrorCode.Failed, "Scene bundle Not matching of name")));
                         return;
                     }

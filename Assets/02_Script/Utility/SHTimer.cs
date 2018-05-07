@@ -118,11 +118,11 @@ public class SHTimer : SHSingleton<SHTimer>
     //         }
     //         catch (Exception e)
     //         {
-    //             Debug.LogError("ERROR : {0}", e.Message);
+    //             Debug.LogError("[LSH] ERROR : {0}", e.Message);
     //             return new DateTime();
     //         }
     // 
-    //         Debug.Log(m_cSNTPClient.ToString());
+    //         Debug.Log("[LSH] " + m_cSNTPClient.ToString());
     //     }
     // 
     //     return m_cSNTPClient.DestinationTimestamp;

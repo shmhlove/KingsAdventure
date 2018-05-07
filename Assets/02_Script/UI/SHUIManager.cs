@@ -28,7 +28,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
     {
         if (null == pPanel)
         {
-            Debug.LogError("AddPanel() - Panel Is null!!");
+            Debug.LogError("[LSH] AddPanel() - Panel Is null!!");
             return;
         }
 
@@ -44,7 +44,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         var pPanel = GetPanel(strName);
         if (null == pPanel)
         {
-            Debug.LogErrorFormat("Show() - No Exist Panel(Name : {0})", strName);
+            Debug.LogErrorFormat("[LSH] Show() - No Exist Panel(Name : {0})", strName);
             return null;
         }
         
@@ -56,7 +56,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         var pPanel = GetPanel(strName);
         if (null == pPanel)
         {
-            Debug.LogErrorFormat("Close() - No Exist Panel(Name : {0})", strName);
+            Debug.LogErrorFormat("[LSH] Close() - No Exist Panel(Name : {0})", strName);
             return null;
         }
 

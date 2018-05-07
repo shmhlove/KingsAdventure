@@ -105,8 +105,8 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
         SetOrientation();
         SetCrittercism();
 
-        UnityEngine.Debug.LogFormat("ProcessID : {0}", GetProcessID());
-        UnityEngine.Debug.LogFormat("DebugPort : {0}", GetDebugPort());
+        UnityEngine.Debug.LogFormat("[LSH] ProcessID : {0}", GetProcessID());
+        UnityEngine.Debug.LogFormat("[LSH] DebugPort : {0}", GetDebugPort());
     }
     
     public bool IsEditorMode()
@@ -181,17 +181,17 @@ public partial class SHApplicationInfo : SHSingleton<SHApplicationInfo>
     
     void SetCrittercism()
     {
-// #if UNITY_ANDROID
-//         UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismAndroid.DidCrashOnLastLoad());
-//         CrittercismAndroid.Init("20fb64bf760d44589b6aefeb6bcb220700555300");
-//         CrittercismAndroid.SetLogUnhandledExceptionAsCrash(true);
-// #elif UNITY_IPHONE || UNITY_IOS
-//         UnityEngine.Debug.LogFormat("Crittercism.DidCrashOnLastLoad = {0}", CrittercismIOS.DidCrashOnLastLoad());
-//         CrittercismIOS.Init("7d02af2372694b93b84d75a999dd7dd400555300");
-//         CrittercismIOS.SetLogUnhandledExceptionAsCrash(true);
-// #endif
+        // #if UNITY_ANDROID
+        //         UnityEngine.Debug.LogFormat("[LSH] Crittercism.DidCrashOnLastLoad = {0}", CrittercismAndroid.DidCrashOnLastLoad());
+        //         CrittercismAndroid.Init("20fb64bf760d44589b6aefeb6bcb220700555300");
+        //         CrittercismAndroid.SetLogUnhandledExceptionAsCrash(true);
+        // #elif UNITY_IPHONE || UNITY_IOS
+        //         UnityEngine.Debug.LogFormat("[LSH] Crittercism.DidCrashOnLastLoad = {0}", CrittercismIOS.DidCrashOnLastLoad());
+        //         CrittercismIOS.Init("7d02af2372694b93b84d75a999dd7dd400555300");
+        //         CrittercismIOS.SetLogUnhandledExceptionAsCrash(true);
+        // #endif
     }
-    
+
     // UUID
     public string GetDeviceID()
     {

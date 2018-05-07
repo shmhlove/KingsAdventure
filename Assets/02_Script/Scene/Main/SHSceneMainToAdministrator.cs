@@ -15,12 +15,17 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.AppInfo.CreateSingleton();
 	}
     
+    public void OnClickOfOpenConsole()
+    {
+        LunarConsolePlugin.LunarConsole.Show();
+    }
+
     public void OnClickOfAddtiveIntro()
     {
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Intro, false, (pReply) =>
         {
-            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -34,7 +39,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Patch, false, (pReply) =>
         {
-            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -48,7 +53,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Login, false, (pReply) => 
         {
-            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -62,7 +67,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Loading, false, (pReply) =>
         {
-            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -76,7 +81,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.InGame, false, (pReply) =>
         {
-            Debug.LogErrorFormat("Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
         });
     }
 
@@ -107,12 +112,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyCreateAccount>();
 
-                Debug.LogErrorFormat("Firebase user created successfully: {0} ({1})",
+                Debug.LogErrorFormat("[LSH] Firebase user created successfully: {0} ({1})",
                     pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
             }
             else
             {
-                Debug.LogErrorFormat("Firebase user created Failed: {0}",
+                Debug.LogErrorFormat("[LSH] Firebase user created Failed: {0}",
                     pReply.Error.ToString());
             }
         });
@@ -128,12 +133,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyLogin>();
 
-                Debug.LogErrorFormat("Firebase user login successfully: {0} ({1})",
+                Debug.LogErrorFormat("[LSH] Firebase user login successfully: {0} ({1})",
                     pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
             }
             else
             {
-                Debug.LogErrorFormat("Firebase user login Failed: {0}", pReply.Error.ToString());
+                Debug.LogErrorFormat("[LSH] Firebase user login Failed: {0}", pReply.Error.ToString());
             }
         });
     }
@@ -148,12 +153,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGuestLogin>();
 
-                Debug.LogErrorFormat("Firebase user guest login successfully: {0} ({1})",
+                Debug.LogErrorFormat("[LSH] Firebase user guest login successfully: {0} ({1})",
                     pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
             }
             else
             {
-                Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
+                Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
             }
         });
     }
@@ -172,12 +177,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
                 {
                     var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
 
-                    Debug.LogErrorFormat("Firebase user google login successfully: {0} ({1})",
+                    Debug.LogErrorFormat("[LSH] Firebase user google login successfully: {0} ({1})",
                         pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
                 }
                 else
                 {
-                    Debug.LogErrorFormat("Firebase user guest login Failed: {0}", pReply.Error.ToString());
+                    Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
                 }
             });
         });
@@ -193,12 +198,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 var pAsReply = pReply.GetAs<Google.Auth.SHReplyLogin>();
 
-                Debug.LogErrorFormat("Google login successfully: {0}",
+                Debug.LogErrorFormat("[LSH] Google login successfully: {0}",
                     pAsReply.ToString());
             }
             else
             {
-                Debug.LogErrorFormat("Google login Failed: {0}", pReply.Error.ToString());
+                Debug.LogErrorFormat("[LSH] Google login Failed: {0}", pReply.Error.ToString());
             }
         });
     }
@@ -213,12 +218,12 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 var pAsReply = pReply.GetAs<Apple.Auth.SHReplyLogin>();
 
-                Debug.LogErrorFormat("Apple login successfully: {0}",
+                Debug.LogErrorFormat("[LSH] Apple login successfully: {0}",
                     pAsReply.ToString());
             }
             else
             {
-                Debug.LogErrorFormat("Apple login Failed: {0}", pReply.Error.ToString());
+                Debug.LogErrorFormat("[LSH] Apple login Failed: {0}", pReply.Error.ToString());
             }
         });
     }

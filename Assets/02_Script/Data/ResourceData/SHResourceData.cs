@@ -51,7 +51,7 @@ public partial class SHResourceData : SHBaseData
         var pResourceInfo = pTable.GetResouceInfo(pInfo.m_strName);
         if (null == pResourceInfo)
         {
-            Debug.LogFormat("[SHResourceData] 리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
+            Debug.LogFormat("[LSH] 리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", pInfo.m_strName);
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Resource_Not_ExsitTable));
             yield break;
         }
@@ -99,7 +99,7 @@ public partial class SHResourceData : SHBaseData
             var pInfo = Table.GetResouceInfo(strFileName);
             if (null == pInfo)
             {
-                Debug.Log(string.Format("리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", strFileName));
+                Debug.Log(string.Format("[LSH] 리소스 테이블에 {0}가 없습니다.(파일이 없거나 리소스 리스팅이 안되었음)", strFileName));
                 return null;
             }
 
@@ -196,7 +196,7 @@ public partial class SHResourceData : SHBaseData
 
         if (null == pPrefab)
         {
-            Debug.LogErrorFormat("[SHResourceData] 오브젝트 복사중 Null 프리팹이 전달되었습니다!!(Type : {0})", typeof(T));
+            Debug.LogErrorFormat("[LSH] 오브젝트 복사중 Null 프리팹이 전달되었습니다!!(Type : {0})", typeof(T));
             return default(T);
         }
 
@@ -263,7 +263,7 @@ public partial class SHResourceData : SHBaseData
         
         if (null == pObject)
         {
-            Debug.LogError(string.Format("{0}을 로드하지 못했습니다!!\n리소스 테이블에는 목록이 있으나 실제 파일은 없을 수도 있습니다.", pTable.m_strPath));
+            Debug.LogError(string.Format("[LSH] {0}을 로드하지 못했습니다!!\n리소스 테이블에는 목록이 있으나 실제 파일은 없을 수도 있습니다.", pTable.m_strPath));
             yield break;
         }
         
@@ -296,7 +296,7 @@ public partial class SHResourceData : SHBaseData
 
         if (null == pObject)
         {
-            Debug.LogError(string.Format("{0}을 로드하지 못했습니다!!\n리소스 테이블에는 목록이 있으나 실제 파일은 없을 수 있습니다.", pTable.m_strPath));
+            Debug.LogError(string.Format("[LSH] {0}을 로드하지 못했습니다!!\n리소스 테이블에는 목록이 있으나 실제 파일은 없을 수 있습니다.", pTable.m_strPath));
             return null;
         }
 

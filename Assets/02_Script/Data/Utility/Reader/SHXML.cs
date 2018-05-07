@@ -92,7 +92,7 @@ public class SHXML
         var pBuff = File.ReadAllText(strFilePath);
         if (null == pBuff)
         {
-            Debug.LogError(string.Format("[SHXML] XML(*.xml)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath));
+            Debug.LogError(string.Format("[LSH] XML(*.xml)파일을 읽는 중 오류발생!!(Path:{0})", strFilePath));
             return null;
         }
 

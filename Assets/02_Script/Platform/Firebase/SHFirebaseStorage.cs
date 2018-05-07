@@ -15,12 +15,12 @@ public class SHFirebaseStorage
 
     public void OnInitialize()
     {
-        Debug.LogErrorFormat("[SHFirebaseStorage] Call is OnInitialize");
+        Debug.LogFormat("[LSH] Call is OnInitialize");
     }
 
     public void OnFinalize()
     {
-        Debug.LogErrorFormat("[SHFirebaseStorage] Call is OnFinalize");
+        Debug.LogFormat("[LSH] Call is OnFinalize");
     }
     
     public void GetFileURL(string strFilePath, Action<SHReply> pCallback)
@@ -86,18 +86,18 @@ public class SHFirebaseStorage
 //    if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
 //    {
 //        byte[] byteFileContents = pTask.Result;
-//        Debug.Log("Finished downloading!");
+//        Debug.Log("[LSH] Finished downloading!");
 //    }
 //    else
 //    {
-//        Debug.Log(pTask.Exception.ToString());
+//        Debug.Log("[LSH] " + pTask.Exception.ToString());
 //    }
 //});
 
 // 스트리밍으로 다운로드
 //pIntroRef.GetStreamAsync((pStream) =>
 //{
-//    Debug.Log("Finished downloading!");
+//    Debug.Log("[LSH] Finished downloading!");
 //}, null, CancellationToken.None);
 
 // 로컬파일로 다운로드
@@ -106,6 +106,6 @@ public class SHFirebaseStorage
 //{
 //    if ((false == pTask.IsFaulted) && (false == pTask.IsCanceled))
 //    {
-//        Debug.Log("File downloaded.");
+//        Debug.Log("[LSH] File downloaded.");
 //    }
 //});

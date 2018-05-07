@@ -49,7 +49,7 @@ public abstract class SHState : SHMonoWrapper
     {
         if (null == pInfo)
         {
-            Debug.LogErrorFormat("SHState::AddState - StateInfo Is Null!! : {0}", iStateID);
+            Debug.LogErrorFormat("[LSH] SHState::AddState - StateInfo Is Null!! : {0}", iStateID);
             return;
         }
 

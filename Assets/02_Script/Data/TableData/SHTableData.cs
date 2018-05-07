@@ -49,7 +49,7 @@ public partial class SHTableData : SHBaseData
         var pTable = GetTable(pInfo.m_strName, false);
         if (null == pTable)
         {
-            Debug.LogErrorFormat("[SHTableData] 등록된 테이블이 아닙니다.!!({0})", pInfo.m_strName);
+            Debug.LogErrorFormat("[LSH] 등록된 테이블이 아닙니다.!!({0})", pInfo.m_strName);
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Table_Not_AddClass));
             yield break;
         }

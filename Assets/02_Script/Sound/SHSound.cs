@@ -42,7 +42,7 @@ public class SHSound : SHSingleton<SHSound>
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
         {
-            Debug.LogError("SHSound::PlayBGM() - Not Found TableInfo!!");
+            Debug.LogError("[LSH] SHSound::PlayBGM() - Not Found TableInfo!!");
             return;
         }
         
@@ -60,7 +60,7 @@ public class SHSound : SHSingleton<SHSound>
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
         {
-            Debug.LogError("SHSound::StopBGM() - Not Found TableInfo!!");
+            Debug.LogError("[LSH] SHSound::StopBGM() - Not Found TableInfo!!");
             return;
         }
 
@@ -73,7 +73,7 @@ public class SHSound : SHSingleton<SHSound>
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
         {
-            Debug.LogError("SHSound::PlayEffect() - Not Found TableInfo!!");
+            Debug.LogError("[LSH] SHSound::PlayEffect() - Not Found TableInfo!!");
             return;
         }
         
@@ -90,7 +90,7 @@ public class SHSound : SHSingleton<SHSound>
     {
         if (false == m_dicSoundTable.ContainsKey(strName))
         {
-            Debug.LogError("SHSound::StopEffect() - Not Found TableInfo!!");
+            Debug.LogError("[LSH] SHSound::StopEffect() - Not Found TableInfo!!");
             return;
         }
 
