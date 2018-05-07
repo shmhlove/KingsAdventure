@@ -22,10 +22,13 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfAddtiveIntro()
     {
+        Single.UI.Show("Panel_Indicator");
+
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Intro, false, (pReply) =>
         {
             Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
@@ -36,10 +39,13 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfAddtivePatch()
     {
+        Single.UI.Show("Panel_Indicator");
+
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Patch, false, (pReply) =>
         {
             Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
@@ -50,10 +56,13 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfAddtiveLogin()
     {
+        Single.UI.Show("Panel_Indicator");
+
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Login, false, (pReply) => 
         {
             Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
@@ -64,10 +73,13 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfAddtiveLoading()
     {
+        Single.UI.Show("Panel_Indicator");
+
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.Loading, false, (pReply) =>
         {
             Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
@@ -78,10 +90,13 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     
     public void OnClickOfAddtiveInGame()
     {
+        Single.UI.Show("Panel_Indicator");
+
         Single.Timer.StartDeltaTime("SceneLoadTime");
         Single.Scene.Addtive(eSceneType.InGame, false, (pReply) =>
         {
             Debug.LogErrorFormat("[LSH] Bundle Scene Load Time is {0}sec", Single.Timer.GetDeltaTimeToSecond("SceneLoadTime"));
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
@@ -106,6 +121,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     {
         OnClickOfProvider_LogoutAll();
 
+        Single.UI.Show("Panel_Indicator");
+
         Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword, (pReply) => 
         {
             if (pReply.IsSucceed)
@@ -120,12 +137,16 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
                 Debug.LogErrorFormat("[LSH] Firebase user created Failed: {0}",
                     pReply.Error.ToString());
             }
+
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
     public void OnClickOfFBAuth_Login()
     {
         OnClickOfProvider_LogoutAll();
+
+        Single.UI.Show("Panel_Indicator");
 
         Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword, (pReply) =>
         {
@@ -140,12 +161,16 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 Debug.LogErrorFormat("[LSH] Firebase user login Failed: {0}", pReply.Error.ToString());
             }
+
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
     public void OnClickOfFBAuth_GuestLogin()
     {
         OnClickOfProvider_LogoutAll();
+
+        Single.UI.Show("Panel_Indicator");
 
         Single.Firebase.Auth.GuestLogin((pReply) =>
         {
@@ -160,12 +185,16 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
             }
+
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
     public void OnClickOfFBAuth_GoogleSignIn()
     {
         OnClickOfProvider_LogoutAll();
+
+        Single.UI.Show("Panel_Indicator");
 
         Single.Google.Auth.Login((pGoogleReply) =>
         {
@@ -184,6 +213,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
                 {
                     Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
                 }
+
+                Single.UI.Close("Panel_Indicator");
             });
         });
     }
@@ -191,6 +222,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
     public void OnClickOfGoogle_Login()
     {
         OnClickOfProvider_LogoutAll();
+
+        Single.UI.Show("Panel_Indicator");
 
         Single.Google.Auth.Login((pReply) =>
         {
@@ -205,12 +238,16 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 Debug.LogErrorFormat("[LSH] Google login Failed: {0}", pReply.Error.ToString());
             }
+
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
     public void OnclickOfApple_Login()
     {
         OnClickOfProvider_LogoutAll();
+
+        Single.UI.Show("Panel_Indicator");
 
         Single.Apple.Auth.Login((pReply) =>
         {
@@ -225,6 +262,8 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
             {
                 Debug.LogErrorFormat("[LSH] Apple login Failed: {0}", pReply.Error.ToString());
             }
+
+            Single.UI.Close("Panel_Indicator");
         });
     }
 
