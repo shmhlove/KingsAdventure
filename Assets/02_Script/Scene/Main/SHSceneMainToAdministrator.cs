@@ -119,8 +119,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_CreateAccount()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Firebase.Auth.CreateAccount(m_strUserEmail, m_strUserPassword, (pReply) => 
@@ -144,8 +142,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_Login()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Firebase.Auth.Login(m_strUserEmail, m_strUserPassword, (pReply) =>
@@ -168,8 +164,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_GuestLogin()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Firebase.Auth.GuestLogin((pReply) =>
@@ -192,8 +186,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfFBAuth_GoogleSignIn()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Google.Auth.Login((pGoogleReply) =>
@@ -221,8 +213,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnClickOfGoogle_Login()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Google.Auth.Login((pReply) =>
@@ -245,8 +235,6 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
     public void OnclickOfApple_Login()
     {
-        OnClickOfProvider_LogoutAll();
-
         Single.UI.Show("Panel_Indicator");
 
         Single.Apple.Auth.Login((pReply) =>
