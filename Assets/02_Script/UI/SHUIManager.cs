@@ -33,9 +33,14 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         }
 
         if (true == m_dicPanels.ContainsKey(pPanel.name))
+        {
             m_dicPanels[pPanel.name] = pPanel;
+            Debug.LogWarningFormat("[LSH] Warning!!! Detection same UI Panel name : {0}", pPanel.name);
+        }
         else
+        {
             m_dicPanels.Add(pPanel.name, pPanel);
+        }
 
         pPanel.Initialize(bIsActive);
     }
