@@ -26,6 +26,9 @@ public class SHReply
 
     public T GetAs<T>() where T : SHReply
     {
-        return this as T;
+        if (this is T)
+            return this as T;
+        else
+            return default(T);
     }
 }
