@@ -28,14 +28,14 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
     {
         if (null == pPanel)
         {
-            Debug.LogError("[LSH] AddPanel() - Panel Is null!!");
+            Debug.LogError("[LSH] Error!!! Can not add panel because panel Is null");
             return;
         }
 
         if (true == m_dicPanels.ContainsKey(pPanel.name))
         {
             m_dicPanels[pPanel.name] = pPanel;
-            Debug.LogWarningFormat("[LSH] Warning!!! Detection same UI Panel name : {0}", pPanel.name);
+            Debug.LogWarningFormat("[LSH] Warning!!! Detection same UI Panel(Name : {0})", pPanel.name);
         }
         else
         {
@@ -49,7 +49,7 @@ public partial class SHUIManager : SHSingleton<SHUIManager>
         var pPanel = GetPanel(strName);
         if (null == pPanel)
         {
-            Debug.LogErrorFormat("[LSH] Show() - No Exist Panel(Name : {0})", strName);
+            Debug.LogErrorFormat("[LSH] No Exist Panel(Name : {0})", strName);
             return null;
         }
         
