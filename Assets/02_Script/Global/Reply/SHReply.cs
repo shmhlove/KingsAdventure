@@ -24,11 +24,16 @@ public class SHReply
         Error = pError;
     }
 
+    public SHReply(SHReply pReply)
+    {
+        Error = pReply.Error;
+    }
+
     public T GetAs<T>() where T : SHReply
     {
         if (this is T)
             return this as T;
         else
-            return default(T);
+            return (new SHReply(this)) as T;
     }
 }
