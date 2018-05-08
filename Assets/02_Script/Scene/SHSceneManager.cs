@@ -18,11 +18,14 @@ public class SHSceneManager : SHSingleton<SHSceneManager>
 
     public void Addtive(eSceneType eType, bool bIsUseFade = false, Action<SHReply> pCallback = null)
     {
-        if (true == IsLoadedScene(eType))
-            return;
-
         if (null == pCallback)
             pCallback = (SHReply pReply) => { };
+
+        if (true == IsLoadedScene(eType))
+        {
+            pCallback(new SHReply(new SHError(eErrorCode.Failed, "Aleady Loaded Scene")));
+            return;
+        }
 
         Action LoadScene = () =>
         {
