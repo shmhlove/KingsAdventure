@@ -190,24 +190,31 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
 
         Single.Google.Auth.Login((pGoogleReply) =>
         {
-            var pAsGoogleReply = pGoogleReply.GetAs<Google.Auth.SHReplyLogin>();
-            
-            Single.Firebase.Auth.GoogleSignIn(pAsGoogleReply.m_strIdToken, (pReply) =>
+            if (pGoogleReply.IsSucceed)
             {
-                if (pReply.IsSucceed)
-                {
-                    var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
+                var pAsGoogleReply = pGoogleReply.GetAs<Google.Auth.SHReplyLogin>();
 
-                    Debug.LogErrorFormat("[LSH] Firebase user google login successfully: {0} ({1})",
-                        pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
-                }
-                else
+                Single.Firebase.Auth.GoogleSignIn(pAsGoogleReply.m_strIdToken, (pReply) =>
                 {
-                    Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
-                }
+                    if (pReply.IsSucceed)
+                    {
+                        var pAsReply = pReply.GetAs<Firebase.Auth.SHReplyGoogleLogin>();
 
+                        Debug.LogErrorFormat("[LSH] Firebase user google login successfully: {0} ({1})",
+                            pAsReply.m_pUser.DisplayName, pAsReply.m_pUser.UserId);
+                    }
+                    else
+                    {
+                        Debug.LogErrorFormat("[LSH] Firebase user guest login Failed: {0}", pReply.Error.ToString());
+                    }
+
+                    Single.UI.Close("Panel_Indicator");
+                });
+            }
+            else
+            {
                 Single.UI.Close("Panel_Indicator");
-            });
+            }
         });
     }
 

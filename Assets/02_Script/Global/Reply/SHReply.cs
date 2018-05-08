@@ -31,9 +31,6 @@ public class SHReply
 
     public T GetAs<T>() where T : SHReply
     {
-        if (this is T)
-            return this as T;
-        else
-            return (new SHReply(this)) as T;
+        return this as T;
     }
 }
