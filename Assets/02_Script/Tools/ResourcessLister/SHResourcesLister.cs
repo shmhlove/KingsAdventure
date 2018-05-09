@@ -13,13 +13,13 @@ using LitJson;
 public class SHResourcesLister
 {
     // 멤버 : 리스팅된 리소스 리스트
-    public Dictionary<string, SHResourcesInfo>      m_dicResources      = new Dictionary<string, SHResourcesInfo>();
+    public Dictionary<string, SHResourcesInfo> m_dicResources = new Dictionary<string, SHResourcesInfo>();
 
     // 멤버 : 리스팅된 번들 리스트
     //public Dictionary<string, AssetBundleInfo>      m_dicAssetBundles   = new Dictionary<string, AssetBundleInfo>();
 
     // 멤버 : 중복파일 리스트
-    public Dictionary<string, List<string>>         m_dicDuplications   = new Dictionary<string, List<string>>();
+    public Dictionary<string, List<string>> m_dicDuplications = new Dictionary<string, List<string>>();
 
     // 인터페이스 : 초기화
     public void Initialize()
@@ -32,16 +32,16 @@ public class SHResourcesLister
     // 인터페이스 : strSearchPath 내에 있는 모든 파일을 ResourceTableData형식에 맞게 Json으로 리스팅
     public int Listing(string strSearchPath)
     {
-        SHUtils.Search(strSearchPath, (pFileInfo) => 
+        SHUtils.Search(strSearchPath, (pFileInfo) =>
         {
             var pResourceInfo = MakeResourceInfo(pFileInfo);
             if (null == pResourceInfo)
                 return;
-            
+
             var strDuplicationFile = CheckToDuplicationFile(m_dicResources, pResourceInfo.m_strFileName);
             if (false == string.IsNullOrEmpty(strDuplicationFile))
             {
-                string strFirst  = string.Format("{0}", strDuplicationFile);
+                string strFirst = string.Format("{0}", strDuplicationFile);
                 string strSecond = string.Format("{0}", pResourceInfo.m_strPath);
 
 #if UNITY_EDITOR
@@ -78,17 +78,14 @@ public class SHResourcesLister
         {
             pResourcesJsonData.Add(MakeResourceJsonData(pValue));
         });
-
-        var pJsonData = new JsonData();
-        pJsonData["ResourcesInfo"] = pResourcesJsonData;
-
+        
         var pJsonWriter = new JsonWriter();
         pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
+        JsonMapper.ToJson(pResourcesJsonData, pJsonWriter);
 
         SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
     }
-    
+
     // 인터페이스 : 번들 리스트를 Json형태로 번들정보파일포맷으로 쓰기
     //public static void SaveToAssetBundleInfo(Dictionary<string, AssetBundleInfo> dicTable, string strSaveFilePath)
     //{
@@ -102,7 +99,7 @@ public class SHResourcesLister
     //        pBundleJsonData["s_BundleName"] = pValue.m_strBundleName;
     //        pBundleJsonData["s_BundleSize"] = pValue.m_lBundleSize;
     //        pBundleJsonData["s_BundleHash"] = pValue.m_pHash128.ToString();
-            
+
     //        SHUtils.ForToDic(pValue.m_dicResources, (pResKey, pResValue) =>
     //        {
     //            pBundleJsonData["p_Resources"].Add(MakeResourceJsonData(pResValue));
@@ -110,13 +107,10 @@ public class SHResourcesLister
 
     //        pBundleListJsonData.Add(pBundleJsonData);
     //    });
-
-    //    var pJsonData = new JsonData();
-    //    pJsonData["AssetBundleInfo"] = pBundleListJsonData;
-
+    
     //    var pJsonWriter = new JsonWriter();
     //    pJsonWriter.PrettyPrint = true;
-    //    JsonMapper.ToJson(pJsonData, pJsonWriter);
+    //    JsonMapper.ToJson(pBundleListJsonData, pJsonWriter);
 
     //    SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
     //}
@@ -138,12 +132,9 @@ public class SHResourcesLister
             pDuplicationJsonData[string.Format("FileName_{0}", pKey)] = pFilesJsonData;
         });
         
-        var pJsonData = new JsonData();
-        pJsonData["DuplicationList"] = pDuplicationJsonData;
-
         var pJsonWriter = new JsonWriter();
         pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
+        JsonMapper.ToJson(pDuplicationJsonData, pJsonWriter);
 
         SHUtils.SaveFile(pJsonWriter.ToString(), strSaveFilePath);
     }

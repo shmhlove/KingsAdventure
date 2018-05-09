@@ -8,8 +8,8 @@ using System.Collections.Generic;
 [CustomEditor(typeof(SHConvertToByte))]
 public class SHEditorConvertToByte : Editor
 {
-    [MenuItem("SHTools/Convert To Byte", false, 0)]
-    [MenuItem("Assets/SHTools/Convert To Byte", false, 0)]
+    [MenuItem("SHTools/Convert of Json To Byte", false, 0)]
+    [MenuItem("Assets/SHTools/Convert of Json To Byte", false, 0)]
     static void SelectToMenu()
     {
         EditorUtility.DisplayDialog("[SHTools] Convert Table To ByteFile",

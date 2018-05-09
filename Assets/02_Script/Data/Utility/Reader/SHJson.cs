@@ -113,42 +113,7 @@ public class SHJson
     {
         return (null != m_pJsonData);
     }
-
-    // 인터페이스 : DataSet을 Json으로 쓰기
-    public void Write(string strFileName, Dictionary<string, List<SHTableDataSet>> dicData)
-    {
-        #if UNITY_EDITOR
-        if (null == dicData)
-        {
-            Debug.LogError(string.Format("[LSH] Json으로 저장할 데이터가 없습니다!!"));
-            return;
-        }
-
-        var pJsonData = new JsonData();
-        
-        SHUtils.ForToDic(dicData, (pKey, pValue) =>
-        {
-            var pTableJsonData = new JsonData();
-            SHUtils.ForToList(pValue, (pData) =>
-            {
-                var pRowJsonData = new JsonData();
-                SHUtils.For(0, pData.m_iMaxCol, (iCol) =>
-                {
-                    pRowJsonData[pData.m_ColumnNames[iCol]].Add(pData.m_pDatas[iCol]);
-                });
-                pTableJsonData.Add(pRowJsonData);
-            });
-            pJsonData[pKey] = pTableJsonData;
-        });
-
-        var pJsonWriter = new JsonWriter();
-        pJsonWriter.PrettyPrint = true;
-        JsonMapper.ToJson(pJsonData, pJsonWriter);
-
-        SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", SHPath.GetStreamingAssetsJsonTable(), Path.GetFileNameWithoutExtension(strFileName)));
-        #endif
-    }
-
+    
     // 유틸 : Json파일 로드
     public JsonData LoadLocal(string strFilePath)
     {

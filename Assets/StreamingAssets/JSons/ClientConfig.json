@@ -1,7 +1,6 @@
 
-{
-    "ClientConfig" : {
-	
+[
+    {
         "ServerConfigURL": "",
         "ServiceMode": "Dev",
         "Version": "1.0.1",
@@ -19,4 +18,4 @@
         "FrameRate": 60,
         "CacheSize": 200
     }
-}
+]

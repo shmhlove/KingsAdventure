@@ -41,7 +41,7 @@ public class JsonClientConfig : SHBaseTable
         if (null == pJson)
             return eErrorCode.Table_Load_Fail;
 
-        JsonData pDataNode = pJson["ClientConfig"];
+        JsonData pDataNode = pJson[0];
 
         ServerConfigURL = GetStrToJson(pDataNode, "ServerConfigURL");
         ServiceMode = GetStrToJson(pDataNode, "ServiceMode");
@@ -85,13 +85,10 @@ public class JsonClientConfig : SHBaseTable
     //    pClientConfigJsonData["VSyncCount"] = VSyncCount;
     //    pClientConfigJsonData["FrameRate"] = FrameRate;
     //    pClientConfigJsonData["CacheSize"] = CacheSize;
-
-    //    var pJsonData = new JsonData();
-    //    pJsonData["ClientConfig"] = pClientConfigJsonData;
-
+    
     //    var pJsonWriter = new JsonWriter();
     //    pJsonWriter.PrettyPrint = true;
-    //    JsonMapper.ToJson(pJsonData, pJsonWriter);
+    //    JsonMapper.ToJson(pClientConfigJsonData, pJsonWriter);
 
     //    SHUtils.SaveFile(pJsonWriter.ToString(), string.Format("{0}/{1}.json", strSavePath, m_strFileName));
     //}

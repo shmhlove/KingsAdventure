@@ -58,11 +58,11 @@ public class JsonResources : SHBaseTable
     {
         if (null == pJson)
             return eErrorCode.Table_Load_Fail;
-
-        int iMaxTable = pJson["ResourcesInfo"].Count;
+        
+        int iMaxTable = pJson.Count;
         for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            JsonData pDataNode          = pJson["ResourcesInfo"][iLoop];
+            var pDataNode               = pJson[iLoop];
             SHResourcesInfo pData       = new SHResourcesInfo();
             pData.m_strName             = GetStrToJson(pDataNode, "s_Name");
             pData.m_strFileName         = GetStrToJson(pDataNode, "s_FileName");

@@ -30,18 +30,19 @@ public class JsonPreloadResources : SHBaseTable
     {
         if (null == pJson)
             return eErrorCode.Table_Load_Fail;
-        
-        SHUtils.For(0, pJson["PreLoadResourcesList"].Count, (iLoop) => 
+
+        int iMaxTable = pJson.Count;
+        for (int iLoop = 0; iLoop < iMaxTable; ++iLoop)
         {
-            var pDataNode = pJson["PreLoadResourcesList"][iLoop];
+            var pDataNode = pJson[iLoop];
             SHUtils.ForToEnum<eSceneType>((eType) => 
             {
-                SHUtils.For(0, pDataNode[eType.ToString()].Count, (iDataIndex) => 
+                for (int iDataIndex = 0; iDataIndex < pDataNode[eType.ToString()].Count; ++iDataIndex)
                 {
                     AddData(eType, (string)pDataNode[eType.ToString()][iDataIndex]);
-                });
+                }
             });
-        });
+        }
 
         return eErrorCode.Succeed;
     }
