@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-
+﻿#if UNITY_EDITOR_WIN
+using UnityEngine;
 using System;
 using System.IO;
 using System.Data;
@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using Excel;
-//using Newtonsoft.Json;
 using LitJson;
 
 public class ExcelToJsonConverter 
@@ -470,3 +469,4 @@ public class ExcelToJsonConverter
 		return sheetNames;
 	}
 }
+#endif

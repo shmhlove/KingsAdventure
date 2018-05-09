@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR_WIN
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.IO;
@@ -103,3 +104,4 @@ public class ExcelToJsonAutoConverter
         //excelProcessor.ConvertExcelFilesToJson(inputPath, outputPath, onlyModifiedFiles);
     }
 }
+#endif
