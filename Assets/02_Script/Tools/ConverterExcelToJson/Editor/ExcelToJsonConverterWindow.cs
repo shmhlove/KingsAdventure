@@ -16,8 +16,8 @@ public class ExcelToJsonConverterWindow : EditorWindow
 
 	private ExcelToJsonConverter _excelProcessor;
     
-    [MenuItem("SHTools/Convert of Excel To Json", false, 0)]
-    [MenuItem("Assets/SHTools/Convert of Excel To Json", false, 0)]
+    [MenuItem("SHTools/Converter of Excel To Json", false, 1)]
+    [MenuItem("Assets/SHTools/Converter of Excel To Json", false, 1)]
     public static void ShowWindow() 
 	{
 		EditorWindow.GetWindow(typeof(ExcelToJsonConverterWindow), true, "Excel To Json Converter", true);

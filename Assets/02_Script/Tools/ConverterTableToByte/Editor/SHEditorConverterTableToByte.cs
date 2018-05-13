@@ -8,8 +8,8 @@ using System.Collections.Generic;
 [CustomEditor(typeof(SHConverterTableToByte))]
 public class SHEditorConverterTableToByte : Editor
 {
-    [MenuItem("SHTools/Converter of Table To Byte", false, 0)]
-    [MenuItem("Assets/SHTools/Converter of Table To Byte", false, 0)]
+    [MenuItem("SHTools/Converter of Table To Byte", false, 1)]
+    [MenuItem("Assets/SHTools/Converter of Table To Byte", false, 1)]
     static void SelectToMenu()
     {
         EditorUtility.DisplayDialog("[SHTools] Converter Table To Byte",
