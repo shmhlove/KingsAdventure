@@ -25,9 +25,9 @@ public class SHEditorResourcesLister : Editor
 
         // 알리아싱
         var pStartTime = DateTime.Now;
-        var strSaveResourcePath = string.Format("{0}/{1}", SHPath.GetStreamingAssetsJsonTable(), "ResourcesInfo.json");
-        //var strSaveBundlePath = string.Format("{0}/{1}", SHPath.GetPathToJson(), "AssetBundleInfo.json");
-        var strSaveDuplicationPath = string.Format("{0}/{1}", SHPath.GetStreamingAssetsJsonTable(), "DuplicationResourcesList.txt");
+        var strSaveResourcePath = string.Format("{0}/{1}", SHPath.GetResourceJsonTable(), "JsonResourcesInfo.json");
+        //var strSaveBundlePath = string.Format("{0}/{1}", SHPath.GetResourceJsonTable(), "JsonAssetBundleInfo.json");
+        var strSaveDuplicationPath = string.Format("{0}/{1}", SHPath.GetRoot(), "DuplicationResourcesList.txt");
 
         // 리스팅
         var pLister = new SHResourcesLister();

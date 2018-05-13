@@ -66,13 +66,13 @@ public abstract class SHBaseTable
 
         return LoadJsonTable(pJson.Node, m_strFileName);
     }
-    
+
     // 인터페이스 : XML파일 로드
     public eErrorCode LoadXML(string strFileName) 
     {
         if (eErrorCode.Table_Not_Override == LoadXMLTable(null))
             return eErrorCode.Table_Not_Override;
-
+        
         var pXML = new SHXML(strFileName);
         if (false == pXML.CheckXML())
             return eErrorCode.Table_Not_ExsitFile;

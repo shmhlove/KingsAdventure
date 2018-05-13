@@ -59,8 +59,7 @@ public partial class SHTableData : SHBaseData
             pDone(pInfo.m_strName, new SHLoadEndInfo(pLoadTable()));
         });
     }
-
-
+    
     public SHLoadData CreateLoadInfo(string strName)
     {
         return new SHLoadData()
@@ -71,9 +70,9 @@ public partial class SHTableData : SHBaseData
         };
     }
 
-    public T GetTable<T>() where T : SHBaseTable
+    public T GetTable<T>(bool bIsLoadCheck = true) where T : SHBaseTable
     {
-        return GetTable(typeof(T)) as T;
+        return GetTable(typeof(T), bIsLoadCheck) as T;
     }
 
     public SHBaseTable GetTable(Type pType, bool bIsLoadCheck = true)

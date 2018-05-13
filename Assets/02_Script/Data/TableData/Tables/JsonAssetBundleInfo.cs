@@ -77,7 +77,7 @@ using LitJson;
 
 //    public JsonAssetBundleInfo()
 //    {
-//        m_strFileName = "AssetBundleInfo";
+//        m_strFileName = "JsonAssetBundleInfo";
 //    }
 
 //    public override void Initialize()

@@ -28,7 +28,7 @@ public class JsonClientConfig : SHBaseTable
 
     public JsonClientConfig()
     {
-        m_strFileName = "ClientConfig";
+        m_strFileName = "JsonClientConfig";
     }
 
     public override bool IsLoadTable()

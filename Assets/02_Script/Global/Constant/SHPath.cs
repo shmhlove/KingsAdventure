@@ -85,7 +85,13 @@ public static partial class SHPath
     {
         return string.Format("{0}/{1}/{2}", SHPath.GetResources(), "Table", "Bytes");
     }
-    
+
+    // 경로 : (Root : Assets/Resources/Table/Json)
+    public static string GetResourceJsonTable()
+    {
+        return string.Format("{0}/{1}/{2}", SHPath.GetResources(), "Table", "Json");
+    }
+
     // 경로 : (Root : Assets/StreamingAssets/JSons)
     public static string GetStreamingAssetsJsonTable()
     {

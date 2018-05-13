@@ -24,9 +24,9 @@ public class SHBytes
 
         string strSavePath = string.Format("{0}/{1}.bytes", SHPath.GetPersistentDataBytes(), strFileName);
         if (true == File.Exists(strSavePath))
-            m_pBytes = LoadLocal(strSavePath);
+            m_pBytes = LoadByPersistent(strSavePath);
         else
-            m_pBytes = LoadPackage(strFileName);
+            m_pBytes = LoadByPackage(strFileName);
     }
     
     public bool CheckBytes()
@@ -39,7 +39,7 @@ public class SHBytes
         return m_pBytes;
     }
     
-    byte[] LoadWWW(string strFilePath)
+    byte[] LoadByWWW(string strFilePath)
     {
         WWW pWWW = Single.Coroutine.WWWOfSync(new WWW(strFilePath));
         if (true != string.IsNullOrEmpty(pWWW.error))
@@ -51,7 +51,7 @@ public class SHBytes
         return pWWW.bytes;
     }
     
-    byte[] LoadLocal(string strFilePath)
+    byte[] LoadByPersistent(string strFilePath)
     {
         var pBuff = File.ReadAllBytes(strFilePath);
         if (null == pBuff)
@@ -63,7 +63,7 @@ public class SHBytes
         return pBuff;
     }
 
-    byte[] LoadPackage(string strFileName)
+    byte[] LoadByPackage(string strFileName)
     {
         var pTextAsset = Single.Resource.GetTextAsset(Path.GetFileNameWithoutExtension(strFileName));
         if (null == pTextAsset)

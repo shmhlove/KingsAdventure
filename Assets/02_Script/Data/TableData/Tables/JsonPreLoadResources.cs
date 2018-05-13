@@ -13,7 +13,7 @@ public class JsonPreloadResources : SHBaseTable
     
     public JsonPreloadResources()
     {
-        m_strFileName = "PreloadResources";
+        m_strFileName = "JsonPreloadResources";
     }
     
     public override void Initialize()

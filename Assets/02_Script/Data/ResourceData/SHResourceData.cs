@@ -47,7 +47,7 @@ public partial class SHResourceData : SHBaseData
             yield break;
         }
 
-        var pTable = Single.Table.GetTable<JsonResources>();
+        var pTable = Single.Table.GetTable<JsonResources>(false);
         var pResourceInfo = pTable.GetResouceInfo(pInfo.m_strName);
         if (null == pResourceInfo)
         {
@@ -95,7 +95,7 @@ public partial class SHResourceData : SHBaseData
         strFileName = Path.GetFileNameWithoutExtension(strFileName);
         if (false == IsLoadResource(strFileName.ToLower()))
         {
-            var Table = Single.Table.GetTable<JsonResources>();
+            var Table = Single.Table.GetTable<JsonResources>(false);
             var pInfo = Table.GetResouceInfo(strFileName);
             if (null == pInfo)
             {

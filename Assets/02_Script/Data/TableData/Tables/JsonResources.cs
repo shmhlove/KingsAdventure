@@ -17,22 +17,6 @@ public class SHResourcesInfo
     public string           m_strHash;             // 해시
     public string           m_strPath;             // Resources폴더 이하 경로
     public eResourceType    m_eResourceType;       // 리소스 타입
-
-
-    public void CopyTo(SHResourcesInfo pData)
-    {
-        if (null == pData)
-            return;
-
-        m_strName             = pData.m_strName;
-        m_strFileName         = pData.m_strFileName;
-        m_strExtension        = pData.m_strExtension;
-        m_strSize             = pData.m_strSize;
-        //m_strLastWriteTime  = pData.m_strLastWriteTime;
-        m_strHash             = pData.m_strHash;
-        m_strPath             = pData.m_strPath;
-        m_eResourceType       = pData.m_eResourceType;
-    }
 }
 
 public class JsonResources : SHBaseTable
@@ -41,9 +25,9 @@ public class JsonResources : SHBaseTable
 
     public JsonResources()
     {
-        m_strFileName = "ResourcesInfo";
+        m_strFileName = "JsonResourcesInfo";
     }
-
+    
     public override void Initialize()
     {
         m_pData.Clear();
@@ -79,49 +63,31 @@ public class JsonResources : SHBaseTable
         return eErrorCode.Succeed;
     }
     
-    // 인터페이스 : 파일명으로 리소스 정보얻기
+    public void LoadImmediately()
+    {
+        var pTextAsset = Resources.Load<TextAsset>(string.Format("Table/Json/{0}", m_strFileName));
+        if (null == pTextAsset)
+        {
+            Debug.LogError("[LSH] Error!! not exist JsonResourcesInfo.json, Please Run > SHTool > Update Resources Info");
+        }
+        else
+        {
+            var pJson = new SHJson();
+            pJson.SetJsonData(pJson.GetJsonParseToString(pTextAsset.text));
+            LoadJsonTable(pJson.Node, m_strFileName);
+        }
+    }
+
     public SHResourcesInfo GetResouceInfo(string strName)
     {
         if (false == IsLoadTable())
-            LoadJson(m_strFileName);
+            LoadImmediately();
 
         strName = strName.ToLower().Trim();
         if (false == m_pData.ContainsKey(strName))
             return null;
 
         return m_pData[strName];
-    }
-    
-    // 인터페이스 : 파일명으로 리소스 경로 얻기
-    public string GetResoucesPath(string strName)
-    {
-        SHResourcesInfo pInfo = GetResouceInfo(strName);
-        if (null == pInfo)
-            return string.Empty;
-    
-        return pInfo.m_strPath;
-    }
-    
-    // 인터페이스 : 타입에 해당하는 리소스 정보 리스트 얻기
-    public List<SHResourcesInfo> GetResourceInfoByType(eResourceType eType)
-    {
-        if (false == IsLoadTable())
-            LoadJson(m_strFileName);
-
-        var pList = new List<SHResourcesInfo>();
-        SHUtils.ForToDic(m_pData, (pKey, pValue) =>
-        {
-            if (eType == pValue.m_eResourceType)
-                pList.Add(pValue);
-        });
-        
-        return pList;
-    }
-
-    // 인터페이스 : 리소스 정보 체크
-    public bool IsContain(string strName)
-    {
-        return (null != GetResouceInfo(strName));
     }
     
     void AddResources(string strKey, SHResourcesInfo pData)
