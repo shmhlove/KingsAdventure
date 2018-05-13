@@ -5,33 +5,33 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SHConvertToByte
+public class SHConverterTableToByte
 {
     // 인터페이스 : 에디터 클래스 전용 ( Resources폴더내에 컨버팅된 Byte파일을 쏟아 냄 )
-    public void RunEditorToConvert()
+    public void RunEditorToConverter()
     {
         var pTableData = new SHTableData();
         pTableData.OnInitialize();
-        ConvertByteFiles(pTableData, string.Format("{0}{1}", SHPath.GetResources(), "/Table/Bytes"));
+        ConverterTableToByte(pTableData, SHPath.GetResourceBytesTable());
         pTableData.OnFinalize();
     }
 
     // 인터페이스 : 바이트파일 컨버터 ( 전달된 TableData를 참조해서 전달된 저장경로에 쏟아 냄 )
-    public void ConvertByteFiles(SHTableData pTableData, string strSavePath)
+    public void ConverterTableToByte(SHTableData pTableData, string strSavePath)
     {
         if (null == pTableData)
             return;
 
         SHUtils.ForToDic(pTableData.Tables, (pKey, pValue) =>
         {
-            ConvertByteFile(pValue, strSavePath);
+            ConverterByteFile(pValue, strSavePath);
         });
 
-        Debug.Log("<color=yellow>[LSH] ConvertByteFiles Finish!!!</color>");
+        Debug.Log("<color=yellow>[LSH] Converter Table To Byte Finish!!!</color>");
     }
 
     // 인터페이스 : 바이트파일 컨버터 ( 파일 하나 )
-    public void ConvertByteFile(SHBaseTable pTable, string strSavePath)
+    public void ConverterByteFile(SHBaseTable pTable, string strSavePath)
     {
         if (null == pTable)
             return;
@@ -40,9 +40,9 @@ public class SHConvertToByte
         if (null == pBytes)
             return;
         
-        SHUtils.SaveByte(pBytes, string.Format("{0}/{1}{2}", strSavePath, pTable.m_strByteFileName, ".bytes"));
+        SHUtils.SaveByte(pBytes, string.Format("{0}/{1}.bytes", strSavePath, pTable.m_strByteFileName));
 
-        Debug.Log(string.Format("[LSH] {0} To Convert Byte Files : {1}",
+        Debug.Log(string.Format("[LSH] {0} To Converter Byte Files : {1}",
                     (true == pTable.IsLoadTable() ? "<color=yellow>Success</color>" : "<color=red>Fail!!</color>"),
                     pTable.m_strFileName));
     }
