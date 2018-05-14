@@ -41,7 +41,7 @@ public partial class SHResourceData : SHBaseData
     {
         pStart(pInfo.m_strName, new SHLoadStartInfo());
 
-        if (false == m_dicResources.ContainsKey(pInfo.m_strName.ToLower()))
+        if (true == m_dicResources.ContainsKey(pInfo.m_strName.ToLower()))
         {
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
             yield break;
