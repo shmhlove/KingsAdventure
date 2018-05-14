@@ -86,16 +86,16 @@ public class SHFirebaseStorage
         
         var pRiversRef = pRootRef.Child(strUploadPath);
         pRiversRef.PutFileAsync(strFilePath).ContinueWith((Task<StorageMetadata> pTask) =>
-          {
-              if (pTask.IsFaulted || pTask.IsCanceled)
-              {
-                  pCallback(new SHReply(new SHError(eErrorCode.Patch_Bundle_Upload_Fail, pTask.Exception.ToString())));
-              }
-              else
-              {
-                  pCallback(new SHReplyUpload(pTask.Result));
-              }
-          });
+        {
+            if (pTask.IsFaulted || pTask.IsCanceled)
+            {
+                pCallback(new SHReply(new SHError(eErrorCode.Patch_Bundle_Upload_Fail, pTask.Exception.ToString())));
+            }
+            else
+            {
+                pCallback(new SHReplyUpload(pTask.Result));
+            }
+        });
     }
 }
 

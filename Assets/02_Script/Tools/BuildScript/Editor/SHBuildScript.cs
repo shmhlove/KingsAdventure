@@ -59,7 +59,7 @@ class SHBuildScript
     static void AssetBundlesPacking(BuildTarget eTarget, eBundlePackType ePackType)
     {
         PackingAssetBundles(eTarget, ePackType);
-        UploadAssetBundles(eTarget, ePackType);
+        //UploadAssetBundles(eTarget, ePackType);
         PostProcessor(eTarget);
     }
     
