@@ -299,7 +299,10 @@ public partial class SHResourceData : SHBaseData
         Single.AppInfo.SetLoadResource(string.Format("Load : {0}({1}sec)", pTable.m_strName, ((DateTime.Now - pStartTime).TotalMilliseconds / 1000.0f)));
 #endif
 
-        m_dicResources.Add(pTable.m_strName.ToLower(), pObject);
+        if (true == m_dicResources.ContainsKey(pTable.m_strName.ToLower()))
+            m_dicResources[pTable.m_strName.ToLower()] = pObject;
+        else
+            m_dicResources.Add(pTable.m_strName.ToLower(), pObject);
 
         return pObject;
     }
