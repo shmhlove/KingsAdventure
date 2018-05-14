@@ -90,9 +90,6 @@ class SHBuildScript
         var strUploadRoot = string.Format("{0}/{1}", SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
         SHUtils.Search(strExportPath, (FileInfo pFile) =>
         {
-            if (Path.GetExtension(pFile.FullName).ToLower().Equals(".apk"))
-                return;
-
             var strUploadPath = string.Format("{0}/{1}", 
                 strUploadRoot, pFile.FullName.Substring(pFile.FullName.IndexOf("AssetBundle") + "AssetBundle".Length + 1)).Replace("\\", "/");
             
