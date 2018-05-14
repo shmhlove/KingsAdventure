@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: fe9a2de218013ac43b3a9842d4725a50
 timeCreated: 1515813984
 licenseType: Free
-DefaultImporter:
+TextScriptImporter:
   userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+  assetBundleName: table/jsonclientconfig
+  assetBundleVariant: table

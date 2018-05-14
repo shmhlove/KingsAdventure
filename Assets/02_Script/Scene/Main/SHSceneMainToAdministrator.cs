@@ -240,7 +240,7 @@ public class SHSceneMainToAdministrator : SHMonoWrapper
         });
     }
 
-    public void OnclickOfApple_Login()
+    public void OnClickOfApple_Login()
     {
         Single.UI.Show("Panel_Indicator");
 

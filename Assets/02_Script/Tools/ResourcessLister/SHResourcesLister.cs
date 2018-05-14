@@ -226,7 +226,7 @@ public class SHResourcesLister
         pInfo.m_strSize             = pFile.Length.ToString();
         //pInfo.m_strLastWriteTime    = pFile.LastWriteTime.ToString("yyyy-MM-dd-HH:mm:ss.fff");
         pInfo.m_strHash             = SHHash.GetMD5ToFile(pFile.FullName);
-        pInfo.m_strPath             = strFullName.Substring(0, strFullName.Length - strExtension.Length);;
+        pInfo.m_strPath             = strFullName.Substring(0, strFullName.Length - strExtension.Length);
         
         return pInfo;
     }

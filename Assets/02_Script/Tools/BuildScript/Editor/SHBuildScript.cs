@@ -59,6 +59,7 @@ class SHBuildScript
     static void AssetBundlesPacking(BuildTarget eTarget, eBundlePackType ePackType)
     {
         PackingAssetBundles(eTarget, ePackType);
+        UploadAssetBundles(eTarget, ePackType);
         PostProcessor(eTarget);
     }
     
@@ -81,6 +82,32 @@ class SHBuildScript
         }
 
         PlayerSettings.bundleVersion = pConfigFile.Version;
+    }
+
+    static void UploadAssetBundles(BuildTarget eTarget, eBundlePackType eType)
+    {
+        var strExportPath = string.Format("{0}/{1}/{2}", SHPath.GetBuild(), SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
+        var strUploadRoot = string.Format("{0}/{1}", SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
+        SHUtils.Search(strExportPath, (FileInfo pFile) =>
+        {
+            if (Path.GetExtension(pFile.FullName).ToLower().Equals(".apk"))
+                return;
+
+            var strUploadPath = string.Format("{0}/{1}", 
+                strUploadRoot, pFile.FullName.Substring(pFile.FullName.IndexOf("AssetBundle") + "AssetBundle".Length + 1)).Replace("\\", "/");
+            
+            Single.Firebase.Storage.Upload(pFile.FullName.Replace("\\", "/"), strUploadPath, (pReply) => 
+            {
+                if (pReply.IsSucceed)
+                {
+                    Debug.LogFormat("SUCCEED!! UploadPath : {0}", strUploadPath);
+                }
+                else
+                {
+                    Debug.LogFormat("FAILED!! UploadPath : {0}", strUploadPath);
+                }
+            });
+        });
     }
 
     static void PostProcessor(BuildTarget eTarget)

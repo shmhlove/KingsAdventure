@@ -27,6 +27,7 @@ public enum eErrorCode
     // 업데이트 관련
     Patch_Table,
     Patch_Bundle_Download_Fail,
+    Patch_Bundle_Upload_Fail,
 
     // Firebase
     FB_CreateAccount_Fail,
