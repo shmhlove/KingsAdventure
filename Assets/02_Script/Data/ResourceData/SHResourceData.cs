@@ -25,12 +25,12 @@ public partial class SHResourceData : SHBaseData
     {
         var dicLoadList  = new Dictionary<string, SHLoadData>();
         var PreloadTable = Single.Table.GetTable<JsonPreloadResources>();
-        SHUtils.ForToList(PreloadTable.GetData(eType), (pValue) =>
+        SHUtils.ForToList(PreloadTable.GetData(eType), (strValue) =>
         {
-            if (true == IsLoadResource(pValue))
+            if (true == m_dicResources.ContainsKey(strValue.ToLower()))
                 return;
-
-            dicLoadList.Add(pValue, CreateLoadInfo(pValue));
+            
+            dicLoadList.Add(strValue, CreateLoadInfo(strValue));
         });
 
         return dicLoadList;
@@ -41,7 +41,7 @@ public partial class SHResourceData : SHBaseData
     {
         pStart(pInfo.m_strName, new SHLoadStartInfo());
 
-        if (true == IsLoadResource(pInfo.m_strName.ToLower()))
+        if (false == m_dicResources.ContainsKey(pInfo.m_strName.ToLower()))
         {
             pDone(pInfo.m_strName, new SHLoadEndInfo(eErrorCode.Succeed));
             yield break;
@@ -77,11 +77,6 @@ public partial class SHResourceData : SHBaseData
         yield return null;
     }
     
-    public bool IsLoadResource(string strName)
-    {
-        return m_dicResources.ContainsKey(strName.ToLower());
-    }
-    
     public Object GetResources(string strFileName)
     {
         return GetResources<Object>(strFileName);
@@ -91,9 +86,9 @@ public partial class SHResourceData : SHBaseData
     {
         if (true == string.IsNullOrEmpty(strFileName))
             return null;
-
+        
         strFileName = Path.GetFileNameWithoutExtension(strFileName);
-        if (false == IsLoadResource(strFileName.ToLower()))
+        if (false == m_dicResources.ContainsKey(strFileName.ToLower()))
         {
             var Table = Single.Table.GetTable<JsonResources>(false);
             var pInfo = Table.GetResouceInfo(strFileName);
@@ -237,7 +232,7 @@ public partial class SHResourceData : SHBaseData
         if (null == pTable)
             yield break;
 
-        if (true == IsLoadResource(pTable.m_strName.ToLower()))
+        if (true == m_dicResources.ContainsKey(pTable.m_strName.ToLower()))
             yield break;
         
 #if UNITY_EDITOR
@@ -280,9 +275,9 @@ public partial class SHResourceData : SHBaseData
         if (null == pTable)
             return null;
 
-        if (true == IsLoadResource(pTable.m_strName.ToLower()))
+        if (true == m_dicResources.ContainsKey(pTable.m_strName.ToLower()))
             return m_dicResources[pTable.m_strName.ToLower()] as T;
-
+        
 #if UNITY_EDITOR
         DateTime pStartTime = DateTime.Now;
 #endif
