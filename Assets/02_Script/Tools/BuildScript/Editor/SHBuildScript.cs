@@ -24,11 +24,11 @@ class SHBuildScript
     { AppBuild(eNationType.Korea, BuildTarget.Android, eServiceMode.QA, BuildOptions.None);   }
     
     [MenuItem("SHTools/CI/Android AssetBundles Packing")]
-	static void AndroidAssetBundlesPacking()
+	static void KOR_AndroidAssetBundlesPacking()
     { AssetBundlesPacking(BuildTarget.Android, eBundlePackType.All);  }
 
     [MenuItem("SHTools/CI/Android AssetBundles Upload")]
-    static void AndroidAssetBundlesUpload()
+    static void KOR_AndroidAssetBundlesUpload()
     { UploadAssetBundles(BuildTarget.Android); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #endregion
@@ -48,11 +48,11 @@ class SHBuildScript
     { AppBuild(eNationType.Korea, BuildTarget.iOS, eServiceMode.QA, BuildOptions.AcceptExternalModificationsToPlayer);   }
     
     [MenuItem("SHTools/CI/iOS AssetBundles Packing")]
-	static void iOSAssetBundlesPacking()
+	static void KOR_iOSAssetBundlesPacking()
     { AssetBundlesPacking(BuildTarget.iOS, eBundlePackType.All);  }
 
     [MenuItem("SHTools/CI/iOS AssetBundles Upload")]
-    static void iOSAssetBundlesUpload()
+    static void KOR_iOSAssetBundlesUpload()
     { UploadAssetBundles(BuildTarget.iOS); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #endregion
@@ -116,6 +116,7 @@ class SHBuildScript
         
         Single.Firebase.Storage.Upload(pFileList, strUploadRoot, (pReply) => 
         {
+            PostProcessor(eTarget);
             EditorApplication.Exit(0);
         });
     }

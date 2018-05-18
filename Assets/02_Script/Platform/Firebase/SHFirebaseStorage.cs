@@ -109,12 +109,19 @@ public class SHFirebaseStorage
 
             Upload(pFile.FullName.Replace("\\", "/"), strUploadPath, (pReply) =>
             {
+                if (pReply.IsSucceed)
+                {
+                    Debug.LogFormat("SUCCEED!! UploadPath : {0}", strUploadPath);
+                }
+                else
+                {
+                    Debug.LogFormat("FAILED!! UploadPath : {0}", strUploadPath);
+                }
+
                 if (0 == --iFileCount)
                 {
                     pCallback(new SHReply());
                 }
-
-                Debug.LogErrorFormat("Upload Count!!!({0})", iFileCount);
             });
         }
     }
