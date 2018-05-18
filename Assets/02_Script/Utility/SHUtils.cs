@@ -228,15 +228,17 @@ public static partial class SHUtils
 
 
     #region 디렉토리 관련
-    public static void Search(string strPath, Action<FileInfo> pCallback)
+    public static List<FileInfo> Search(string strPath, Action<FileInfo> pCallback)
     {
+        var pFileList = new List<FileInfo>();
 #if UNITY_EDITOR
         DirectoryInfo pDirInfo = new DirectoryInfo(strPath);
-        SearchFiles(pDirInfo, pCallback);
-        SearchDirs(pDirInfo, pCallback);
+        SearchFiles(pDirInfo, pFileList, pCallback);
+        SearchDirs(pDirInfo, pFileList, pCallback);
 #endif
+        return pFileList;
     }
-    static void SearchDirs(DirectoryInfo pDirInfo, Action<FileInfo> pCallback)
+    static void SearchDirs(DirectoryInfo pDirInfo, List<FileInfo> pOutFileList, Action<FileInfo> pCallback)
     {
 #if UNITY_EDITOR
         if (false == pDirInfo.Exists)
@@ -244,17 +246,18 @@ public static partial class SHUtils
         
         SHUtils.ForToArray(pDirInfo.GetDirectories(), (pDir) =>
         {
-            SearchFiles(pDir, pCallback);
-            SearchDirs(pDir, pCallback);
+            SearchFiles(pDir, pOutFileList, pCallback);
+            SearchDirs(pDir, pOutFileList, pCallback);
         });
 #endif
     }
-    static void SearchFiles(DirectoryInfo pDirInfo, Action<FileInfo> pCallback)
+    static void SearchFiles(DirectoryInfo pDirInfo, List<FileInfo> pOutFileList, Action<FileInfo> pCallback)
     {
 #if UNITY_EDITOR
         SHUtils.ForToArray(pDirInfo.GetFiles(), (pFile) =>
         {
             pCallback(pFile);
+            pOutFileList.Add(pFile);
         });
 #endif
     }

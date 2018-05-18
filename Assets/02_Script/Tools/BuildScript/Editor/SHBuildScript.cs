@@ -26,6 +26,10 @@ class SHBuildScript
     [MenuItem("SHTools/CI/Android AssetBundles Packing")]
 	static void AndroidAssetBundlesPacking()
     { AssetBundlesPacking(BuildTarget.Android, eBundlePackType.All);  }
+
+    [MenuItem("SHTools/CI/Android AssetBundles Upload")]
+    static void AndroidAssetBundlesUpload()
+    { UploadAssetBundles(BuildTarget.Android); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #endregion
 
@@ -46,6 +50,10 @@ class SHBuildScript
     [MenuItem("SHTools/CI/iOS AssetBundles Packing")]
 	static void iOSAssetBundlesPacking()
     { AssetBundlesPacking(BuildTarget.iOS, eBundlePackType.All);  }
+
+    [MenuItem("SHTools/CI/iOS AssetBundles Upload")]
+    static void iOSAssetBundlesUpload()
+    { UploadAssetBundles(BuildTarget.iOS); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #endregion
     
@@ -59,7 +67,7 @@ class SHBuildScript
     static void AssetBundlesPacking(BuildTarget eTarget, eBundlePackType ePackType)
     {
         PackingAssetBundles(eTarget, ePackType);
-        //UploadAssetBundles(eTarget, ePackType);
+        //UploadAssetBundles(eTarget);
         PostProcessor(eTarget);
     }
     
@@ -84,29 +92,34 @@ class SHBuildScript
         PlayerSettings.bundleVersion = pConfigFile.Version;
     }
 
-    static void UploadAssetBundles(BuildTarget eTarget, eBundlePackType eType)
+    static void UploadAssetBundles(BuildTarget eTarget)
     {
         var strExportPath = string.Format("{0}/{1}/{2}", SHPath.GetBuild(), SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
         var strUploadRoot = string.Format("{0}/{1}", SHHard.GetPlatformStringByEnum(eTarget), "AssetBundle");
-        SHUtils.Search(strExportPath, (FileInfo pFile) =>
+        var pFileList = SHUtils.Search(strExportPath, (FileInfo pFile) =>
         {
-            var strUploadPath = string.Format("{0}/{1}", 
-                strUploadRoot, pFile.FullName.Substring(pFile.FullName.IndexOf("AssetBundle") + "AssetBundle".Length + 1)).Replace("\\", "/");
+            // var strUploadPath = string.Format("{0}/{1}", 
+            //     strUploadRoot, pFile.FullName.Substring(pFile.FullName.IndexOf("AssetBundle") + "AssetBundle".Length + 1)).Replace("\\", "/");
             
-            Single.Firebase.Storage.Upload(pFile.FullName.Replace("\\", "/"), strUploadPath, (pReply) => 
-            {
-                if (pReply.IsSucceed)
-                {
-                    Debug.LogFormat("SUCCEED!! UploadPath : {0}", strUploadPath);
-                }
-                else
-                {
-                    Debug.LogFormat("FAILED!! UploadPath : {0}", strUploadPath);
-                }
-            });
+            // Single.Firebase.Storage.Upload(pFile.FullName.Replace("\\", "/"), strUploadPath, (pReply) => 
+            // {
+            //     if (pReply.IsSucceed)
+            //     {
+            //         Debug.LogFormat("SUCCEED!! UploadPath : {0}", strUploadPath);
+            //     }
+            //     else
+            //     {
+            //         Debug.LogFormat("FAILED!! UploadPath : {0}", strUploadPath);
+            //     }
+            // });
+        });
+        
+        Single.Firebase.Storage.Upload(pFileList, strUploadRoot, (pReply) => 
+        {
+            EditorApplication.Exit(0);
         });
     }
-
+    
     static void PostProcessor(BuildTarget eTarget)
     {
         SHGameObject.DestoryObject(GameObject.Find("SHSingletons(Destroy)"));

@@ -2,6 +2,7 @@
 using UnityEngine.SocialPlatforms;
 
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -96,6 +97,26 @@ public class SHFirebaseStorage
                 pCallback(new SHReplyUpload(pTask.Result));
             }
         });
+    }
+
+    public void Upload(List<FileInfo> pFileList, string strUploadRoot, Action<SHReply> pCallback)
+    {
+        var iFileCount = pFileList.Count;
+        foreach (var pFile in pFileList)
+        {
+            var strUploadPath = string.Format("{0}/{1}",
+                strUploadRoot, pFile.FullName.Substring(pFile.FullName.IndexOf("AssetBundle") + "AssetBundle".Length + 1)).Replace("\\", "/");
+
+            Upload(pFile.FullName.Replace("\\", "/"), strUploadPath, (pReply) =>
+            {
+                if (0 == --iFileCount)
+                {
+                    pCallback(new SHReply());
+                }
+
+                Debug.LogErrorFormat("Upload Count!!!({0})", iFileCount);
+            });
+        }
     }
 }
 
